@@ -13,6 +13,7 @@ namespace Authentication.DAL
         AmazonDynamoDBConfig ddbConfig;
         AmazonDynamoDBClient client;
         Table usersTable;
+        Table tokensTable;
         public UserRepository()
         {
             ddbConfig = new AmazonDynamoDBConfig();

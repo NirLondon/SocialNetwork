@@ -22,25 +22,16 @@ namespace Authentication.Server.Controllers
 
         }
 
-        // GET api/<controller>/5
-        public string Get(int id)
+
+        public void SignupWithFacebook(string facebbokToken)
         {
-            return "value";
+
         }
 
-        // POST api/<controller>
-        public void Post([FromBody]string value)
-        {
-        }
 
-        // PUT api/<controller>/5
-        public void Put(int id, [FromBody]string value)
+        public void LoginWithFacebook(string facebookToken)
         {
-        }
 
-        // DELETE api/<controller>/5
-        public void Delete(int id)
-        {
         }
     }
 }
