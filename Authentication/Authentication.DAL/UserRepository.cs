@@ -25,24 +25,37 @@ namespace Authentication.DAL
 
         public async void Signup(UserModel user)
         {
-            if (await Exists(user.UserID))
-                throw new UserAlreadyExistsException(user.UserID);
-            else
+            try
             {
-                var userDocument = GenerateUserDocument(user);
-                await usersTable.PutItemAsync(userDocument);
+                if (await Exists(user.UserID))
+                    throw new UserAlreadyExistsException(user.UserID);
+                else
+                {
+                    var userDocument = GenerateUserDocument(user);
+                    await usersTable.PutItemAsync(userDocument);
+                }
+            }
+            catch (Exception e)
+            {
+
+                throw;
             }
         }
 
         public async void SaveToken(TokenModel token)
         {
-
+            var tokenDocument = GenerateTokenDocument(token);
+            await tokensTable.PutItemAsync(tokenDocument);
         }
 
         private async Task<bool> Exists(string userID)
         {
+            Document result;
             bool flag = true;
-            var result = await usersTable.GetItemAsync(userID);
+
+
+            result = await usersTable.GetItemAsync(userID);
+
 
             if (result == null)
             {
@@ -62,9 +75,14 @@ namespace Authentication.DAL
             return userDocument;
         }
 
-        private Document GenerateTokenDocument()
+        private Document GenerateTokenDocument(TokenModel token)
         {
+            var tokenDocument = new Document();
+            tokenDocument["Token"] = token.Token;
+            tokenDocument["User"] = token.AssignedUser;
+            tokenDocument["State"] = token.State.ToString();
 
+            return tokenDocument;
         }
     }
 }

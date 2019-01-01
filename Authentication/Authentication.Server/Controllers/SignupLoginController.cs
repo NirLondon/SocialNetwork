@@ -21,11 +21,13 @@ namespace Authentication.Server.Controllers
 
         [HttpGet]
         [Route(api + "Signup/{username}/{password}")]
-        public void Signup(string username, string password)
+        public TokenModel Signup(string username, string password)
         {
             UserModel user = GenerateUser(username, password);
             repository.Signup(user);
             TokenModel TM = GenerateToken(username);
+            repository.SaveToken(TM);
+            return TM;
         }
 
 
