@@ -1,4 +1,9 @@
-﻿using System;
+﻿using Authentication.BL;
+using Authentication.Common.BL;
+using SimpleInjector;
+using SimpleInjector.Integration.WebApi;
+using SimpleInjector.Lifestyles;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -12,6 +17,21 @@ namespace Authentication.Server
         protected void Application_Start()
         {
             GlobalConfiguration.Configure(WebApiConfig.Register);
+            InitContainer();
         }
+        private static void InitContainer()
+        {
+            var container = new Container();
+            container.Options.DefaultScopedLifestyle = new AsyncScopedLifestyle();
+
+            container.Register<ISignupLogin>(() => new SignupLoginManager());
+
+            container.RegisterWebApiControllers(GlobalConfiguration.Configuration);
+
+            container.Verify();
+
+            GlobalConfiguration.Configuration.DependencyResolver = new SimpleInjectorWebApiDependencyResolver(container);
+        }
+
     }
 }

@@ -1,4 +1,5 @@
-﻿using Authentication.Common.Models;
+﻿using Authentication.Common.BL;
+using Authentication.Common.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,8 +11,36 @@ namespace Authentication.Server.Controllers
 {
     public class SignupLoginController : ApiController
     {
-        // GET api/<controller>
+        ISignupLogin repository;
+        const string api = "api/SignupLogin/";
+
+        public SignupLoginController(ISignupLogin repositoryManager)
+        {
+            repository = repositoryManager;
+        }
+
+        [HttpGet]
+        [Route(api + "Signup/{username}/{password}")]
         public void Signup(string username, string password)
+        {
+            UserModel user = GenerateUser(username, password);
+            repository.Signup(user);
+            TokenModel TM = GenerateToken(username);
+        }
+
+
+        private TokenModel GenerateToken(string username)
+        {
+            TokenModel TM = new TokenModel()
+            {
+                Token = Convert.ToBase64String(Guid.NewGuid().ToByteArray()),
+                AssignedUser = username,
+                State = Common.Enums.TokenStateModel.Valid
+            };
+            return TM;
+        }
+
+        private UserModel GenerateUser(string username, string password)
         {
             UserModel user = new UserModel()
             {
@@ -19,28 +48,7 @@ namespace Authentication.Server.Controllers
                 Password = password,
                 State = Common.Enums.UserStateEnum.Open
             };
-
-        }
-
-        // GET api/<controller>/5
-        public string Get(int id)
-        {
-            return "value";
-        }
-
-        // POST api/<controller>
-        public void Post([FromBody]string value)
-        {
-        }
-
-        // PUT api/<controller>/5
-        public void Put(int id, [FromBody]string value)
-        {
-        }
-
-        // DELETE api/<controller>/5
-        public void Delete(int id)
-        {
+            return user;
         }
     }
 }
