@@ -10,5 +10,7 @@ namespace Authentication.Common.BL
         void Signup(UserModel user);
 
         void SaveToken(TokenModel token);
+
+        bool Login(UserModel user);
     }
 }

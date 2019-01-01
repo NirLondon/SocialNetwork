@@ -22,15 +22,14 @@ namespace Client.WUP.Views
     /// <summary>
     /// An empty page that can be used on its own or navigated to within a Frame.
     /// </summary>
-    public sealed partial class SignupLoginView : Page
+    public sealed partial class MainPageView : Page
     {
-        private SignupLoginViewModel viewModel { get; set; }
-        private SignupLoginService service { get; set; }
-        public SignupLoginView()
+        private MainPageViewModel viewModel { get; set; }
+        private MainPageService service { get; set; }
+        public MainPageView()
         {
             this.InitializeComponent();
-            service = new SignupLoginService();
-            viewModel = new SignupLoginViewModel(service);
+            viewModel = new MainPageViewModel(service);
         }
     }
 }

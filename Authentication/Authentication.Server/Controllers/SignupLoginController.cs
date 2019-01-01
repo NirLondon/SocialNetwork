@@ -30,6 +30,21 @@ namespace Authentication.Server.Controllers
             return TM;
         }
 
+        [HttpGet]
+        [Route(api + "Login/{username}/{password}")]
+        public TokenModel Login(string username, string password)
+        {
+            TokenModel TM = null;
+            UserModel user = GenerateUser(username, password);
+            bool success = repository.Login(user);
+            if (success)
+            {
+                TM = GenerateToken(username);
+                repository.SaveToken(TM);
+            }
+
+            return TM;
+        }
 
         private TokenModel GenerateToken(string username)
         {

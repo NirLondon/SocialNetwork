@@ -16,6 +16,11 @@ namespace Authentication.BL
             repository = new UserRepository();
         }
 
+        public bool Login(UserModel user)
+        {
+            return repository.Login(user);
+        }
+
         public void SaveToken(TokenModel token)
         {
             repository.SaveToken(token);

@@ -23,39 +23,47 @@ namespace Authentication.DAL
             tokensTable = Table.LoadTable(client, "Tokens");
         }
 
-        public async void Signup(UserModel user)
+        public void Signup(UserModel user)
         {
             try
             {
-                if (await Exists(user.UserID))
+                if (Exists(user.UserID))
                     throw new UserAlreadyExistsException(user.UserID);
                 else
                 {
                     var userDocument = GenerateUserDocument(user);
-                    await usersTable.PutItemAsync(userDocument);
+                    usersTable.PutItemAsync(userDocument);
                 }
             }
             catch (Exception e)
             {
-
                 throw;
             }
         }
 
-        public async void SaveToken(TokenModel token)
+        public void SaveToken(TokenModel token)
         {
             var tokenDocument = GenerateTokenDocument(token);
-            await tokensTable.PutItemAsync(tokenDocument);
+            tokensTable.PutItemAsync(tokenDocument);
         }
 
-        private async Task<bool> Exists(string userID)
+        public bool Login(UserModel user)
         {
-            Document result;
             bool flag = true;
+            Document result = usersTable.GetItemAsync(user.UserID).Result;
 
+            if (result == null || result["Password"] != user.Password)
+            {
+                flag = false;
+            }
 
-            result = await usersTable.GetItemAsync(userID);
+            return flag;
+        }
 
+        private bool Exists(string userID)
+        {
+            bool flag = true;
+            Document result = usersTable.GetItemAsync(userID).Result;
 
             if (result == null)
             {

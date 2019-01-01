@@ -15,7 +15,13 @@ namespace Client.ViewModels
 
         public string Username { get; set; }
         public string Password { get; set; }
-        public string Message { get; set; }
+
+        private string _message;
+        public string Message
+        {
+            get { return _message; }
+            set { _message = value; OnPropertyChange(); }
+        }
 
         public SignupLoginViewModel(ISignupLoginService service)
         {
@@ -26,13 +32,34 @@ namespace Client.ViewModels
 
         public async void Signup()
         {
-            bool result = await API_Client.Signup(Username, Password);
-            Message = result.ToString();
+            if (Username == null || Username == "" || Password == null || Password == "")
+            {
+                Message = "Insert username or password";
+            }
+            else
+            {
+                bool result = await API_Client.Signup(Username, Password);
+                Message = result.ToString();
+            }
         }
 
         public async void Login()
         {
-            await API_Client.Login(Username, Password);
+            bool logged = await API_Client.Login(Username, Password);
+
+            if (logged)
+            {
+                _viewService.NavigateToMainPage();
+            }
+            else
+            {
+                Message = logged.ToString();
+            }
+        }
+
+        private void OnPropertyChange(string propname = null)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propname));
         }
     }
 }

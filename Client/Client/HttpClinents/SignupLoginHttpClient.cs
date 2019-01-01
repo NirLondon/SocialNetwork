@@ -36,7 +36,15 @@ namespace Client.HttpClinents
         public async Task<bool> Login(string username, string password)
         {
             bool flag = false;
-
+            var result = await httpClient.GetAsync($"Login/{username}/{password}");
+            if (result.IsSuccessStatusCode)
+            {
+                flag = result.Content.ReadAsAsync<bool>().Result;
+            }
+            else
+            {
+                //manage error
+            }
 
             return flag;
         }
