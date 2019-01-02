@@ -1,15 +1,17 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.28010.2019
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.28407.52
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Authentication.DAL", "Authentication.DAL\Authentication.DAL.csproj", "{2B448B90-D4B3-4A40-AB7E-D1D2D729A1F0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Authentication.DAL", "Authentication.DAL\Authentication.DAL.csproj", "{2B448B90-D4B3-4A40-AB7E-D1D2D729A1F0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Authentication.Common", "Authentication.Common\Authentication.Common.csproj", "{6FF5BC6B-B4D1-46A7-BEF5-CF62A9FE1187}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Authentication.Common", "Authentication.Common\Authentication.Common.csproj", "{6FF5BC6B-B4D1-46A7-BEF5-CF62A9FE1187}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Authentication.BL", "Authentication.BL\Authentication.BL.csproj", "{A44BEE73-CF96-44B2-BBB3-C15CE2B7C1D4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Authentication.BL", "Authentication.BL\Authentication.BL.csproj", "{A44BEE73-CF96-44B2-BBB3-C15CE2B7C1D4}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Authentication.Server", "Authentication.Server\Authentication.Server.csproj", "{0802E1F6-F86E-4DDB-8DDC-1A529626BAD6}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Authentication.DAL.Test", "Authentication.DAL.Test\Authentication.DAL.Test.csproj", "{BB69765A-F7E2-45E0-A1CF-1BB583D00FA6}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +35,10 @@ Global
 		{0802E1F6-F86E-4DDB-8DDC-1A529626BAD6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0802E1F6-F86E-4DDB-8DDC-1A529626BAD6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0802E1F6-F86E-4DDB-8DDC-1A529626BAD6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BB69765A-F7E2-45E0-A1CF-1BB583D00FA6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BB69765A-F7E2-45E0-A1CF-1BB583D00FA6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BB69765A-F7E2-45E0-A1CF-1BB583D00FA6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BB69765A-F7E2-45E0-A1CF-1BB583D00FA6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
