@@ -11,9 +11,9 @@ namespace Client.WUP.Services
 {
     public class SignupLoginService : ISignupLoginService
     {
-        public void NavigateToMainPage()
+        public void NavigateToMainPage(string token)
         {
-            Window.Current.Content = new MainPageView();
+            Window.Current.Content = new MainPageView(token);
         }
     }
 }

@@ -6,6 +6,6 @@ namespace Client.ServicesInterfaces
 {
     public interface ISignupLoginService
     {
-        void NavigateToMainPage();
+        void NavigateToMainPage(string token);
     }
 }

@@ -25,19 +25,12 @@ namespace Authentication.DAL
 
         public void Signup(UserModel user)
         {
-            try
+            if (Exists(user.UserID))
+                throw new UserAlreadyExistsException(user.UserID);
+            else
             {
-                if (Exists(user.UserID))
-                    throw new UserAlreadyExistsException(user.UserID);
-                else
-                {
-                    var userDocument = GenerateUserDocument(user);
-                    usersTable.PutItemAsync(userDocument);
-                }
-            }
-            catch (Exception e)
-            {
-                throw;
+                var userDocument = GenerateUserDocument(user);
+                usersTable.PutItemAsync(userDocument);
             }
         }
 

@@ -1,4 +1,6 @@
 ﻿using Authentication.Common.BL;
+using Authentication.Common.Enums;
+using Authentication.Common.Exceptions;
 using Authentication.Common.Models;
 using System;
 using System.Collections.Generic;
@@ -21,29 +23,51 @@ namespace Authentication.Server.Controllers
 
         [HttpGet]
         [Route(api + "Signup/{username}/{password}")]
-        public TokenModel Signup(string username, string password)
+        public Tuple<string, ErrorEnum> Signup(string username, string password)
         {
+            Tuple<string, ErrorEnum> response;
+            string token = null;
+            ErrorEnum eror = ErrorEnum.EverythingIsGood;
             UserModel user = GenerateUser(username, password);
-            repository.Signup(user);
-            TokenModel TM = GenerateToken(username);
-            repository.SaveToken(TM);
-            return TM;
+            try
+            {
+                repository.Signup(user);
+                TokenModel TM = GenerateToken(username);
+                token = TM.Token;
+                repository.SaveToken(TM);
+            }
+            catch (Exception e)
+            {
+                if (e is UserAlreadyExistsException)
+                {
+                    eror = ErrorEnum.UsernameAlreadyExist;
+                }
+                else
+                {
+                    eror = ErrorEnum.ConectionFailed;
+                }
+            }
+            response = new Tuple<string, ErrorEnum>(token, eror);
+            return response; ;
         }
 
         [HttpGet]
         [Route(api + "Login/{username}/{password}")]
-        public TokenModel Login(string username, string password)
+        public Tuple<string, ErrorEnum> Login(string username, string password)
         {
-            TokenModel TM = null;
+            string token = null;
+            ErrorEnum eror = ErrorEnum.WrongUsernameOrPassword;
             UserModel user = GenerateUser(username, password);
             bool success = repository.Login(user);
             if (success)
             {
-                TM = GenerateToken(username);
+                eror = ErrorEnum.EverythingIsGood;
+                TokenModel TM = GenerateToken(username);
                 repository.SaveToken(TM);
+                token = TM.Token;
             }
-
-            return TM;
+            Tuple<string, ErrorEnum> tuple = new Tuple<string, ErrorEnum>(token, eror);
+            return tuple;
         }
 
         private TokenModel GenerateToken(string username)
@@ -52,7 +76,7 @@ namespace Authentication.Server.Controllers
             {
                 Token = Convert.ToBase64String(Guid.NewGuid().ToByteArray()),
                 AssignedUser = username,
-                State = Common.Enums.TokenStateModel.Valid
+                State = Common.Enums.TokenStateEnum.Valid
             };
             return TM;
         }

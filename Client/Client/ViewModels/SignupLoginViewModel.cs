@@ -1,4 +1,5 @@
-﻿using Client.HttpClinents;
+﻿using Client.Enum;
+using Client.HttpClinents;
 using Client.ServicesInterfaces;
 using System;
 using System.Collections.Generic;
@@ -38,23 +39,48 @@ namespace Client.ViewModels
             }
             else
             {
-                bool result = await API_Client.Signup(Username, Password);
-                Message = result.ToString();
+                Tuple<string, ErrorEnum> tuple = await API_Client.Signup(Username, Password);
+                if (tuple.Item2 == ErrorEnum.EverythingIsGood)
+                {
+                    _viewService.NavigateToMainPage(tuple.Item1);
+                }
+                else
+                {
+                    Message = ManageError(tuple.Item2);
+                }
             }
         }
 
         public async void Login()
         {
-            bool logged = await API_Client.Login(Username, Password);
+            Tuple<string, ErrorEnum> tuple = await API_Client.Login(Username, Password);
 
-            if (logged)
+            if (tuple.Item2 == ErrorEnum.EverythingIsGood)
             {
-                _viewService.NavigateToMainPage();
+                _viewService.NavigateToMainPage(tuple.Item1);
             }
             else
             {
-                Message = logged.ToString();
+                Message = ManageError(tuple.Item2);
             }
+        }
+
+        private string ManageError(ErrorEnum eror)
+        {
+            string msg = "";
+            switch (eror)
+            {
+                case ErrorEnum.WrongUsernameOrPassword:
+                    msg = "Wrong username or password";
+                    break;
+                case ErrorEnum.ConectionFailed:
+                    msg = "Bad internet conection";
+                    break;
+                case ErrorEnum.UsernameAlreadyExist:
+                    msg = "Username already exist";
+                    break;
+            }
+            return msg;
         }
 
         private void OnPropertyChange(string propname = null)
