@@ -53,5 +53,24 @@ namespace Client.HttpClinents
             Tuple<string, ErrorEnum> tuple = new Tuple<string, ErrorEnum>(token, eror);
             return tuple;
         }
+
+        public async Task<Tuple<string, ErrorEnum>> LoginWithFacebook(string facebookToken)
+        {
+            string token = null;
+            ErrorEnum eror = ErrorEnum.EverythingIsGood;
+            var result = await httpClient.PostAsJsonAsync($"LoginWithFacebook", facebookToken);
+            if (result.IsSuccessStatusCode)
+            {
+                var response = result.Content.ReadAsAsync<Tuple<string, ErrorEnum>>().Result;
+                eror = response.Item2;
+                token = response.Item1;
+            }
+            else
+            {
+                eror = ErrorEnum.ConectionFailed;
+            }
+            Tuple<string, ErrorEnum> tuple = new Tuple<string, ErrorEnum>(token, eror);
+            return tuple;
+        }
     }
 }

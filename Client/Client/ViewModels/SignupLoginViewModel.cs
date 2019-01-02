@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Text;
 
+
 namespace Client.ViewModels
 {
     public class SignupLoginViewModel : INotifyPropertyChanged
@@ -64,6 +65,24 @@ namespace Client.ViewModels
                 Message = ManageError(tuple.Item2);
             }
         }
+
+        public async void LoginWithFacebook()
+        {
+            string facebookToken = await _viewService.LoginWithFacebook();
+            if (facebookToken != null)
+            {
+                Tuple<string, ErrorEnum> tuple = await API_Client.LoginWithFacebook(facebookToken);
+                if (tuple.Item2 == ErrorEnum.EverythingIsGood)
+                {
+                    _viewService.NavigateToMainPage(tuple.Item1);
+                }
+                else
+                {
+                    Message = ManageError(tuple.Item2);
+                }
+            }
+        }
+
 
         private string ManageError(ErrorEnum eror)
         {

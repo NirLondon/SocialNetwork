@@ -2,6 +2,7 @@
 using Authentication.Common.Enums;
 using Authentication.Common.Exceptions;
 using Authentication.Common.Models;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -65,6 +66,27 @@ namespace Authentication.Server.Controllers
                 TokenModel TM = GenerateToken(username);
                 repository.SaveToken(TM);
                 token = TM.Token;
+            }
+            Tuple<string, ErrorEnum> tuple = new Tuple<string, ErrorEnum>(token, eror);
+            return tuple;
+        }
+
+        [HttpPost]
+        [Route(api + "LoginWithFacebook")]
+        public Tuple<string, ErrorEnum> LoginWithFacebook([FromBody]string facebookToken)
+        {
+            string token = null;
+            ErrorEnum eror = ErrorEnum.EverythingIsGood;
+            HttpClient httpClient = new HttpClient();
+            var result = httpClient.GetAsync("https://graph.facebook.com/me?access_token=" + facebookToken).Result;
+            if (result.IsSuccessStatusCode)
+            {
+                var user = result.Content.ReadAsStringAsync().Result;
+                var u = JObject.Parse(user).ToObject<object>();
+            }
+            else
+            {
+                eror = ErrorEnum.WrongUsernameOrPassword;
             }
             Tuple<string, ErrorEnum> tuple = new Tuple<string, ErrorEnum>(token, eror);
             return tuple;
