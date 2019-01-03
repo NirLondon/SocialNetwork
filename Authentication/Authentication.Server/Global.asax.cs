@@ -1,4 +1,5 @@
 ﻿using Authentication.BL;
+using Authentication.BL.Managers;
 using Authentication.Common.BL;
 using SimpleInjector;
 using SimpleInjector.Integration.WebApi;
@@ -26,6 +27,7 @@ namespace Authentication.Server
 
             container.Register<ISignupLogin, SignupLoginManager>();
             container.Register<IUserState, UserStateManager>();
+            container.Register<IValidateToken, ValidateTokenManager>();
 
             container.RegisterWebApiControllers(GlobalConfiguration.Configuration);
 
