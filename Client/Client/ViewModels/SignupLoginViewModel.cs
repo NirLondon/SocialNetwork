@@ -25,8 +25,17 @@ namespace Client.ViewModels
             set { _message = value; OnPropertyChange(); }
         }
 
+        private bool _sending;
+        public bool Sending
+        {
+            get { return _sending; }
+            set { _sending = value; OnPropertyChange(); }
+        }
+
+
         public SignupLoginViewModel(ISignupLoginService service)
         {
+            Sending = false;
             _viewService = service;
             API_Client = new SignupLoginHttpClient();
         }
@@ -34,12 +43,9 @@ namespace Client.ViewModels
 
         public async void Signup()
         {
-            if (Username == null || Username == "" || Password == null || Password == "")
+            if (ValidateInput())
             {
-                Message = "Insert username or password";
-            }
-            else
-            {
+                Sending = true;
                 Tuple<string, ErrorEnum> tuple = await API_Client.Signup(Username, Password);
                 if (tuple.Item2 == ErrorEnum.EverythingIsGood)
                 {
@@ -49,20 +55,24 @@ namespace Client.ViewModels
                 {
                     Message = ManageError(tuple.Item2);
                 }
+                Sending = false;
             }
         }
 
         public async void Login()
         {
-            Tuple<string, ErrorEnum> tuple = await API_Client.Login(Username, Password);
+            if (ValidateInput())
+            {
+                Tuple<string, ErrorEnum> tuple = await API_Client.Login(Username, Password);
 
-            if (tuple.Item2 == ErrorEnum.EverythingIsGood)
-            {
-                _viewService.NavigateToMainPage(tuple.Item1);
-            }
-            else
-            {
-                Message = ManageError(tuple.Item2);
+                if (tuple.Item2 == ErrorEnum.EverythingIsGood)
+                {
+                    _viewService.NavigateToMainPage(tuple.Item1);
+                }
+                else
+                {
+                    Message = ManageError(tuple.Item2);
+                }
             }
         }
 
@@ -83,6 +93,17 @@ namespace Client.ViewModels
             }
         }
 
+
+        private bool ValidateInput()
+        {
+            bool flag = true;
+            if (Username == null || Username == "" || Password == null || Password == "" || Username[0] == '_')
+            {
+                flag = false;
+                Message = "Insert proper username or password";
+            }
+            return flag;
+        }
 
         private string ManageError(ErrorEnum eror)
         {

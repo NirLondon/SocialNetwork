@@ -30,24 +30,22 @@ namespace Authentication.Server.Controllers
             string token = null;
             ErrorEnum eror = ErrorEnum.EverythingIsGood;
             UserModel user = GenerateUser(username, password);
-            try
+            if (ValidateValues(username, password))
             {
-                repository.Signup(user);
-                TokenModel TM = GenerateToken(username);
-                token = TM.Token;
-                repository.SaveToken(TM);
-            }
-            catch (Exception e)
-            {
-                if (e is UserAlreadyExistsException)
+                try
                 {
-                    eror = ErrorEnum.UsernameAlreadyExist;
+                    repository.Signup(user);
+                    TokenModel TM = GenerateToken(username);
+                    token = TM.Token;
+                    repository.SaveToken(TM);
                 }
-                else
+                catch (Exception e)
                 {
-                    eror = ErrorEnum.ConectionFailed;
+                    eror = ManageError(e);
                 }
             }
+            else
+                eror = ErrorEnum.WrongUsernameOrPassword;
             response = new Tuple<string, ErrorEnum>(token, eror);
             return response; ;
         }
@@ -58,14 +56,17 @@ namespace Authentication.Server.Controllers
         {
             string token = null;
             ErrorEnum eror = ErrorEnum.WrongUsernameOrPassword;
-            UserModel user = GenerateUser(username, password);
-            bool success = repository.Login(user);
-            if (success)
+            if (password != null || password != "")
             {
-                eror = ErrorEnum.EverythingIsGood;
-                TokenModel TM = GenerateToken(username);
-                repository.SaveToken(TM);
-                token = TM.Token;
+                UserModel user = GenerateUser(username, password);
+                bool success = repository.Login(user);
+                if (success)
+                {
+                    eror = ErrorEnum.EverythingIsGood;
+                    TokenModel TM = GenerateToken(username);
+                    repository.SaveToken(TM);
+                    token = TM.Token;
+                }
             }
             Tuple<string, ErrorEnum> tuple = new Tuple<string, ErrorEnum>(token, eror);
             return tuple;
@@ -81,16 +82,26 @@ namespace Authentication.Server.Controllers
             var result = httpClient.GetAsync("https://graph.facebook.com/me?access_token=" + facebookToken).Result;
             if (result.IsSuccessStatusCode)
             {
-                var user = result.Content.ReadAsStringAsync().Result;
-                var u = JObject.Parse(user).ToObject<object>();
+                var facebookUser = result.Content.ReadAsStringAsync().Result;
+                var parsedUser = JObject.Parse(facebookUser).ToObject<dynamic>();
+                UserModel user = GenerateUser("_" + parsedUser.id.Value, "");
+                bool success = repository.LoginWithFacebook(user);
+                if (success)
+                {
+                    TokenModel TM = GenerateToken(user.UserID);
+                    repository.SaveToken(TM);
+                    token = TM.Token;
+                }
+                else
+                    eror = ErrorEnum.UsernameAlreadyExist;
             }
             else
-            {
                 eror = ErrorEnum.WrongUsernameOrPassword;
-            }
+
             Tuple<string, ErrorEnum> tuple = new Tuple<string, ErrorEnum>(token, eror);
             return tuple;
         }
+
 
         private TokenModel GenerateToken(string username)
         {
@@ -112,6 +123,31 @@ namespace Authentication.Server.Controllers
                 State = Common.Enums.UserStateEnum.Open
             };
             return user;
+        }
+
+        private bool ValidateValues(string username, string password)
+        {
+            bool flag = false;
+            if (username.Length > 0 && username[0] != '_')
+            {
+                if (password.Length > 0)
+                    flag = true;
+            }
+            return flag;
+        }
+
+        private ErrorEnum ManageError(Exception e)
+        {
+            ErrorEnum er = ErrorEnum.EverythingIsGood;
+            if (e is UserAlreadyExistsException)
+            {
+                er = ErrorEnum.UsernameAlreadyExist;
+            }
+            else
+            {
+                er = ErrorEnum.ConectionFailed;
+            }
+            return er;
         }
     }
 }

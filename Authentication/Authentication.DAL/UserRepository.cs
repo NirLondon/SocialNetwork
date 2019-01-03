@@ -53,12 +53,27 @@ namespace Authentication.DAL
             return flag;
         }
 
+        public bool LoginWithFacebook(UserModel user)
+        {
+            bool flag = false;
+            Document userdoc = usersTable.GetItemAsync(user.UserID).Result;
+            if (userdoc == null)
+            {
+                userdoc = GenerateUserDocument(user);
+                usersTable.PutItemAsync(userdoc);
+                flag = true;
+            }
+
+            return flag;
+        }
+
+
         private bool Exists(string userID)
         {
             bool flag = true;
-            Document result = usersTable.GetItemAsync(userID).Result;
+            Document userdoc = usersTable.GetItemAsync(userID).Result;
 
-            if (result == null)
+            if (userdoc == null)
             {
                 flag = false;
             }

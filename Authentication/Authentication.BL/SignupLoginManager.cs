@@ -21,6 +21,11 @@ namespace Authentication.BL
             return repository.Login(user);
         }
 
+        public bool LoginWithFacebook(UserModel user)
+        {
+            return repository.LoginWithFacebook(user);
+        }
+
         public void SaveToken(TokenModel token)
         {
             repository.SaveToken(token);

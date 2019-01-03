@@ -19,6 +19,7 @@ namespace Client.HttpClinents
             httpClient.BaseAddress = new Uri(api);
         }
 
+
         public async Task<Tuple<string, ErrorEnum>> Signup(string username, string password)
         {
             string token = null;                           // string and eror 

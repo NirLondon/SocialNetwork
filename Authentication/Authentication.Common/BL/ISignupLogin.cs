@@ -7,10 +7,12 @@ namespace Authentication.Common.BL
 {
     public interface ISignupLogin
     {
-        void Signup(UserModel user);
-
         void SaveToken(TokenModel token);
 
+        void Signup(UserModel user);
+
         bool Login(UserModel user);
+
+        bool LoginWithFacebook(UserModel user);
     }
 }
