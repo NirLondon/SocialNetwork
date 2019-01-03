@@ -73,5 +73,16 @@ namespace Client.HttpClinents
             Tuple<string, ErrorEnum> tuple = new Tuple<string, ErrorEnum>(token, eror);
             return tuple;
         }
+
+        public async Task<ErrorEnum> SwitchToFacebookUser(string username, string password)
+        {
+            ErrorEnum eror = ErrorEnum.EverythingIsGood;
+            var result = await httpClient.GetAsync($"SwitchToFacebookUser/{username}/{password}");
+            if (result.IsSuccessStatusCode)
+            {
+                 eror = result.Content.ReadAsAsync<ErrorEnum>().Result;
+            }
+            return eror;
+        }
     }
 }

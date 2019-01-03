@@ -1,4 +1,5 @@
 ﻿using Authentication.Common.BL;
+using Authentication.Common.Enums;
 using Authentication.Common.Models;
 using Authentication.DAL;
 using System;
@@ -16,14 +17,19 @@ namespace Authentication.BL
             repository = new UserRepository();
         }
 
-        public bool Login(UserModel user)
+        public ErrorEnum Login(UserModel user)
         {
             return repository.Login(user);
         }
 
-        public bool LoginWithFacebook(UserModel user)
+        public ErrorEnum LoginWithFacebook(UserModel user)
         {
             return repository.LoginWithFacebook(user);
+        }
+
+        public ErrorEnum ResetPassword(string username, string oldPassword, string newPassword)
+        {
+            throw new NotImplementedException();
         }
 
         public void SaveToken(TokenModel token)
@@ -34,6 +40,12 @@ namespace Authentication.BL
         public void Signup(UserModel user)
         {
             repository.Signup(user);
+        }
+
+        public ErrorEnum SwitchToFacebookUser(string username, string passwrod)
+        {
+            var eror = repository.SwitchToFacebookUser(username, passwrod);
+            return eror;
         }
     }
 }

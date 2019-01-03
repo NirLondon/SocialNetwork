@@ -1,4 +1,5 @@
-﻿using Authentication.Common.Models;
+﻿using Authentication.Common.Enums;
+using Authentication.Common.Models;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -11,8 +12,12 @@ namespace Authentication.Common.BL
 
         void Signup(UserModel user);
 
-        bool Login(UserModel user);
+        ErrorEnum Login(UserModel user);
 
-        bool LoginWithFacebook(UserModel user);
+        ErrorEnum LoginWithFacebook(UserModel user);
+
+        ErrorEnum SwitchToFacebookUser(string username, string password);
+
+        ErrorEnum ResetPassword(string username, string oldPassword, string newPassword);
     }
 }

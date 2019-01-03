@@ -10,5 +10,7 @@ namespace Client.ServicesInterfaces
         void NavigateToMainPage(string token);
 
         Task<string> LoginWithFacebook();
+
+        Task<bool> SwitchToFacebookMessage();
     }
 }

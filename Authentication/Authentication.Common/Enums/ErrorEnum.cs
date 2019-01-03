@@ -9,6 +9,7 @@ namespace Authentication.Common.Enums
         EverythingIsGood,
         WrongUsernameOrPassword,
         ConectionFailed,
-        UsernameAlreadyExist
+        UsernameAlreadyExist,
+        UserIsBlocked
     }
 }

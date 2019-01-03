@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Windows.UI.Popups;
 using Windows.UI.Xaml;
 
 namespace Client.WUP.Services
@@ -28,6 +29,25 @@ namespace Client.WUP.Services
                 token = FacebookService.Instance.Provider.AccessTokenData.AccessToken;
             }
             return token;
+        }
+
+        public async Task<bool> SwitchToFacebookMessage()
+        {
+            bool flag = false;
+            string msg = "There was a conflict with your facebook id and a user. If it is your user you can switch it to facebook user, just fill the username and password";
+            MessageDialog showDialog = new MessageDialog(msg);
+            showDialog.Commands.Add(new UICommand("No") { Id = 0 });
+            showDialog.Commands.Add(new UICommand("Yes") { Id = 1 });
+            showDialog.CancelCommandIndex = 0;
+            showDialog.DefaultCommandIndex = 1;
+            var result = await showDialog.ShowAsync();
+
+            if ((int)result.Id == 1)
+            {
+                flag = true;
+            }
+
+            return flag;
         }
     }
 }

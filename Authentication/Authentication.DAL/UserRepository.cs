@@ -1,5 +1,6 @@
 ﻿using Amazon.DynamoDBv2;
 using Amazon.DynamoDBv2.DocumentModel;
+using Authentication.Common.Enums;
 using Authentication.Common.Exceptions;
 using Authentication.Common.Models;
 using System;
@@ -40,45 +41,94 @@ namespace Authentication.DAL
             tokensTable.PutItemAsync(tokenDocument);
         }
 
-        public bool Login(UserModel user)
+        public ErrorEnum Login(UserModel user)
         {
-            bool flag = true;
+            ErrorEnum eror = ErrorEnum.EverythingIsGood;
             Document result = usersTable.GetItemAsync(user.UserID).Result;
 
             if (result == null || result["Password"] != user.Password)
             {
-                flag = false;
+                eror = ErrorEnum.WrongUsernameOrPassword;
             }
-
-            return flag;
+            else if (result["State"] == ErrorEnum.UserIsBlocked.ToString())
+            {
+                eror = ErrorEnum.UserIsBlocked;
+            }
+            return eror;
         }
 
-        public bool LoginWithFacebook(UserModel user)
+        public ErrorEnum LoginWithFacebook(UserModel user)
         {
-            bool flag = false;
+            ErrorEnum eror = ErrorEnum.EverythingIsGood;
             Document userdoc = usersTable.GetItemAsync(user.UserID).Result;
             if (userdoc == null)
             {
                 userdoc = GenerateUserDocument(user);
                 usersTable.PutItemAsync(userdoc);
-                flag = true;
+                eror = ErrorEnum.EverythingIsGood;
+            }
+            else if (userdoc["State"] == ErrorEnum.UserIsBlocked.ToString())
+            {
+                eror = ErrorEnum.UserIsBlocked;
             }
 
-            return flag;
+            return eror;
+        }
+
+        public void BlockUser(string username)
+        {
+            Document userdoc = usersTable.GetItemAsync(username).Result;
+            if (userdoc != null)
+            {
+                userdoc["State"] = UserStateEnum.Blocked.ToString();
+                usersTable.PutItemAsync(userdoc);
+            }
+        }
+
+        public void UnBlockUser(string username)
+        {
+            Document userdoc = usersTable.GetItemAsync(username).Result;
+            if (userdoc != null)
+            {
+                userdoc["State"] = UserStateEnum.Open.ToString();
+                usersTable.PutItemAsync(userdoc);
+            }
+        }
+
+        public ErrorEnum SwitchToFacebookUser(string username, string password)
+        {
+            ErrorEnum eror = ErrorEnum.WrongUsernameOrPassword;
+            Document userdoc = usersTable.GetItemAsync(username).Result;
+            if (userdoc != null && userdoc["Password"] == password)
+            {
+                eror = ErrorEnum.EverythingIsGood;
+                userdoc["Username/Token"] = "_" + username;
+                userdoc["Password"] = "";
+                usersTable.PutItemAsync(userdoc);
+            }
+            return eror;
+        }
+
+        public ErrorEnum ResetPassword(string username, string oldPassword, string newPassword)
+        {
+            ErrorEnum eror = ErrorEnum.EverythingIsGood;
+            var userdoc = usersTable.GetItemAsync(username).Result;
+            if (userdoc == null || userdoc["Password"] != oldPassword)
+            {
+                eror = ErrorEnum.WrongUsernameOrPassword;
+            }
+            else
+            {
+                userdoc["Password"] = newPassword;
+                usersTable.PutItemAsync(userdoc);
+            }
+            return eror;
         }
 
 
         private bool Exists(string userID)
         {
-            bool flag = true;
-            Document userdoc = usersTable.GetItemAsync(userID).Result;
-
-            if (userdoc == null)
-            {
-                flag = false;
-            }
-
-            return flag;
+            return usersTable.GetItemAsync(userID).Result != null;
         }
 
         private Document GenerateUserDocument(UserModel user)

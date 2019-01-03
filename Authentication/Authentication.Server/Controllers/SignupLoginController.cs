@@ -59,10 +59,9 @@ namespace Authentication.Server.Controllers
             if (password != null || password != "")
             {
                 UserModel user = GenerateUser(username, password);
-                bool success = repository.Login(user);
-                if (success)
+                eror = repository.Login(user);
+                if (eror == ErrorEnum.EverythingIsGood)
                 {
-                    eror = ErrorEnum.EverythingIsGood;
                     TokenModel TM = GenerateToken(username);
                     repository.SaveToken(TM);
                     token = TM.Token;
@@ -85,21 +84,35 @@ namespace Authentication.Server.Controllers
                 var facebookUser = result.Content.ReadAsStringAsync().Result;
                 var parsedUser = JObject.Parse(facebookUser).ToObject<dynamic>();
                 UserModel user = GenerateUser("_" + parsedUser.id.Value, "");
-                bool success = repository.LoginWithFacebook(user);
-                if (success)
+                eror = repository.LoginWithFacebook(user);
+                if (eror == ErrorEnum.EverythingIsGood)
                 {
                     TokenModel TM = GenerateToken(user.UserID);
                     repository.SaveToken(TM);
                     token = TM.Token;
                 }
-                else
-                    eror = ErrorEnum.UsernameAlreadyExist;
             }
             else
                 eror = ErrorEnum.WrongUsernameOrPassword;
 
             Tuple<string, ErrorEnum> tuple = new Tuple<string, ErrorEnum>(token, eror);
             return tuple;
+        }
+
+        [HttpGet]
+        [Route(api + "SwitchToFacebookUser/{username}/{password}")]
+        public ErrorEnum SwitchToFacebookUser(string username, string password)
+        {
+            var eror = repository.SwitchToFacebookUser(username, password);
+            return eror;
+        }
+
+        [HttpGet]
+        [Route(api + "ResetPassword/{username}/{oldPassword}/{newPassword}")]
+        public ErrorEnum resetPassword(string username, string oldPassword, string newPassword)
+        {
+            var eror = repository.ResetPassword(username, oldPassword, newPassword);
+            return eror;
         }
 
 

@@ -88,11 +88,36 @@ namespace Client.ViewModels
                 }
                 else
                 {
-                    Message = ManageError(tuple.Item2);
+                    if (tuple.Item2 == ErrorEnum.WrongUsernameOrPassword)
+                    {
+                        ManageUserSwitch();
+                    }
+                    else
+                        Message = ManageError(tuple.Item2);
                 }
             }
         }
 
+
+        private async void ManageUserSwitch()
+        {
+            if (ValidateInput())
+            {
+                bool wantToSwitch = await _viewService.SwitchToFacebookMessage();
+                if (wantToSwitch)
+                {
+                    ErrorEnum success = await API_Client.SwitchToFacebookUser(Username, Password);
+                    if (success == ErrorEnum.EverythingIsGood)
+                    {
+                        Message = "User converted to facebook user!";
+                    }
+                    else
+                    {
+                        ManageError(success);
+                    }
+                }
+            }
+        }
 
         private bool ValidateInput()
         {

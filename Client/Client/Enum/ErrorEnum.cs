@@ -9,6 +9,7 @@ namespace Client.Enum
         EverythingIsGood,
         WrongUsernameOrPassword,
         ConectionFailed,
-        UsernameAlreadyExist
+        UsernameAlreadyExist,
+        UserIsBlocked
     }
 }

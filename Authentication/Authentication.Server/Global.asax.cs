@@ -24,7 +24,8 @@ namespace Authentication.Server
             var container = new Container();
             container.Options.DefaultScopedLifestyle = new AsyncScopedLifestyle();
 
-            container.Register<ISignupLogin>(() => new SignupLoginManager());
+            container.Register<ISignupLogin, SignupLoginManager>();
+            container.Register<IUserState, UserStateManager>();
 
             container.RegisterWebApiControllers(GlobalConfiguration.Configuration);
 
