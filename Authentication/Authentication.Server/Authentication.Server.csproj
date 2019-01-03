@@ -98,6 +98,7 @@
   <ItemGroup>
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Controllers\SignupLoginController.cs" />
+    <Compile Include="Controllers\TokensController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -127,6 +128,10 @@
     <ProjectReference Include="..\Authentication.Common\Authentication.Common.csproj">
       <Project>{6ff5bc6b-b4d1-46a7-bef5-cf62a9fe1187}</Project>
       <Name>Authentication.Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Authentication.DAL\Authentication.DAL.csproj">
+      <Project>{2B448B90-D4B3-4A40-AB7E-D1D2D729A1F0}</Project>
+      <Name>Authentication.DAL</Name>
     </ProjectReference>
   </ItemGroup>
   <PropertyGroup>

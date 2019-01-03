@@ -1,20 +1,19 @@
 ﻿using Amazon.DynamoDBv2;
 using Amazon.DynamoDBv2.DocumentModel;
+using Authentication.Common.DAL;
 using Authentication.Common.Exceptions;
 using Authentication.Common.Models;
-using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Authentication.DAL
 {
-    public class UserRepository
+    public class UserRepository : IUsersRepository
     {
         AmazonDynamoDBConfig ddbConfig;
         AmazonDynamoDBClient client;
         Table usersTable;
         Table tokensTable;
+
         public UserRepository()
         {
             ddbConfig = new AmazonDynamoDBConfig();
@@ -23,46 +22,27 @@ namespace Authentication.DAL
             tokensTable = Table.LoadTable(client, "Tokens");
         }
 
-        public async void Signup(UserModel user)
+        public async Task /*void*/ Signup(UserModel user)
         {
-            try
+            if (await Exists(user.UserID))
+                throw new UserAlreadyExistsException(user.UserID);
+            else
             {
-                if (await Exists(user.UserID))
-                    throw new UserAlreadyExistsException(user.UserID);
-                else
-                {
-                    var userDocument = GenerateUserDocument(user);
-                    await usersTable.PutItemAsync(userDocument);
-                }
-            }
-            catch (Exception e)
-            {
-
-                throw;
+                var userDocument = GenerateUserDocument(user);
+                await usersTable.PutItemAsync(userDocument)/*.Wait()*/;
             }
         }
 
-        public async void SaveToken(TokenModel token)
+        public void SaveToken(TokenModel token)
         {
             var tokenDocument = GenerateTokenDocument(token);
-            await tokensTable.PutItemAsync(tokenDocument);
+            tokensTable.PutItemAsync(tokenDocument);
         }
 
-        private async Task<bool> Exists(string userID)
+        private async Task<bool> /*bool*/ Exists(string userID)
         {
-            Document result;
-            bool flag = true;
-
-
-            result = await usersTable.GetItemAsync(userID);
-
-
-            if (result == null)
-            {
-                flag = false;
-            }
-
-            return flag;
+            return await usersTable.GetItemAsync(userID) != null;
+            //return usersTable.GetItemAsync(userID).Result != null;
         }
 
         private Document GenerateUserDocument(UserModel user)

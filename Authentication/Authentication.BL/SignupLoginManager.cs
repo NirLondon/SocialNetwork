@@ -1,9 +1,7 @@
 ﻿using Authentication.Common.BL;
 using Authentication.Common.Models;
 using Authentication.DAL;
-using System;
-using System.Collections.Generic;
-using System.Text;
+using System.Threading.Tasks;
 
 namespace Authentication.BL
 {
@@ -21,9 +19,9 @@ namespace Authentication.BL
             repository.SaveToken(token);
         }
 
-        public void Signup(UserModel user)
+        public Task /*void*/ Signup(UserModel user)
         {
-            repository.Signup(user);
+            return repository.Signup(user);
         }
     }
 }

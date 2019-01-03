@@ -1,13 +1,11 @@
 ﻿using Authentication.Common.Models;
-using System;
-using System.Collections.Generic;
-using System.Text;
+using System.Threading.Tasks;
 
 namespace Authentication.Common.BL
 {
     public interface ISignupLogin
     {
-        void Signup(UserModel user);
+        Task /*void*/ Signup(UserModel user);
 
         void SaveToken(TokenModel token);
     }

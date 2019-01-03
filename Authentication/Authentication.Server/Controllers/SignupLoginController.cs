@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Threading.Tasks;
 using System.Web.Http;
 
 namespace Authentication.Server.Controllers
@@ -21,10 +22,13 @@ namespace Authentication.Server.Controllers
 
         [HttpGet]
         [Route(api + "Signup/{username}/{password}")]
-        public TokenModel Signup(string username, string password)
+        public async Task<TokenModel> Signup(string username, string password)
         {
             UserModel user = GenerateUser(username, password);
-            repository.Signup(user);
+
+            await repository.Signup(user)
+                /*.Wait()*/;
+
             TokenModel TM = GenerateToken(username);
             repository.SaveToken(TM);
             return TM;

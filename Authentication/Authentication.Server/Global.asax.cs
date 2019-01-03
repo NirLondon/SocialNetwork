@@ -1,5 +1,7 @@
 ﻿using Authentication.BL;
 using Authentication.Common.BL;
+using Authentication.Common.DAL;
+using Authentication.DAL;
 using SimpleInjector;
 using SimpleInjector.Integration.WebApi;
 using SimpleInjector.Lifestyles;
@@ -25,6 +27,7 @@ namespace Authentication.Server
             container.Options.DefaultScopedLifestyle = new AsyncScopedLifestyle();
 
             container.Register<ISignupLogin>(() => new SignupLoginManager());
+            container.Register<ITokensRepository, TokensRepository>();
 
             container.RegisterWebApiControllers(GlobalConfiguration.Configuration);
 
