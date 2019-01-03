@@ -1,5 +1,6 @@
 ﻿using Amazon.DynamoDBv2;
 using Amazon.DynamoDBv2.DocumentModel;
+using Authentication.Common.Enums;
 using Authentication.Common.Exceptions;
 using Authentication.Common.Models;
 using System;
@@ -23,46 +24,111 @@ namespace Authentication.DAL
             tokensTable = Table.LoadTable(client, "Tokens");
         }
 
-        public async void Signup(UserModel user)
+        public void Signup(UserModel user)
         {
-            try
+            if (Exists(user.UserID))
+                throw new UserAlreadyExistsException(user.UserID);
+            else
             {
-                if (await Exists(user.UserID))
-                    throw new UserAlreadyExistsException(user.UserID);
-                else
-                {
-                    var userDocument = GenerateUserDocument(user);
-                    await usersTable.PutItemAsync(userDocument);
-                }
-            }
-            catch (Exception e)
-            {
-
-                throw;
+                var userDocument = GenerateUserDocument(user);
+                usersTable.PutItemAsync(userDocument);
             }
         }
 
-        public async void SaveToken(TokenModel token)
+        public void SaveToken(TokenModel token)
         {
             var tokenDocument = GenerateTokenDocument(token);
-            await tokensTable.PutItemAsync(tokenDocument);
+            tokensTable.PutItemAsync(tokenDocument);
         }
 
-        private async Task<bool> Exists(string userID)
+        public ErrorEnum Login(UserModel user)
         {
-            Document result;
-            bool flag = true;
+            ErrorEnum eror = ErrorEnum.EverythingIsGood;
+            Document result = usersTable.GetItemAsync(user.UserID).Result;
 
-
-            result = await usersTable.GetItemAsync(userID);
-
-
-            if (result == null)
+            if (result == null || result["Password"] != user.Password)
             {
-                flag = false;
+                eror = ErrorEnum.WrongUsernameOrPassword;
+            }
+            else if (result["State"] == ErrorEnum.UserIsBlocked.ToString())
+            {
+                eror = ErrorEnum.UserIsBlocked;
+            }
+            return eror;
+        }
+
+        public ErrorEnum LoginWithFacebook(UserModel user)
+        {
+            ErrorEnum eror = ErrorEnum.EverythingIsGood;
+            Document userdoc = usersTable.GetItemAsync(user.UserID).Result;
+            if (userdoc == null)
+            {
+                userdoc = GenerateUserDocument(user);
+                usersTable.PutItemAsync(userdoc);
+                eror = ErrorEnum.EverythingIsGood;
+            }
+            else if (userdoc["State"] == ErrorEnum.UserIsBlocked.ToString())
+            {
+                eror = ErrorEnum.UserIsBlocked;
             }
 
-            return flag;
+            return eror;
+        }
+
+        public void BlockUser(string username)
+        {
+            Document userdoc = usersTable.GetItemAsync(username).Result;
+            if (userdoc != null)
+            {
+                userdoc["State"] = UserStateEnum.Blocked.ToString();
+                usersTable.PutItemAsync(userdoc);
+            }
+        }
+
+        public void UnBlockUser(string username)
+        {
+            Document userdoc = usersTable.GetItemAsync(username).Result;
+            if (userdoc != null)
+            {
+                userdoc["State"] = UserStateEnum.Open.ToString();
+                usersTable.PutItemAsync(userdoc);
+            }
+        }
+
+        public ErrorEnum SwitchToFacebookUser(string username, string password)
+        {
+            ErrorEnum eror = ErrorEnum.WrongUsernameOrPassword;
+            Document userdoc = usersTable.GetItemAsync(username).Result;
+            if (userdoc != null && userdoc["Password"] == password)
+            {
+                eror = ErrorEnum.EverythingIsGood;
+                userdoc["Username/Token"] = "_" + username;
+                userdoc["Password"] = "";
+                usersTable.PutItemAsync(userdoc);
+            }
+            return eror;
+        }
+
+        public ErrorEnum ResetPassword(string username, string oldPassword, string newPassword)
+        {
+            ErrorEnum eror = ErrorEnum.EverythingIsGood;
+            var userdoc = usersTable.GetItemAsync(username).Result;
+            if (userdoc == null || userdoc["Password"] != oldPassword)
+            {
+                eror = ErrorEnum.WrongUsernameOrPassword;
+            }
+            else
+            {
+                userdoc["Password"] = newPassword;
+                usersTable.PutItemAsync(userdoc);
+            }
+            return eror;
+        }
+
+
+        private bool Exists(string userID)
+        {
+            return usersTable.GetItemAsync(userID).Result != null;
         }
 
         private Document GenerateUserDocument(UserModel user)
