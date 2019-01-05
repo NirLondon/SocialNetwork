@@ -12,15 +12,23 @@
         <StackPanel Margin="15" HorizontalAlignment="Center" VerticalAlignment="Center">
             <StackPanel Margin="10" Orientation="Horizontal">
                 <TextBlock Margin="5" Text="Username"/>
-                <TextBox Text="{x:Bind ViewModel.Username, Mode=TwoWay}"/>
+                <TextBox Text="{x:Bind viewModel.Username, Mode=TwoWay}"/>
             </StackPanel>
             <StackPanel Margin="10" Orientation="Horizontal">
                 <TextBlock Margin="5" Text="Password"/>
-                <TextBox Margin="5" Text="{x:Bind ViewModel.Password, Mode=TwoWay}"/>
+                <TextBox Margin="5" Text="{x:Bind viewModel.Password, Mode=TwoWay}"/>
             </StackPanel>
-            <Button Margin="10" Content="Signp" Click="{x:Bind ViewModel.Signup}"/>
-            <!--<Button Margin="10" Content="Login" Click="{x:Bind ViewModel.Login}"/>-->
-            <TextBlock Text="{x:Bind ViewModel.Message, Mode=OneWay}"/>
+            <Button Margin="10" Content="Signp" Click="{x:Bind viewModel.Signup}"/>
+            <Button Margin="10" Content="Login" Click="{x:Bind viewModel.Login}"/>
+            <Button Click="{x:Bind viewModel.LoginWithFacebook}">
+                <Image Margin="10" Source="/Assets/facebook.jpg" Height="100" Width="300" />
+            </Button>
+            <TextBlock Margin="10" Text="{x:Bind viewModel.Message, Mode=OneWay}"/>
         </StackPanel>
+        <Image x:Name="sendingGif" Visibility="{x:Bind viewModel.Sending, Mode=OneWay}" Width="500">
+            <Image.Source>
+                <BitmapImage x:Name="GifImage" UriSource="/Assets/sending.gif"/>
+            </Image.Source>
+        </Image>
     </Grid>
 </Page>

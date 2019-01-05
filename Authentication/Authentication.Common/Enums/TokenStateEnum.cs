@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Authentication.Common.Enums
 {
-    public enum TokenStateModel
+    public enum TokenStateEnum
     {
         Valid,
         Expired
