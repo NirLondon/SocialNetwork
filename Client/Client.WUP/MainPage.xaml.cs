@@ -1,6 +1,4 @@
-﻿using Client.ViewModels;
-using Client.WUP.Services;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -15,21 +13,18 @@ using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 
-// The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=234238
+// The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x409
 
-namespace Client.WUP.Views
+namespace Client.WUP
 {
     /// <summary>
     /// An empty page that can be used on its own or navigated to within a Frame.
     /// </summary>
-    public sealed partial class MainPageView : Page
+    public sealed partial class MainPage : Page
     {
-        private MainPageViewModel viewModel { get; set; }
-        private MainPageService service { get; set; }
-        public MainPageView(string token)
+        public MainPage()
         {
             this.InitializeComponent();
-            viewModel = new MainPageViewModel(service, token);
         }
     }
 }

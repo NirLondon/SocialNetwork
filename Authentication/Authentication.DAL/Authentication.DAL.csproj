@@ -4,12 +4,4 @@
     <TargetFramework>netstandard2.0</TargetFramework>
   </PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="AWSSDK.DynamoDBv2" Version="3.3.16" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\Authentication.Common\Authentication.Common.csproj" />
-  </ItemGroup>
-
 </Project>

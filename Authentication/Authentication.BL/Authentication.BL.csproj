@@ -4,9 +4,4 @@
     <TargetFramework>netstandard2.0</TargetFramework>
   </PropertyGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\Authentication.Common\Authentication.Common.csproj" />
-    <ProjectReference Include="..\Authentication.DAL\Authentication.DAL.csproj" />
-  </ItemGroup>
-
 </Project>
