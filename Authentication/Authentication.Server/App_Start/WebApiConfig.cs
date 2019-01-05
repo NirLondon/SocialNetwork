@@ -1,8 +1,4 @@
-﻿using Authentication.BL;
-using Authentication.Common.BL;
-using SimpleInjector;
-using SimpleInjector.Lifestyles;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web.Http;
