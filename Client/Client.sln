@@ -1,9 +1,9 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.28407.52
+# Visual Studio 15
+VisualStudioVersion = 15.0.28010.2019
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Client", "Client\Client.csproj", "{9C321457-592A-43C4-9D32-D9791ECF02F0}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Client", "Client\Client.csproj", "{9C321457-592A-43C4-9D32-D9791ECF02F0}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Client.WUP", "Client.WUP\Client.WUP.csproj", "{E3A36A80-66F3-482B-BFD6-B5F072BCF687}"
 EndProject
@@ -36,8 +36,6 @@ Global
 		{9C321457-592A-43C4-9D32-D9791ECF02F0}.Release|x86.ActiveCfg = Release|Any CPU
 		{9C321457-592A-43C4-9D32-D9791ECF02F0}.Release|x86.Build.0 = Release|Any CPU
 		{E3A36A80-66F3-482B-BFD6-B5F072BCF687}.Debug|Any CPU.ActiveCfg = Debug|x86
-		{E3A36A80-66F3-482B-BFD6-B5F072BCF687}.Debug|Any CPU.Build.0 = Debug|x86
-		{E3A36A80-66F3-482B-BFD6-B5F072BCF687}.Debug|Any CPU.Deploy.0 = Debug|x86
 		{E3A36A80-66F3-482B-BFD6-B5F072BCF687}.Debug|ARM.ActiveCfg = Debug|ARM
 		{E3A36A80-66F3-482B-BFD6-B5F072BCF687}.Debug|ARM.Build.0 = Debug|ARM
 		{E3A36A80-66F3-482B-BFD6-B5F072BCF687}.Debug|ARM.Deploy.0 = Debug|ARM
