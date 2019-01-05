@@ -147,6 +147,7 @@ namespace Authentication.DAL
             tokenDocument["Token"] = token.Token;
             tokenDocument["User"] = token.AssignedUser;
             tokenDocument["State"] = token.State.ToString();
+            tokenDocument["CreatedDate"] = DateTime.Now;
 
             return tokenDocument;
         }
