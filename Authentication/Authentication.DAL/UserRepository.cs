@@ -1,4 +1,5 @@
-﻿using Amazon.DynamoDBv2;
+﻿using Amazon;
+using Amazon.DynamoDBv2;
 using Amazon.DynamoDBv2.DocumentModel;
 using Authentication.Common.Enums;
 using Authentication.Common.Exceptions;
@@ -12,14 +13,12 @@ namespace Authentication.DAL
 {
     public class UserRepository
     {
-        AmazonDynamoDBConfig ddbConfig;
         AmazonDynamoDBClient client;
         Table usersTable;
         Table tokensTable;
         public UserRepository()
         {
-            ddbConfig = new AmazonDynamoDBConfig();
-            client = new AmazonDynamoDBClient(ddbConfig);
+            client = new AmazonDynamoDBClient();
             usersTable = Table.LoadTable(client, "Users");
             tokensTable = Table.LoadTable(client, "Tokens");
         }

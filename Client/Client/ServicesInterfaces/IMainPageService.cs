@@ -6,6 +6,5 @@ namespace Client.ServicesInterfaces
 {
     public interface IMainPageService
     {
-
     }
 }

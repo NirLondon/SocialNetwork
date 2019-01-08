@@ -1,0 +1,42 @@
+﻿<UserControl
+    x:Class="Client.WUP.UserControls.PostUserControl"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:Client.WUP.UserControls"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:models="using:Client.Common"
+    xmlns:vm="using:Client.ViewModels"
+    mc:Ignorable="d"
+    d:DesignHeight="300"
+    d:DesignWidth="400">
+    <Grid>
+        <StackPanel>
+            <StackPanel Margin="20">
+                <TextBlock Margin="10" Text="{Binding CurrentPost.Publisher}" FontSize="20" FontWeight="Bold"/>
+                <Image Margin="10" Source="{Binding CurrentPost.IMGURL}" Width="280"/>
+                <TextBlock Margin="10" Text="{Binding CurrentPost.Text}" FontSize="15"/>
+                <StackPanel Margin="10">
+                    <ListView ItemsSource="{Binding CurrentPost.Comments}" SelectionMode="None">
+                        <ListView.ItemTemplate>
+                            <DataTemplate x:DataType="models:Post">
+                                <StackPanel>
+                                    <TextBlock Margin="10" Text="{Binding Publisher}" FontSize="15" FontWeight="Bold"/>
+                                    <Image Source="{Binding IMGURL}" Width="170"/>
+                                    <TextBlock Margin="10" Text="{Binding Text}" FontSize="12"/>
+                                </StackPanel>
+                            </DataTemplate>
+                        </ListView.ItemTemplate>
+                    </ListView>
+                    <StackPanel Margin="7" Orientation="Horizontal">
+                        <TextBlock Margin="5" Text="Comment:"/>
+                        <TextBox Margin="5" Text="{Binding CommentText, Mode=TwoWay}"/>
+                        <Button Margin="5" Content="Choose image" Click="ChooseImage"/>
+                    </StackPanel>
+                        <Button Margin="5" Background="Transparent" Content="Publish" Click="PublishComment" FontWeight="ExtraBlack"/>
+                </StackPanel>
+                <TextBlock Margin="10" Text="-----------------------------------------------------------------------------------------------------------------------"/>
+            </StackPanel>
+        </StackPanel>
+    </Grid>
+</UserControl>
