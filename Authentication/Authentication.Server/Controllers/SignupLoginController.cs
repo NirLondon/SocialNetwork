@@ -45,7 +45,7 @@ namespace Authentication.Server.Controllers
 
         [HttpGet]
         [Route("ResetPassword/{username}/{oldPassword}/{newPassword}")]
-        public SignupLoginResult resetPassword(string username, string oldPassword, string newPassword)
+        public SignupLoginResult ResetPassword(string username, string oldPassword, string newPassword)
         {
             return _usersManager.ResetPassword(username, oldPassword, newPassword);
         }

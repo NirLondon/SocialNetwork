@@ -6,8 +6,6 @@ namespace Authentication.Common.BL
 {
     public interface IUsersManager
     {
-        void SaveToken(TokenModel token);
-
         Tuple<string, SignupLoginResult> Signup(string username, string password);
 
         Tuple<string, SignupLoginResult> Login(string username, string password);

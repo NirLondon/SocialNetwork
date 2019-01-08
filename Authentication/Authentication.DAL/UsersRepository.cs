@@ -51,18 +51,17 @@ namespace Authentication.DAL
         public SignupLoginResult LoginWithFacebook(UserModel user)
         {
             SignupLoginResult eror = SignupLoginResult.EverythingIsGood;
-            Document userdoc = usersTable.GetItemAsync(user.UserID).Result;
-            if (userdoc == null)
+            Document userDoc = usersTable.GetItemAsync(user.UserID).Result;
+            if (userDoc == null)
             {
-                userdoc = DocumentFrom(user);
-                usersTable.PutItemAsync(userdoc);
+                userDoc = DocumentFrom(user);
+                usersTable.PutItemAsync(userDoc);
                 eror = SignupLoginResult.EverythingIsGood;
             }
-            else if (userdoc["State"] == SignupLoginResult.UserIsBlocked.ToString())
+            else if (userDoc["State"] == SignupLoginResult.UserIsBlocked.ToString())
             {
                 eror = SignupLoginResult.UserIsBlocked;
             }
-
             return eror;
         }
 

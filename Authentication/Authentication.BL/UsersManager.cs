@@ -1,15 +1,11 @@
-﻿using Authentication.Common;
+﻿using System;
+using System.Net.Http;
 using Authentication.Common.BL;
 using Authentication.Common.DAL;
 using Authentication.Common.Enums;
 using Authentication.Common.Exceptions;
 using Authentication.Common.Models;
-using Authentication.DAL;
 using Newtonsoft.Json.Linq;
-using System;
-using System.Collections.Generic;
-using System.Net.Http;
-using System.Text;
 
 namespace Authentication.BL
 {
@@ -50,7 +46,7 @@ namespace Authentication.BL
             return new Tuple<string, SignupLoginResult>(token, eror);
         }
 
-        public SignupLoginResult LoginWithFacebook(string facebookToken)
+        public Tuple<string, SignupLoginResult> LoginWithFacebook(string facebookToken)
         {
             string token = null;
             SignupLoginResult eror = SignupLoginResult.EverythingIsGood;
@@ -60,30 +56,34 @@ namespace Authentication.BL
             {
                 var facebookUser = result.Content.ReadAsStringAsync().Result;
                 var parsedUser = JObject.Parse(facebookUser).ToObject<dynamic>();
-                UserModel user = GenerateUser("_" + parsedUser.id.Value, "");
-                eror = _usersManager.LoginWithFacebook(user);
+                UserModel user = new UserModel
+                {
+                    UserID = '_' + parsedUser.id.Value,
+                    Password = string.Empty,
+                    State = UserState.Open
+                };
+
+                eror = _repository.LoginWithFacebook(user);
                 if (eror == SignupLoginResult.EverythingIsGood)
                 {
-                    TokenModel TM = GenerateToken(user.UserID);
-                    _usersManager.SaveToken(TM);
+                    TokenModel TM = new TokenModel
+                    {
+                        UserId = user.UserID,
+                        CreationTime = DateTime.Now,
+                        Token = Utils.GetNewToken()
+                    };
+                    _repository.SaveToken(TM);
                     token = TM.Token;
                 }
             }
-            else
-                eror = SignupLoginResult.WrongUsernameOrPassword;
+            else eror = SignupLoginResult.WrongUsernameOrPassword;
 
-            Tuple<string, SignupLoginResult> tuple = new Tuple<string, SignupLoginResult>(token, eror);
-            return tuple;
+            return new Tuple<string, SignupLoginResult>(token, eror);
         }
 
         public SignupLoginResult ResetPassword(string username, string oldPassword, string newPassword)
         {
-            throw new NotImplementedException();
-        }
-
-        public void SaveToken(TokenModel token)
-        {
-            _repository.SaveToken(token);
+            return _repository.ResetPassword(username, oldPassword, newPassword);
         }
 
         public Tuple<string, SignupLoginResult> Signup(string username, string password)
@@ -122,8 +122,7 @@ namespace Authentication.BL
 
         public SignupLoginResult SwitchToFacebookUser(string username, string passwrod)
         {
-            var eror = _repository.SwitchToFacebookUser(username, passwrod);
-            return eror;
+            return _repository.SwitchToFacebookUser(username, passwrod);
         }
 
         private SignupLoginResult ManageError(Exception exception)
@@ -132,11 +131,11 @@ namespace Authentication.BL
             switch (exception)
             {
                 case UserAlreadyExistsException alreadyExists:
-                er = SignupLoginResult.UsernameAlreadyExist;
+                    er = SignupLoginResult.UsernameAlreadyExist;
                     break;
 
                 default:
-                er = SignupLoginResult.ConectionFailed;
+                    er = SignupLoginResult.ConectionFailed;
                     break;
             }
             return er;
