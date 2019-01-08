@@ -8,14 +8,10 @@ namespace Client.ViewModels
     public class MainPageViewModel
     {
         private IMainPageService _viewService { get; set; }
-        private string _token { get; set; }
 
-
-
-        public MainPageViewModel(IMainPageService service, string token)
+        public MainPageViewModel(IMainPageService service)
         {
             _viewService = service;
-            _token = token;
         }
     }
 }

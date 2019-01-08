@@ -20,16 +20,6 @@ namespace Authentication.DAL
             tokensTable = Table.LoadTable(client, "Tokens");
         }
 
-        public Document GetToken(string token)
-        {
-            Document tokendoc = tokensTable.GetItemAsync(token).Result;
-            return tokendoc;
-        }
-
-        public void PutToken(Document doc)
-        {
-            tokensTable.PutItemAsync(doc);
-        }
 
     }
 }

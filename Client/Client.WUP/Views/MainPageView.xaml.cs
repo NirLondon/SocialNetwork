@@ -26,10 +26,17 @@ namespace Client.WUP.Views
     {
         private MainPageViewModel viewModel { get; set; }
         private MainPageService service { get; set; }
-        public MainPageView(string token)
+
+        public MainPageView()
         {
             this.InitializeComponent();
-            viewModel = new MainPageViewModel(service, token);
+            viewModel = new MainPageViewModel(service);
+        }
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            Window.Current.Content = new EditUserDetailsView();
+            //Frame.Navigate(typeof(EditUserDetailsView));
         }
     }
 }

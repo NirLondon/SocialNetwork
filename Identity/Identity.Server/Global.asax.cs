@@ -1,9 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
+﻿using Identity.Common.DAL;
+using Identity.DAL;
+using SimpleInjector;
+using SimpleInjector.Integration.WebApi;
 using System.Web.Http;
-using System.Web.Routing;
 
 namespace Identity.Server
 {
@@ -12,6 +11,17 @@ namespace Identity.Server
         protected void Application_Start()
         {
             GlobalConfiguration.Configure(WebApiConfig.Register);
+
+            var container = new Container();
+
+            container.Register<IIdentitiesRepository, IdentitiesRpository>();
+
+            container.RegisterWebApiControllers(GlobalConfiguration.Configuration);
+
+            container.Verify();
+
+            GlobalConfiguration.Configuration.DependencyResolver =
+                new SimpleInjectorWebApiDependencyResolver(container);
         }
     }
 }

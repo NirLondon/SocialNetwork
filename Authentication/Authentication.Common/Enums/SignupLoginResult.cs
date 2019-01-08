@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Authentication.Common.Enums
+﻿namespace Authentication.Common.Enums
 {
-    public enum ErrorEnum
+    public enum SignupLoginResult
     {
         EverythingIsGood,
         WrongUsernameOrPassword,

@@ -99,7 +99,7 @@
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Controllers\SignupLoginController.cs" />
     <Compile Include="Controllers\UserStateController.cs" />
-    <Compile Include="Controllers\ValidateTokenController.cs" />
+    <Compile Include="Controllers\TokensController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>

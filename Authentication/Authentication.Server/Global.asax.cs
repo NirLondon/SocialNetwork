@@ -18,22 +18,24 @@ namespace Authentication.Server
         protected void Application_Start()
         {
             GlobalConfiguration.Configure(WebApiConfig.Register);
-            InitContainer();
+            SetDependencies();
         }
-        private static void InitContainer()
+
+        private void SetDependencies()
         {
             var container = new Container();
             container.Options.DefaultScopedLifestyle = new AsyncScopedLifestyle();
 
-            container.Register<ISignupLogin, SignupLoginManager>();
+            container.Register<IUsersManager, UsersManager>();
             container.Register<IUserState, UserStateManager>();
-            container.Register<IValidateToken, ValidateTokenManager>();
+            container.Register<ITokensValidator, TokensValidator>();
 
             container.RegisterWebApiControllers(GlobalConfiguration.Configuration);
 
             container.Verify();
 
-            GlobalConfiguration.Configuration.DependencyResolver = new SimpleInjectorWebApiDependencyResolver(container);
+            GlobalConfiguration.Configuration.DependencyResolver 
+                = new SimpleInjectorWebApiDependencyResolver(container);
         }
 
     }

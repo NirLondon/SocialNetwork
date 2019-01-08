@@ -10,6 +10,7 @@ namespace Client.Enum
         WrongUsernameOrPassword,
         ConectionFailed,
         UsernameAlreadyExist,
-        UserIsBlocked
+        UserIsBlocked, 
+        TokenExpired
     }
 }

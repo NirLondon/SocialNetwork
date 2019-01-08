@@ -14,9 +14,9 @@ namespace Client.WUP.Services
 {
     public class SignupLoginService : ISignupLoginService
     {
-        public void NavigateToMainPage(string token)
+        public void NavigateToMainPage()
         {
-            Window.Current.Content = new MainPageView(token);
+            Window.Current.Content = new MainPageView();
         }
 
         public async Task<string> LoginWithFacebook()

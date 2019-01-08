@@ -8,11 +8,11 @@ namespace Authentication.BL
 {
     public class UserStateManager : IUserState
     {
-        UserRepository repository;
+        UsersRepository repository;
 
         public UserStateManager()
         {
-            repository = new UserRepository();
+            repository = new UsersRepository();
         }
 
         public void BlockUser(string username)
