@@ -44,6 +44,13 @@ namespace Authentication.Server.Controllers
         }
 
         [HttpGet]
+        [Route("Logout/{token}")]
+        public void Logout(string token)
+        {
+            _usersManager.ExipreToken(token);
+        }
+
+        [HttpGet]
         [Route("ResetPassword/{username}/{oldPassword}/{newPassword}")]
         public SignupLoginResult ResetPassword(string username, string oldPassword, string newPassword)
         {

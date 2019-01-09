@@ -36,7 +36,7 @@ namespace Authentication.BL
                     TokenModel TM = new TokenModel
                     {
                         Token = Utils.GetNewToken(),
-                        UserId = username,
+                        UserID = username,
                         CreationTime = DateTime.Now
                     };
                     _repository.SaveToken(TM);
@@ -68,7 +68,7 @@ namespace Authentication.BL
                 {
                     TokenModel TM = new TokenModel
                     {
-                        UserId = user.UserID,
+                        UserID = user.UserID,
                         CreationTime = DateTime.Now,
                         Token = Utils.GetNewToken()
                     };
@@ -104,11 +104,13 @@ namespace Authentication.BL
                     TokenModel TM = new TokenModel
                     {
                         Token = Utils.GetNewToken(),
-                        UserId = username,
+                        UserID = username,
                         CreationTime = DateTime.Now
                     };
                     _repository.SaveToken(TM);
                     token = TM.Token;
+
+                    NotifyToIdentityService(token, username);
                 }
                 catch (Exception e)
                 {
@@ -118,6 +120,19 @@ namespace Authentication.BL
             else
                 eror = SignupLoginResult.WrongUsernameOrPassword;
             return new Tuple<string, SignupLoginResult>(token, eror);
+        }
+
+        private void NotifyToIdentityService(string token, string username)
+        {
+            using (var httpClient = new HttpClient())
+            {
+                httpClient.PutAsJsonAsync("http://localhost:63276/api/users/editdetails",
+                    new
+                    {
+                        Token = token,
+                        EditedDetails = string.Format("{ \"UserID\" : \"{0}\" }", username)
+                    });
+            }
         }
 
         public SignupLoginResult SwitchToFacebookUser(string username, string passwrod)
@@ -139,6 +154,12 @@ namespace Authentication.BL
                     break;
             }
             return er;
+        }
+
+        public void ExipreToken(string token)
+        {
+            //_repository.ExpireToken(token);
+            throw new NotImplementedException();
         }
     }
 }

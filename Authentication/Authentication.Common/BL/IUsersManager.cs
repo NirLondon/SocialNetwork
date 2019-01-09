@@ -15,5 +15,7 @@ namespace Authentication.Common.BL
         SignupLoginResult SwitchToFacebookUser(string username, string password);
 
         SignupLoginResult ResetPassword(string username, string oldPassword, string newPassword);
+
+        void ExipreToken(string token);
     }
 }

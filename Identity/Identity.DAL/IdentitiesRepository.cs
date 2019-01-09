@@ -1,7 +1,7 @@
-﻿using Amazon;
-using Amazon.DynamoDBv2;
+﻿using Amazon.DynamoDBv2;
 using Amazon.DynamoDBv2.DocumentModel;
 using Identity.Common.DAL;
+using Identity.Common.Models;
 using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -10,37 +10,37 @@ namespace Identity.DAL
 {
     public class IdentitiesRpository : IIdentitiesRepository
     {
-        AmazonDynamoDBClient client;
-        Table IdentitiesTable;
+        private readonly Table _identitiesTable;
 
         public IdentitiesRpository()
         {
-            client = new AmazonDynamoDBClient(
-                "AKIAJXYAJT5X7XKWZE4A",
-                "eKrd97YbICC8nEZiUqev1UzsfD+Ov9UqFw8YJ1fe",
-                RegionEndpoint.USEast2);
-            IdentitiesTable = Table.LoadTable(client, "Identities");
+            var dbclient = new AmazonDynamoDBClient();
+
+            _identitiesTable = Table.LoadTable(dbclient, "Identities");
         }
 
-        public async void AddUser(string userId)
+        public void AddUser(string userId)
         {
             var doc = new Document();
             doc["UserID"] = userId;
 
-            await IdentitiesTable.PutItemAsync(doc);
+            _identitiesTable.PutItemAsync(doc);
         }
 
-        public async Task EditUser(string userid, Dictionary<string, object> editedFields)
+        public async Task EditUser(string userid, UserDetails editedFields)
         {
-            editedFields.Add("UserID", userid);
+            var document = Utils.DocumentFrom(editedFields);
 
-            await IdentitiesTable.PutItemAsync(Document.FromJson(JsonConvert.SerializeObject(editedFields)));
+            document["UserID"] = userid;
+
+            await _identitiesTable.PutItemAsync(document);
         }
 
-        public async Task<string> GetDetailsJsonAsync(string userId)
+        public async Task<UserDetails> GetUserDetailsAsync(string userId)
         {
-            var doc = await IdentitiesTable.GetItemAsync(userId);
-            return doc.ToJsonPretty();
+            var doc = await _identitiesTable.GetItemAsync(userId);
+            doc.Remove("UserID");
+            return Utils.FromDocument<UserDetails>(doc);
         }
     }
 }

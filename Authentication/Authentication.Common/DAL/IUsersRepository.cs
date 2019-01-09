@@ -20,5 +20,7 @@ namespace Authentication.Common.DAL
         void BlockUser(string username);
 
         void UnBlockUser(string username);
+
+        void ExpireToken(string token);
     }
 }

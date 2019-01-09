@@ -69,6 +69,16 @@
   <ItemGroup>
     <Analyzer Include="..\packages\AWSSDK.DynamoDBv2.3.3.16\analyzers\dotnet\cs\AWSSDK.DynamoDBv2.CodeAnalysis.dll" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Authentication.Common\Authentication.Common.csproj">
+      <Project>{6FF5BC6B-B4D1-46A7-BEF5-CF62A9FE1187}</Project>
+      <Name>Authentication.Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Authentication.DAL\Authentication.DAL.csproj">
+      <Project>{2b448b90-d4b3-4a40-ab7e-d1d2d729a1f0}</Project>
+      <Name>Authentication.DAL</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets" Condition="Exists('$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets')" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

@@ -1,5 +1,6 @@
 ﻿using Authentication.Common.BL;
 using Authentication.Common.DAL;
+using Authentication.Common.Models;
 using System;
 
 namespace Authentication.BL
@@ -26,9 +27,16 @@ namespace Authentication.BL
                 {
                     if (now - tokenModel.CreationTime > TimeSpan.FromMinutes(30))
                         return (null, null);
-                    return (_repository.SetNewTokenFor(tokenModel), tokenModel.UserId);
+                    tokenModel = new TokenModel
+                    {
+                        Token = Utils.GetNewToken(),
+                        CreationTime = DateTime.Now,
+                        UserID = tokenModel.UserID
+                    };
+                    _repository.SaveToken(tokenModel);
+                    return (tokenModel.Token, tokenModel.UserID);
                 }
-                return (token, tokenModel.UserId);
+                return (token, tokenModel.UserID);
             }
             return (null, null);
         }

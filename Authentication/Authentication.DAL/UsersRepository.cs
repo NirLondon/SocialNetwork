@@ -9,33 +9,33 @@ namespace Authentication.DAL
 {
     public class UsersRepository : IUsersRepository
     {
-        private readonly Table usersTable;
-        private readonly Table tokensTable;
+        private readonly Table _usersTable;
+        private readonly Table _tokensTable;
 
         public UsersRepository()
         {
-            var ddbConfig = new AmazonDynamoDBConfig();
-            var client = new AmazonDynamoDBClient(ddbConfig);
-            usersTable = Table.LoadTable(client, "Users");
-            tokensTable = Table.LoadTable(client, "Tokens");
+            //var ddbConfig = new AmazonDynamoDBConfig();
+            var client = new AmazonDynamoDBClient(/*ddbConfig*/);
+            _usersTable = Table.LoadTable(client, "Users");
+            _tokensTable = Table.LoadTable(client, "Tokens");
         }
 
         public void Signup(UserModel user)
         {
             if (Exists(user.UserID))
                 throw new UserAlreadyExistsException(user.UserID);
-            else usersTable.PutItemAsync(DocumentFrom(user));
+            else _usersTable.PutItemAsync(Utils.DocumentFrom(user));
         }
 
         public void SaveToken(TokenModel token)
         {
-            tokensTable.PutItemAsync(DocumentFrom(token));
+            _tokensTable.PutItemAsync(Utils.DocumentFrom(token));
         }
 
         public SignupLoginResult Login(UserModel user)
         {
             SignupLoginResult eror = SignupLoginResult.EverythingIsGood;
-            Document result = usersTable.GetItemAsync(user.UserID).Result;
+            Document result = _usersTable.GetItemAsync(user.UserID).Result;
 
             if (result == null || result["Password"] != user.Password)
             {
@@ -51,11 +51,11 @@ namespace Authentication.DAL
         public SignupLoginResult LoginWithFacebook(UserModel user)
         {
             SignupLoginResult eror = SignupLoginResult.EverythingIsGood;
-            Document userDoc = usersTable.GetItemAsync(user.UserID).Result;
+            Document userDoc = _usersTable.GetItemAsync(user.UserID).Result;
             if (userDoc == null)
             {
-                userDoc = DocumentFrom(user);
-                usersTable.PutItemAsync(userDoc);
+                userDoc = Utils.DocumentFrom(user);
+                _usersTable.PutItemAsync(userDoc);
                 eror = SignupLoginResult.EverythingIsGood;
             }
             else if (userDoc["State"] == SignupLoginResult.UserIsBlocked.ToString())
@@ -67,34 +67,34 @@ namespace Authentication.DAL
 
         public void BlockUser(string username)
         {
-            Document userdoc = usersTable.GetItemAsync(username).Result;
+            Document userdoc = _usersTable.GetItemAsync(username).Result;
             if (userdoc != null)
             {
                 userdoc["State"] = UserState.Blocked.ToString();
-                usersTable.PutItemAsync(userdoc);
+                _usersTable.PutItemAsync(userdoc);
             }
         }
 
         public void UnBlockUser(string username)
         {
-            Document userdoc = usersTable.GetItemAsync(username).Result;
+            Document userdoc = _usersTable.GetItemAsync(username).Result;
             if (userdoc != null)
             {
                 userdoc["State"] = UserState.Open.ToString();
-                usersTable.PutItemAsync(userdoc);
+                _usersTable.PutItemAsync(userdoc);
             }
         }
 
         public SignupLoginResult SwitchToFacebookUser(string username, string password)
         {
             SignupLoginResult result = SignupLoginResult.WrongUsernameOrPassword;
-            Document userDoc = usersTable.GetItemAsync(username).Result;
+            Document userDoc = _usersTable.GetItemAsync(username).Result;
             if (userDoc != null && userDoc["Password"] == password)
             {
                 result = SignupLoginResult.EverythingIsGood;
                 userDoc["Username/Token"] = '_' + username;
                 userDoc["Password"] = string.Empty;
-                usersTable.PutItemAsync(userDoc);
+                _usersTable.PutItemAsync(userDoc);
             }
             return result;
         }
@@ -102,7 +102,7 @@ namespace Authentication.DAL
         public SignupLoginResult ResetPassword(string username, string oldPassword, string newPassword)
         {
             SignupLoginResult eror = SignupLoginResult.EverythingIsGood;
-            var userdoc = usersTable.GetItemAsync(username).Result;
+            var userdoc = _usersTable.GetItemAsync(username).Result;
             if (userdoc == null || userdoc["Password"] != oldPassword)
             {
                 eror = SignupLoginResult.WrongUsernameOrPassword;
@@ -110,34 +110,23 @@ namespace Authentication.DAL
             else
             {
                 userdoc["Password"] = newPassword;
-                usersTable.PutItemAsync(userdoc);
+                _usersTable.PutItemAsync(userdoc);
             }
             return eror;
         }
 
         private bool Exists(string userID)
         {
-            return usersTable.GetItemAsync(userID).Result != null;
+            return _usersTable.GetItemAsync(userID).Result != null;
         }
 
-        private Document DocumentFrom(UserModel user)
+        public void ExpireToken(string token)
         {
-            return new Document
+            _tokensTable.PutItemAsync(new Document
             {
-                { "Username/Token", user.UserID },
-                { "Password", user.Password },
-                { "State", user.State.ToString() }
-            };
-        }
-
-        private Document DocumentFrom(TokenModel token)
-        {
-            return new Document
-            {
-                { "Token", token.Token },
-                { "UserID", token.UserId },
-                { "CreationDate", token.CreationTime }
-            };
+                {"Token", token },
+                {"IsExpired", true }
+            });
         }
     }
 }

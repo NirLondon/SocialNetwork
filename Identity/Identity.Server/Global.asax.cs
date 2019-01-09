@@ -12,6 +12,11 @@ namespace Identity.Server
         {
             GlobalConfiguration.Configure(WebApiConfig.Register);
 
+            ConfigureDependencies();
+        }
+
+        private void ConfigureDependencies()
+        {
             var container = new Container();
 
             container.Register<IIdentitiesRepository, IdentitiesRpository>();

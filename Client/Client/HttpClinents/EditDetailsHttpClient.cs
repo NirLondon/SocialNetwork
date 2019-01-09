@@ -1,6 +1,8 @@
 ﻿using Client.DataProviders;
 using Client.Enum;
+using Identity.Common.Models;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Net.Http;
@@ -13,31 +15,35 @@ namespace Client.HttpClinents
     {
         public EditDetailsHttpClient() : base("http://localhost:63276/") { }
 
-        public async Task<Tuple<ErrorEnum, IDictionary<string, object>>> GetUserDetails()
+        public async Task<UserDetails> GetUserDetails()
         {
             var response = await httpClient.GetAsync($"api/users/details/{CURRENTTOKEN}");
 
             if (response.IsSuccessStatusCode)
             {
-                return new Tuple<ErrorEnum, IDictionary<string, object>>
-                    (ErrorEnum.EverythingIsGood,
-                    JsonConvert.DeserializeObject<Dictionary<string, object>>
-                    (await response.Content.ReadAsStringAsync()));
+                var result = await response.Content.ReadAsAsync<(string token, UserDetails)>();
+                CURRENTTOKEN = result.token;
+                return result.Item2;
             }
 
-            return new Tuple<ErrorEnum, IDictionary<string, object>>(ErrorEnum.ConectionFailed, null);
+            throw new Exception();
         }
 
-        public async Task UpdateUserDetails(IDictionary<string, object> userDetails)
+        public async Task UpdateUserDetails(UserDetails userDetails)
         {
-            var response = await httpClient.PostAsJsonAsync("api/users/editdetails",
+            var response = await httpClient.PutAsJsonAsync("api/users/editdetails",
                 new
                 {
                     Token = CURRENTTOKEN,
-                    EditedDetails = userDetails
+                    UserDetails = userDetails
                 });
 
-            if (!response.IsSuccessStatusCode) ;
+            if (response.IsSuccessStatusCode)
+            {
+                CURRENTTOKEN = response.Content.ReadAsStringAsync().Result;
+                return;
+            }
+            throw new Exception();
         }
     }
 }

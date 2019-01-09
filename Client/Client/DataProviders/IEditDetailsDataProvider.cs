@@ -1,14 +1,12 @@
-﻿using Client.Enum;
-using System;
-using System.Collections.Generic;
+﻿using Identity.Common.Models;
 using System.Threading.Tasks;
 
 namespace Client.DataProviders
 {
     public interface IEditDetailsDataProvider
     {
-        Task<Tuple<ErrorEnum, IDictionary<string, object>>> GetUserDetails();
+        Task<UserDetails> GetUserDetails();
 
-        Task UpdateUserDetails(IDictionary<string, object> userDetails);
+        Task UpdateUserDetails(UserDetails userDetails);
     }
 }

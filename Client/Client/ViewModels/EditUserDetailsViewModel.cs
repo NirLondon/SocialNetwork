@@ -1,41 +1,50 @@
 ﻿using System;
-using System.Collections.Concurrent;
 using Client.DataProviders;
 using Client.HttpClinents;
 using System.Threading.Tasks;
+using System.ComponentModel;
+using Identity.Common.Models;
 
 namespace Client.ViewModels
 {
-    public class EditUserDetailsViewModel
+    public class EditUserDetailsViewModel : INotifyPropertyChanged
     {
-        private readonly IEditDetailsDataProvider dataProvider;
+        private readonly IEditDetailsDataProvider _dataProvider;
 
         public EditUserDetailsViewModel(IEditDetailsDataProvider dataProvider)
         {
-            this.dataProvider = dataProvider ?? throw new ArgumentNullException(nameof(dataProvider));
+            this._dataProvider = dataProvider ?? throw new ArgumentNullException(nameof(dataProvider));
 
+            UserDetails = new UserDetails();
             InitializeUserDetails();
-        }
-
-        private void InitializeUserDetails()
-        {
-            UserDetails = new ObservableConcurrentDictionary<string, object>();
-            var awaiter = dataProvider
-                .GetUserDetails()
-                .GetAwaiter();
-            var source = awaiter.GetResult().Item2;
-
-            foreach (var item in source)
-                UserDetails.Add(item.Key, item.Value);
         }
 
         public EditUserDetailsViewModel() : this(new EditDetailsHttpClient()) { }
 
-        public ObservableConcurrentDictionary<string, object> UserDetails { get; private set; }
+        private async Task InitializeUserDetails()
+        {
+            UserDetails = await _dataProvider.GetUserDetails();
+        }
+
+        private UserDetails _userDetails;
+        public UserDetails UserDetails
+        {
+            get => _userDetails; private set
+            {
+                _userDetails = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+        private void OnPropertyChanged(string propertyName = null)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
 
         public void SaveChanges()
         {
-            dataProvider.UpdateUserDetails(UserDetails);
+            _dataProvider.UpdateUserDetails(UserDetails);
         }
     }
 }

@@ -10,7 +10,7 @@
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
     <Page.Resources>
-        <converters:ObjectToDateTimeOffsetConveerter x:Key="objToDatetime"/>
+        <converters:NullableToDateTimeOffsetConverter x:Key="objToDatetime"/>
     </Page.Resources>
     
     <Grid>
@@ -18,22 +18,22 @@
             <TextBlock Text="Edit your details" HorizontalAlignment="Center" FontSize="26" FontWeight="Bold"/>
             <StackPanel Orientation="Horizontal">
                 <TextBlock Text="First name:" Margin="0,0,0,0"/>
-                <TextBox PlaceholderText="Put here your first name" Text="{x:Bind ViewModel.UserDetails['FirstName'], Mode=TwoWay}"/>
+                <TextBox PlaceholderText="Put here your first name" Text="{x:Bind ViewModel.UserDetails.FirstName, Mode=TwoWay}"/>
             </StackPanel>
             <StackPanel Orientation="Horizontal">
                 <TextBlock Text="Last name:" Margin="0,0,2,0"/>
-                <TextBox PlaceholderText="Put here your last name" Text="{x:Bind ViewModel.UserDetails['LastName'], Mode=TwoWay}"/>
+                <TextBox PlaceholderText="Put here your last name" Text="{x:Bind ViewModel.UserDetails.LastName, Mode=TwoWay}"/>
             </StackPanel>
             <StackPanel Orientation="Horizontal">
                 <TextBlock Text="Birth date:" Margin="0 ,0,4,0"/>
-                <DatePicker Date="{x:Bind ViewModel.UserDetails['BirthDate'], Mode=TwoWay, Converter={StaticResource objToDatetime}}" />
+                <DatePicker Date="{x:Bind ViewModel.UserDetails.BirthDate, Mode=TwoWay, Converter={StaticResource objToDatetime}}" />
             </StackPanel>
             <StackPanel Orientation="Horizontal">
                 <TextBlock Text="Job:" Margin="0,0,45,0"/>
-                <TextBox PlaceholderText="Discribe here your job" Text="{x:Bind ViewModel.UserDetails['Job'], Mode=TwoWay}"/>
+                <TextBox PlaceholderText="Discribe here your job" Text="{x:Bind ViewModel.UserDetails.Job, Mode=TwoWay}"/>
             </StackPanel>
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Spacing="25">
-                <Button Content="Save changes"/>
+                <Button Content="Save changes" Click="{x:Bind ViewModel.SaveChanges}"/>
                 <Button Content="Cancel"/>
             </StackPanel>
         </StackPanel>
