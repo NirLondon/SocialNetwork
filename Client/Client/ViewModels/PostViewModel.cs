@@ -17,6 +17,7 @@ namespace Client.ViewModels
         private IPostService _viwService { get; set; }
         public Post CurrentPost { get; set; }
         public string CommentText { get; set; }
+        public BitmapImage Image { get; set; }
 
 
         public PostViewModel(IPostService service)
@@ -28,8 +29,7 @@ namespace Client.ViewModels
         {
             Comment newComment = new Comment
             {
-                Text = CommentText,
-                Publisher = "Deafult"
+                Text = CommentText
             };
 
             CurrentPost.Comments.Add(newComment);
@@ -37,8 +37,7 @@ namespace Client.ViewModels
 
         public async void ChooseImage()
         {
-            BitmapImage image = await _viwService.ChooseImage();
-
+             Image = await _viwService.ChooseImage();
         }
     }
 }

@@ -17,5 +17,20 @@ namespace Client.ViewModels
             _viewService = service;
             _token = token;
         }
+
+        public void GoToFeed()
+        {
+            _viewService.GoToFeed();
+        }
+
+        public void GoToIdentity()
+        {
+            _viewService.GoToIdentity();
+        }
+
+        public void logOut()
+        {
+             _viewService.LogOut();
+        }
     }
 }

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Client.Common
+namespace Social.Common.Models
 {
     public class Comment
     {

@@ -15,7 +15,7 @@ namespace Client.HttpClinents
         public SignupLoginHttpClient()
         {
             httpClient = new HttpClient();
-            api = "http://localhost:63172/api/SignupLogin/";
+            api = "http://SocialNetwork.Authentication.com/api/SignupLogin/";
             httpClient.BaseAddress = new Uri(api);
         }
 

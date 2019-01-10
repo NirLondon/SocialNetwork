@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Text;
 
-namespace Client.Common
+namespace Social.Common.Models
 {
-    public class Comment
+    public class Post
     {
         public string Publisher { get; set; }
         public string IMGURL { get; set; }
@@ -13,5 +14,7 @@ namespace Client.Common
         public int Likes { get; set; }
         public bool DidLiked { get; set; }
         public int ID { get; set; }
+
+        public ObservableCollection<Comment> Comments { get; set; } = new ObservableCollection<Comment>();
     }
 }

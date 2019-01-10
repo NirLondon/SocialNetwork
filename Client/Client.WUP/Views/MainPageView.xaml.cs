@@ -1,5 +1,6 @@
 ﻿using Client.ViewModels;
 using Client.WUP.Services;
+using Client.WUP.UserControls;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -29,7 +30,7 @@ namespace Client.WUP.Views
         public MainPageView(string token)
         {
             this.InitializeComponent();
-            service = new MainPageService();
+            service = new MainPageService(contentSP);
             viewModel = new MainPageViewModel(service, token);
         }
     }

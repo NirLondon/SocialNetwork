@@ -7,23 +7,45 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:models="using:Client.Common"
     xmlns:vm="using:Client.ViewModels"
+    xmlns:converter="using:Client.WUP.Converters"
     mc:Ignorable="d"
     d:DesignHeight="300"
     d:DesignWidth="400">
+    <UserControl.Resources>
+        <converter:OppositeBoolConverter x:Key="LikeConverter"/>
+    </UserControl.Resources>
     <Grid>
         <StackPanel>
             <StackPanel Margin="20">
-                <TextBlock Margin="10" Text="{Binding CurrentPost.Publisher}" FontSize="20" FontWeight="Bold"/>
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Margin="10" Text="{Binding CurrentPost.Publisher}" FontSize="20" FontWeight="Black"/>
+                    <TextBlock Margin="10" Text="{Binding CurrentPost.PublishDate}" FontSize="20" FontWeight="Bold"/>
+                </StackPanel>
                 <Image Margin="10" Source="{Binding CurrentPost.IMGURL}" Width="280"/>
-                <TextBlock Margin="10" Text="{Binding CurrentPost.Text}" FontSize="15"/>
+                <TextBlock Margin="10" Text="{Binding CurrentPost.Text}" FontSize="20"/>
+                <Button Margin="10" IsEnabled="{Binding CurrentPost.DidLiked, Converter={StaticResource LikeConverter}}">
+                    <StackPanel Orientation="Horizontal">
+                        <Image Source="/Assets/like.png" Height="20"/>
+                        <TextBlock Text="{Binding CurrentPost.Likes}"/>
+                    </StackPanel>
+                </Button>
                 <StackPanel Margin="10">
                     <ListView ItemsSource="{Binding CurrentPost.Comments}" SelectionMode="None">
                         <ListView.ItemTemplate>
                             <DataTemplate x:DataType="models:Post">
                                 <StackPanel>
-                                    <TextBlock Margin="10" Text="{Binding Publisher}" FontSize="15" FontWeight="Bold"/>
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Margin="10" Text="{Binding Publisher}" FontSize="15" FontWeight="Black"/>
+                                        <TextBlock Margin="10" Text="{Binding PublishDate}" FontSize="15" FontWeight="Bold"/>
+                                    </StackPanel>
                                     <Image Source="{Binding IMGURL}" Width="170"/>
-                                    <TextBlock Margin="10" Text="{Binding Text}" FontSize="12"/>
+                                    <TextBlock Margin="10" Text="{Binding Text}" FontSize="15"/>
+                                    <Button Margin="10" IsEnabled="{Binding DidLiked, Converter={StaticResource LikeConverter}}">
+                                        <StackPanel Orientation="Horizontal">
+                                            <Image Source="/Assets/like.png" Height="13"/>
+                                            <TextBlock Text="{Binding Likes}"/>
+                                        </StackPanel>
+                                    </Button>
                                 </StackPanel>
                             </DataTemplate>
                         </ListView.ItemTemplate>
@@ -33,7 +55,7 @@
                         <TextBox Margin="5" Text="{Binding CommentText, Mode=TwoWay}"/>
                         <Button Margin="5" Content="Choose image" Click="ChooseImage"/>
                     </StackPanel>
-                        <Button Margin="5" Background="Transparent" Content="Publish" Click="PublishComment" FontWeight="ExtraBlack"/>
+                    <Button Margin="5" Background="Transparent" Content="Publish" Click="PublishComment" FontWeight="ExtraBlack"/>
                 </StackPanel>
                 <TextBlock Margin="10" Text="-----------------------------------------------------------------------------------------------------------------------"/>
             </StackPanel>

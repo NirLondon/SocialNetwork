@@ -11,11 +11,9 @@
     mc:Ignorable="d"
     d:DesignHeight="300"
     d:DesignWidth="400">
-
     <UserControl.Resources>
         <uc:PostUserControl x:Key="PUC"/>
     </UserControl.Resources>
-
     <StackPanel>
         <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
             <TextBlock VerticalAlignment="Top" Text="Posts" FontSize="40"/>

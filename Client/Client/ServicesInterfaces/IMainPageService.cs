@@ -6,5 +6,10 @@ namespace Client.ServicesInterfaces
 {
     public interface IMainPageService
     {
+        void GoToFeed();
+
+        void GoToIdentity();
+
+        void LogOut();
     }
 }

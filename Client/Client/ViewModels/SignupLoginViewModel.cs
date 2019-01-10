@@ -63,6 +63,7 @@ namespace Client.ViewModels
         {
             if (ValidateInput())
             {
+                Sending = true;
                 Tuple<string, ErrorEnum> tuple = await API_Client.Login(Username, Password);
 
                 if (tuple.Item2 == ErrorEnum.EverythingIsGood)
@@ -73,6 +74,7 @@ namespace Client.ViewModels
                 {
                     Message = ManageError(tuple.Item2);
                 }
+                Sending = false;
             }
         }
 
@@ -81,6 +83,7 @@ namespace Client.ViewModels
             string facebookToken = await _viewService.LoginWithFacebook();
             if (facebookToken != null)
             {
+                Sending = true;
                 Tuple<string, ErrorEnum> tuple = await API_Client.LoginWithFacebook(facebookToken);
                 if (tuple.Item2 == ErrorEnum.EverythingIsGood)
                 {
@@ -95,6 +98,7 @@ namespace Client.ViewModels
                     else
                         Message = ManageError(tuple.Item2);
                 }
+                Sending = false;
             }
         }
 
@@ -125,7 +129,7 @@ namespace Client.ViewModels
             if (Username == null || Username == "" || Password == null || Password == "" || Username[0] == '_')
             {
                 flag = false;
-                Message = "Insert proper username or password";
+                Message = "Insert proper username and password";
             }
             return flag;
         }
