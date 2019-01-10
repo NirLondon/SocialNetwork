@@ -3,12 +3,7 @@ using Authentication.Common.BL;
 using SimpleInjector;
 using SimpleInjector.Integration.WebApi;
 using SimpleInjector.Lifestyles;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
 using System.Web.Http;
-using System.Web.Routing;
 
 namespace Authentication.Server
 {
@@ -17,21 +12,26 @@ namespace Authentication.Server
         protected void Application_Start()
         {
             GlobalConfiguration.Configure(WebApiConfig.Register);
-            InitContainer();
+            SetDependencies();
         }
-        private static void InitContainer()
+
+        private void SetDependencies()
         {
+            var BlResolver = new DependenciesResolver();
+
             var container = new Container();
             container.Options.DefaultScopedLifestyle = new AsyncScopedLifestyle();
 
-            container.Register<ISignupLogin, SignupLoginManager>();
-            container.Register<IUserState, UserStateManager>();
+            container.Register<IUsersManager>(() => BlResolver.GetInstanceOf<IUsersManager>());
+            container.Register<IUserState>(() => BlResolver.GetInstanceOf<IUserState>());
+            container.Register<ITokensValidator>(() => BlResolver.GetInstanceOf<ITokensValidator>());
 
             container.RegisterWebApiControllers(GlobalConfiguration.Configuration);
 
             container.Verify();
 
-            GlobalConfiguration.Configuration.DependencyResolver = new SimpleInjectorWebApiDependencyResolver(container);
+            GlobalConfiguration.Configuration.DependencyResolver 
+                = new SimpleInjectorWebApiDependencyResolver(container);
         }
 
     }

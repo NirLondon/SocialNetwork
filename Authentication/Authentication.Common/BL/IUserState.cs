@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Authentication.Common.BL
+﻿namespace Authentication.Common.BL
 {
     public interface IUserState
     {

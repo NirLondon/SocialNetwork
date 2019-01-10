@@ -9,6 +9,6 @@ namespace Authentication.Common.Models
     {
         public string UserID { get; set; }
         public string Password { get; set; }
-        public UserStateEnum State { get; set; }
+        public UserState State { get; set; }
     }
 }

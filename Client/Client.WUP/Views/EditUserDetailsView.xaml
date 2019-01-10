@@ -1,0 +1,41 @@
+﻿<Page
+    x:Class="Client.WUP.Views.EditUserDetailsView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:Client.WUP.Views"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:converters="using:Client.WUP.Converters"
+    mc:Ignorable="d"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+
+    <Page.Resources>
+        <converters:NullableToDateTimeOffsetConverter x:Key="objToDatetime"/>
+    </Page.Resources>
+    
+    <Grid>
+        <StackPanel VerticalAlignment="Center"  HorizontalAlignment="Center"  Spacing="10">
+            <TextBlock Text="Edit your details" HorizontalAlignment="Center" FontSize="26" FontWeight="Bold"/>
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="First name:" Margin="0,0,0,0"/>
+                <TextBox PlaceholderText="Put here your first name" Text="{x:Bind ViewModel.UserDetails.FirstName, Mode=TwoWay}"/>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="Last name:" Margin="0,0,2,0"/>
+                <TextBox PlaceholderText="Put here your last name" Text="{x:Bind ViewModel.UserDetails.LastName, Mode=TwoWay}"/>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="Birth date:" Margin="0 ,0,4,0"/>
+                <DatePicker Date="{x:Bind ViewModel.UserDetails.BirthDate, Mode=TwoWay, Converter={StaticResource objToDatetime}}" />
+            </StackPanel>
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="Job:" Margin="0,0,45,0"/>
+                <TextBox PlaceholderText="Discribe here your job" Text="{x:Bind ViewModel.UserDetails.Job, Mode=TwoWay}"/>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Spacing="25">
+                <Button Content="Save changes" Click="{x:Bind ViewModel.SaveChanges}"/>
+                <Button Content="Cancel"/>
+            </StackPanel>
+        </StackPanel>
+    </Grid>
+</Page>

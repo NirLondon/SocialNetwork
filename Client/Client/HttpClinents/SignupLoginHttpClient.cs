@@ -1,88 +1,58 @@
-﻿using Client.Enum;
+﻿using Client.DataProviders;
+using Client.Enum;
 using System;
-using System.Collections.Generic;
 using System.Net.Http;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Client.HttpClinents
 {
-    public class SignupLoginHttpClient
+    public class SignupLoginHttpClient : HttpHelper, ISignupLoginDataProvider
     {
-        private HttpClient httpClient { get; set; }
-        private string api { get; set; }
+        public SignupLoginHttpClient() : base("http://localhost:63172/api/SignupLogin/") { }
 
-        public SignupLoginHttpClient()
+        public Task<ErrorEnum> Signup(string username, string password)
         {
-            httpClient = new HttpClient();
-            api = "http://SocialNetwork.Authentication.com/api/SignupLogin/";
-            httpClient.BaseAddress = new Uri(api);
+            return SignupOrLogin($"Signup/{username}/{password}");
         }
 
-
-        public async Task<Tuple<string, ErrorEnum>> Signup(string username, string password)
+        public Task<ErrorEnum> Login(string username, string password)
         {
-            string token = null;                           // string and eror 
-            ErrorEnum eror = ErrorEnum.EverythingIsGood;   // enum to return
-            var result = await httpClient.GetAsync($"Signup/{username}/{password}");
-
-            if (result.IsSuccessStatusCode)
-            {
-                var response = result.Content.ReadAsAsync<Tuple<string, ErrorEnum>>().Result;
-                eror = response.Item2;
-                token = response.Item1;
-            }
-            Tuple<string, ErrorEnum> tuple = new Tuple<string, ErrorEnum>(token, eror);
-            return tuple;
+            return SignupOrLogin($"Login/{username}/{password}");
         }
 
-        public async Task<Tuple<string, ErrorEnum>> Login(string username, string password)
+        private async Task<ErrorEnum> SignupOrLogin(string url)
         {
-            string token = null;
-            ErrorEnum eror = ErrorEnum.EverythingIsGood;
-            var result = await httpClient.GetAsync($"Login/{username}/{password}");
-            if (result.IsSuccessStatusCode)
+            var response = await httpClient.GetAsync(url);
+
+            if (response.IsSuccessStatusCode)
             {
-                var response = result.Content.ReadAsAsync<Tuple<string, ErrorEnum>>().Result;
-                eror = response.Item2;
-                token = response.Item1;
+                var result = response.Content.ReadAsAsync<Tuple<string, ErrorEnum>>().Result;
+                CURRENTTOKEN = result.Item1;
+                return result.Item2;
             }
-            else
-            {
-                eror = ErrorEnum.ConectionFailed;
-            }
-            Tuple<string, ErrorEnum> tuple = new Tuple<string, ErrorEnum>(token, eror);
-            return tuple;
+            return ErrorEnum.ConectionFailed;
         }
 
-        public async Task<Tuple<string, ErrorEnum>> LoginWithFacebook(string facebookToken)
+        public async Task<ErrorEnum> LoginWithFacebook(string facebookToken)
         {
-            string token = null;
-            ErrorEnum eror = ErrorEnum.EverythingIsGood;
-            var result = await httpClient.PostAsJsonAsync($"LoginWithFacebook", facebookToken);
-            if (result.IsSuccessStatusCode)
+            var response = await httpClient.PostAsJsonAsync($"LoginWithFacebook", facebookToken);
+
+            if (response.IsSuccessStatusCode)
             {
-                var response = result.Content.ReadAsAsync<Tuple<string, ErrorEnum>>().Result;
-                eror = response.Item2;
-                token = response.Item1;
+                var result = await response.Content.ReadAsAsync<Tuple<string, ErrorEnum>>();
+                CURRENTTOKEN = result.Item1;
+                return result.Item2;
             }
-            else
-            {
-                eror = ErrorEnum.ConectionFailed;
-            }
-            Tuple<string, ErrorEnum> tuple = new Tuple<string, ErrorEnum>(token, eror);
-            return tuple;
+            return ErrorEnum.ConectionFailed;
         }
 
         public async Task<ErrorEnum> SwitchToFacebookUser(string username, string password)
         {
-            ErrorEnum eror = ErrorEnum.EverythingIsGood;
             var result = await httpClient.GetAsync($"SwitchToFacebookUser/{username}/{password}");
+
             if (result.IsSuccessStatusCode)
-            {
-                 eror = result.Content.ReadAsAsync<ErrorEnum>().Result;
-            }
-            return eror;
+                return await result.Content.ReadAsAsync<ErrorEnum>();
+            return ErrorEnum.ConectionFailed;
         }
     }
 }

@@ -1,19 +1,26 @@
-﻿using Client.Enum;
+﻿using Client.DataProviders;
+using Client.Enum;
 using Client.HttpClinents;
 using Client.ServicesInterfaces;
-using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Text;
-
 
 namespace Client.ViewModels
 {
     public class SignupLoginViewModel : INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler PropertyChanged;
-        private SignupLoginHttpClient API_Client { get; set; }
+        private readonly ISignupLoginDataProvider _dataProvider;
         public ISignupLoginService _viewService { get; set; }
+
+        public SignupLoginViewModel(ISignupLoginService service) 
+            : this(new SignupLoginHttpClient(), service) { }
+
+        public SignupLoginViewModel(ISignupLoginDataProvider dataProvider, ISignupLoginService service)
+        {
+            Sending = false;
+            _dataProvider = dataProvider;
+            _viewService = service;
+        }
 
         public string Username { get; set; }
         public string Password { get; set; }
@@ -32,29 +39,17 @@ namespace Client.ViewModels
             set { _sending = value; OnPropertyChange(); }
         }
 
-
-        public SignupLoginViewModel(ISignupLoginService service)
-        {
-            Sending = false;
-            _viewService = service;
-            API_Client = new SignupLoginHttpClient();
-        }
-
-
         public async void Signup()
         {
             if (ValidateInput())
             {
                 Sending = true;
-                Tuple<string, ErrorEnum> tuple = await API_Client.Signup(Username, Password);
-                if (tuple.Item2 == ErrorEnum.EverythingIsGood)
-                {
-                    _viewService.NavigateToMainPage(tuple.Item1);
-                }
-                else
-                {
-                    Message = ManageError(tuple.Item2);
-                }
+                ErrorEnum result = await _dataProvider.Signup(Username, Password);
+
+                if (result == ErrorEnum.EverythingIsGood)
+                    _viewService.NavigateToMainPage();
+                else ManageError(result);
+
                 Sending = false;
             }
         }
@@ -63,18 +58,11 @@ namespace Client.ViewModels
         {
             if (ValidateInput())
             {
-                Sending = true;
-                Tuple<string, ErrorEnum> tuple = await API_Client.Login(Username, Password);
+                ErrorEnum result = await _dataProvider.Login(Username, Password);
 
-                if (tuple.Item2 == ErrorEnum.EverythingIsGood)
-                {
-                    _viewService.NavigateToMainPage(tuple.Item1);
-                }
-                else
-                {
-                    Message = ManageError(tuple.Item2);
-                }
-                Sending = false;
+                if (result == ErrorEnum.EverythingIsGood)
+                    _viewService.NavigateToMainPage();
+                else ManageError(result);
             }
         }
 
@@ -83,25 +71,17 @@ namespace Client.ViewModels
             string facebookToken = await _viewService.LoginWithFacebook();
             if (facebookToken != null)
             {
-                Sending = true;
-                Tuple<string, ErrorEnum> tuple = await API_Client.LoginWithFacebook(facebookToken);
-                if (tuple.Item2 == ErrorEnum.EverythingIsGood)
-                {
-                    _viewService.NavigateToMainPage(tuple.Item1);
-                }
+                ErrorEnum result = await _dataProvider.LoginWithFacebook(facebookToken);
+                if (result == ErrorEnum.EverythingIsGood)
+                    _viewService.NavigateToMainPage();
                 else
                 {
-                    if (tuple.Item2 == ErrorEnum.WrongUsernameOrPassword)
-                    {
+                    if (result == ErrorEnum.WrongUsernameOrPassword)
                         ManageUserSwitch();
-                    }
-                    else
-                        Message = ManageError(tuple.Item2);
+                    else ManageError(result);
                 }
-                Sending = false;
             }
         }
-
 
         private async void ManageUserSwitch()
         {
@@ -110,46 +90,37 @@ namespace Client.ViewModels
                 bool wantToSwitch = await _viewService.SwitchToFacebookMessage();
                 if (wantToSwitch)
                 {
-                    ErrorEnum success = await API_Client.SwitchToFacebookUser(Username, Password);
-                    if (success == ErrorEnum.EverythingIsGood)
-                    {
+                    ErrorEnum result = await _dataProvider.SwitchToFacebookUser(Username, Password);
+                    if (result == ErrorEnum.EverythingIsGood)
                         Message = "User converted to facebook user!";
-                    }
-                    else
-                    {
-                        ManageError(success);
-                    }
+                    else ManageError(result);
                 }
             }
         }
 
         private bool ValidateInput()
         {
-            bool flag = true;
-            if (Username == null || Username == "" || Password == null || Password == "" || Username[0] == '_')
-            {
-                flag = false;
-                Message = "Insert proper username and password";
-            }
-            return flag;
+            if (!string.IsNullOrEmpty(Username) && !string.IsNullOrEmpty(Password) && Username[0] != '_')
+                return true;
+
+            Message = "Insert proper username or password";
+            return false;
         }
 
-        private string ManageError(ErrorEnum eror)
+        private void ManageError(ErrorEnum eror)
         {
-            string msg = "";
             switch (eror)
             {
                 case ErrorEnum.WrongUsernameOrPassword:
-                    msg = "Wrong username or password";
-                    break;
+                    Message = "Wrong username or password";
+                    return;
                 case ErrorEnum.ConectionFailed:
-                    msg = "Bad internet conection";
-                    break;
+                    Message = "Bad internet conection";
+                    return;
                 case ErrorEnum.UsernameAlreadyExist:
-                    msg = "Username already exist";
-                    break;
+                    Message = "Username already exist";
+                    return;
             }
-            return msg;
         }
 
         private void OnPropertyChange(string propname = null)

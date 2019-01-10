@@ -27,7 +27,8 @@ namespace Client.WUP.Views
     {
         private MainPageViewModel viewModel { get; set; }
         private MainPageService service { get; set; }
-        public MainPageView(string token)
+
+        public MainPageView()
         {
             this.InitializeComponent();
             service = new MainPageService(contentSP);

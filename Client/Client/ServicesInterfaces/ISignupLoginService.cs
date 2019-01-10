@@ -7,7 +7,7 @@ namespace Client.ServicesInterfaces
 {
     public interface ISignupLoginService
     {
-        void NavigateToMainPage(string token);
+        void NavigateToMainPage();
 
         Task<string> LoginWithFacebook();
 
