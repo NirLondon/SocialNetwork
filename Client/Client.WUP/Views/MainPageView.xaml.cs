@@ -1,5 +1,6 @@
 ﻿using Client.ViewModels;
 using Client.WUP.Services;
+using Client.WUP.UserControls;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -30,13 +31,8 @@ namespace Client.WUP.Views
         public MainPageView()
         {
             this.InitializeComponent();
+            service = new MainPageService(contentSP);
             viewModel = new MainPageViewModel(service);
-        }
-
-        private void Button_Click(object sender, RoutedEventArgs e)
-        {
-            Window.Current.Content = new EditUserDetailsView();
-            //Frame.Navigate(typeof(EditUserDetailsView));
         }
     }
 }

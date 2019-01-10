@@ -20,8 +20,8 @@
             </StackPanel>
             <Button Margin="10" Content="Signp" Click="{x:Bind viewModel.Signup}"/>
             <Button Margin="10" Content="Login" Click="{x:Bind viewModel.Login}"/>
-            <Button Click="{x:Bind viewModel.LoginWithFacebook}">
-                <Image Margin="10" Source="/Assets/facebook.jpg" Height="100" Width="300" />
+            <Button Click="{x:Bind viewModel.LoginWithFacebook}" Background="Transparent">
+                <Image Source="/Assets/facebook.jpg" Height="100"/>
             </Button>
             <TextBlock Margin="10" Text="{x:Bind viewModel.Message, Mode=OneWay}"/>
         </StackPanel>

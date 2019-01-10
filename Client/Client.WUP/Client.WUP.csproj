@@ -11,7 +11,7 @@
     <AssemblyName>Client.WUP</AssemblyName>
     <DefaultLanguage>en-US</DefaultLanguage>
     <TargetPlatformIdentifier>UAP</TargetPlatformIdentifier>
-    <TargetPlatformVersion Condition=" '$(TargetPlatformVersion)' == '' ">10.0.17134.0</TargetPlatformVersion>
+    <TargetPlatformVersion Condition=" '$(TargetPlatformVersion)' == '' ">10.0.17763.0</TargetPlatformVersion>
     <TargetPlatformMinVersion>10.0.16299.0</TargetPlatformMinVersion>
     <MinimumVisualStudioVersion>14</MinimumVisualStudioVersion>
     <FileAlignment>512</FileAlignment>
@@ -96,12 +96,20 @@
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
     <Compile Include="Converters\NullableToDateTimeOffsetConverter.cs" />
+    <Compile Include="Converters\OppositeBoolConverter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\MainPageService.cs" />
     <Compile Include="Services\NavigateBack.cs" />
+    <Compile Include="Services\PostService.cs" />
     <Compile Include="Services\SignupLoginService.cs" />
-    <Compile Include="UserControlls\NavBar.xaml.cs">
-      <DependentUpon>NavBar.xaml</DependentUpon>
+    <Compile Include="UserControls\FeedUserControl.xaml.cs">
+      <DependentUpon>FeedUserControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UserControls\PostUserControl.xaml.cs">
+      <DependentUpon>PostUserControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UserControls\UserProfileUserControl.xaml.cs">
+      <DependentUpon>UserProfileUserControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\EditUserDetailsView.xaml.cs">
       <DependentUpon>EditUserDetailsView.xaml</DependentUpon>
@@ -120,7 +128,11 @@
     <None Include="Client.WUP_TemporaryKey.pfx" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Assets\document.png" />
     <Content Include="Assets\facebook.jpg" />
+    <Content Include="Assets\key.png" />
+    <Content Include="Assets\like.png" />
+    <Content Include="Assets\pen.png" />
     <Content Include="Assets\Sending.gif" />
     <Content Include="Properties\Default.rd.xml" />
     <Content Include="Assets\LockScreenLogo.scale-200.png" />
@@ -150,8 +162,8 @@
     <PackageReference Include="Newtonsoft.Json">
       <Version>12.0.1</Version>
     </PackageReference>
-    <PackageReference Include="ParallelExtensionsExtras">
-      <Version>1.2.0</Version>
+    <PackageReference Include="System.Xml.ReaderWriter">
+      <Version>4.3.1</Version>
     </PackageReference>
     <PackageReference Include="winsdkfb">
       <Version>0.15.0</Version>
@@ -164,6 +176,18 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Page Include="UserControls\FeedUserControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UserControls\PostUserControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UserControls\UserProfileUserControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="UserControlls\NavBar.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -181,6 +205,7 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>
+  <ItemGroup />
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '14.0' ">
     <VisualStudioVersion>14.0</VisualStudioVersion>
   </PropertyGroup>

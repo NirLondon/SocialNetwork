@@ -13,5 +13,20 @@ namespace Client.ViewModels
         {
             _viewService = service;
         }
+
+        public void GoToFeed()
+        {
+            _viewService.GoToFeed();
+        }
+
+        public void GoToIdentity()
+        {
+            _viewService.GoToIdentity();
+        }
+
+        public void logOut()
+        {
+             _viewService.LogOut();
+        }
     }
 }
