@@ -8,7 +8,7 @@ namespace Client.HttpClinents
 {
     public class SignupLoginHttpClient : HttpHelper, ISignupLoginDataProvider
     {
-        public SignupLoginHttpClient() : base("http://localhost:63172/api/SignupLogin/") { }
+        public SignupLoginHttpClient() : base("http://SocialNetwork.Authentication.com/api/SignupLogin/") { }
 
         public Task<ErrorEnum> Signup(string username, string password)
         {

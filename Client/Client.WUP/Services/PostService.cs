@@ -21,19 +21,19 @@ namespace Client.WUP.Services
             InitPicker();
         }
 
-        public async Task<Image> ChooseImage()
+        public async Task<BitmapImage> ChooseImage()
         {
             Image image;
             BitmapImage Bitimage = null;
             StorageFile file = await picker.PickSingleFileAsync();
             if (file != null)
             {
-                image = Image.fromfile
+               // image = Image.fromfile
                 var stream = await file.OpenAsync(FileAccessMode.Read);
                 Bitimage = new BitmapImage();
                 Bitimage.SetSource(stream);
             }
-            return image;
+            return Bitimage;
         }
 
         private void InitPicker()
