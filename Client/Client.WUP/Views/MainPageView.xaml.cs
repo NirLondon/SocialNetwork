@@ -32,7 +32,7 @@ namespace Client.WUP.Views
         {
             this.InitializeComponent();
             service = new MainPageService(contentSP);
-            viewModel = new MainPageViewModel(service, token);
+            viewModel = new MainPageViewModel(service);
         }
     }
 }
