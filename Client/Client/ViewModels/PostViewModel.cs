@@ -17,7 +17,7 @@ namespace Client.ViewModels
         private IPostService _viwService { get; set; }
         public Post CurrentPost { get; set; }
         public string CommentText { get; set; }
-        public BitmapImage Image { get; set; }
+        public byte[] Image { get; set; }
 
 
         public PostViewModel(IPostService service)
