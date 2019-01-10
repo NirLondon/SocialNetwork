@@ -24,13 +24,13 @@ namespace Client.WUP.Views
     /// </summary>
     public sealed partial class SignupLoginView : Page
     {
-        private SignupLoginViewModel ViewModel { get; set; }
+        private SignupLoginViewModel viewModel { get; set; }
         private SignupLoginService service { get; set; }
         public SignupLoginView()
         {
             this.InitializeComponent();
             service = new SignupLoginService();
-            ViewModel = new SignupLoginViewModel(service);
+            viewModel = new SignupLoginViewModel(service);
         }
     }
 }

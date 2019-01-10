@@ -4,9 +4,4 @@
     <TargetFramework>netstandard2.0</TargetFramework>
   </PropertyGroup>
 
-  <ItemGroup>
-    <Folder Include="BL\" />
-    <Folder Include="DAL\" />
-  </ItemGroup>
-
 </Project>

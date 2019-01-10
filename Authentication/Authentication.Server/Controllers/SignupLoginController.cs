@@ -1,56 +1,60 @@
-﻿using Authentication.Common.BL;
-using Authentication.Common.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
+﻿using System;
 using System.Web.Http;
+using Authentication.Common.BL;
+using Authentication.Common.Enums;
 
 namespace Authentication.Server.Controllers
 {
+    [RoutePrefix("api/SignupLogin")]
     public class SignupLoginController : ApiController
     {
-        ISignupLogin repository;
-        const string api = "api/SignupLogin/";
+        private readonly IUsersManager _usersManager;
 
-        public SignupLoginController(ISignupLogin repositoryManager)
+        public SignupLoginController(IUsersManager usersManager)
         {
-            repository = repositoryManager;
+            _usersManager = usersManager;
         }
 
         [HttpGet]
-        [Route(api + "Signup/{username}/{password}")]
-        public TokenModel Signup(string username, string password)
+        [Route("Signup/{username}/{password}")]
+        public Tuple<string, SignupLoginResult> Signup(string username, string password)
         {
-            UserModel user = GenerateUser(username, password);
-            repository.Signup(user);
-            TokenModel TM = GenerateToken(username);
-            repository.SaveToken(TM);
-            return TM;
+            return _usersManager.Signup(username, password);
         }
 
-
-        private TokenModel GenerateToken(string username)
+        [HttpGet]
+        [Route("Login/{username}/{password}")]
+        public Tuple<string, SignupLoginResult> Login(string username, string password)
         {
-            TokenModel TM = new TokenModel()
-            {
-                Token = Convert.ToBase64String(Guid.NewGuid().ToByteArray()),
-                AssignedUser = username,
-                State = Common.Enums.TokenStateModel.Valid
-            };
-            return TM;
+            return _usersManager.Login(username, password);            
         }
 
-        private UserModel GenerateUser(string username, string password)
+        [HttpPost]
+        [Route("LoginWithFacebook")]
+        public Tuple<string, SignupLoginResult> LoginWithFacebook([FromBody] string facebookToken)
         {
-            UserModel user = new UserModel()
-            {
-                UserID = username,
-                Password = password,
-                State = Common.Enums.UserStateEnum.Open
-            };
-            return user;
+            return _usersManager.LoginWithFacebook(facebookToken);            
+        }
+
+        [HttpGet]
+        [Route("SwitchToFacebookUser/{username}/{password}")]
+        public SignupLoginResult SwitchToFacebookUser(string username, string password)
+        {
+            return _usersManager.SwitchToFacebookUser(username, password);
+        }
+
+        [HttpGet]
+        [Route("Logout/{token}")]
+        public void Logout(string token)
+        {
+            _usersManager.ExipreToken(token);
+        }
+
+        [HttpGet]
+        [Route("ResetPassword/{username}/{oldPassword}/{newPassword}")]
+        public SignupLoginResult ResetPassword(string username, string oldPassword, string newPassword)
+        {
+            return _usersManager.ResetPassword(username, oldPassword, newPassword);
         }
     }
 }
