@@ -6,8 +6,9 @@ using System.Text;
 using System.Threading.Tasks;
 using Windows.Storage;
 using Windows.Storage.Pickers;
-using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media.Imaging;
+using System.Drawing;
+using System.IO;
 
 namespace Client.WUP.Services
 {
@@ -21,19 +22,27 @@ namespace Client.WUP.Services
             InitPicker();
         }
 
-        public async Task<BitmapImage> ChooseImage()
+        public async Task<byte[]> ChooseImage()
         {
-            Image image;
-            BitmapImage Bitimage = null;
+            //BitmapImage image = null;
             StorageFile file = await picker.PickSingleFileAsync();
+            byte[] arr = null;
             if (file != null)
             {
-                //image = Image.fromfile
-                var stream = await file.OpenAsync(FileAccessMode.Read);
-                Bitimage = new BitmapImage();
-                Bitimage.SetSource(stream);
+                //var stream = await file.OpenAsync(FileAccessMode.Read);
+               // image = new BitmapImage();
+               // image.SetSource(stream);
+                using (Stream stream = await file.OpenStreamForReadAsync())
+                {
+                    using (var memoryStream = new MemoryStream())
+                    {
+
+                        stream.CopyTo(memoryStream);
+                        arr = memoryStream.ToArray();
+                    }
+                }
             }
-            return Bitimage;
+            return arr;
         }
 
         private void InitPicker()

@@ -3,11 +3,11 @@ using Windows.UI.Xaml.Controls;
 
 namespace Client.WUP.Views
 {
-    public sealed partial class EditUserDetailsView : Page
+    public sealed partial class EditUserDetailsUserControl : UserControl
     {
         public EditUserDetailsViewModel ViewModel { get; set; }
 
-        public EditUserDetailsView()
+        public EditUserDetailsUserControl()
         {
             ViewModel = new EditUserDetailsViewModel();
 

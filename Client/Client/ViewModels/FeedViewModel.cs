@@ -1,4 +1,5 @@
 ﻿using Client.Common;
+using Client.DataProviders;
 using Client.ServicesInterfaces;
 using System;
 using System.Collections.Generic;
@@ -10,26 +11,33 @@ namespace Client.ViewModels
 {
     public class FeedViewModel
     {
-        public IPostService _viewService { get; set; }
+        private IPostService _viewService { get; set; }
+        private readonly ISocialDataProvider _dataProvider;
         public ObservableCollection<Post> Posts { get; set; }
         public ObservableCollection<PostViewModel> PostViewModels { get; set; }
-        public string PostText { get; set; }
-        public BitmapImage Image { get; set; }
+        private string PostText { get; set; }
+        private byte[] Image { get; set; }
 
-        public FeedViewModel(IPostService service)
+        public FeedViewModel(IPostService service, ISocialDataProvider dataProvider)
         {
             _viewService = service;
+            _dataProvider = dataProvider;
             InitPosts();
             InitPostsViewModels();
         }
        
+
+        public async void PublishPost()
+        {
+            await _dataProvider.PublishPost(PostText, Image);
+        }
 
         private void InitPostsViewModels()
         {
             PostViewModels = new ObservableCollection<PostViewModel>();
             foreach (var item in Posts)
             {
-                PostViewModels.Add(new PostViewModel(_viewService) { CurrentPost = item});
+                PostViewModels.Add(new PostViewModel(_viewService, _dataProvider) { CurrentPost = item});
             }
         }
 

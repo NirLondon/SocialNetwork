@@ -1,4 +1,5 @@
-﻿using Client.ViewModels;
+﻿using Client.HttpClinents;
+using Client.ViewModels;
 using Client.WUP.Services;
 using System;
 using System.Collections.Generic;
@@ -23,11 +24,12 @@ namespace Client.WUP.UserControls
     {
         private FeedViewModel viewModel { get; set; }
         public PostService postService { get; set; }
+        public SocialHttpClient dataProvider { get; set; }
         public FeedUserControl()
         {
             this.InitializeComponent();
             postService = new PostService();
-            viewModel = new FeedViewModel(postService);
+            viewModel = new FeedViewModel(postService, dataProvider);
         }
     }
 }

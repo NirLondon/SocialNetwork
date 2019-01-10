@@ -8,6 +8,6 @@ namespace Client.ServicesInterfaces
 {
     public interface IPostService
     {
-        Task<BitmapImage> ChooseImage();
+        Task<byte[]> ChooseImage();
     }
 }

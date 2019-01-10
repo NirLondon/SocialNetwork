@@ -58,16 +58,19 @@ namespace Client.ViewModels
         {
             if (ValidateInput())
             {
+                Sending = true;
                 ErrorEnum result = await _dataProvider.Login(Username, Password);
 
                 if (result == ErrorEnum.EverythingIsGood)
                     _viewService.NavigateToMainPage();
                 else ManageError(result);
+                Sending = false;
             }
         }
 
         public async void LoginWithFacebook()
         {
+            Sending = true;
             string facebookToken = await _viewService.LoginWithFacebook();
             if (facebookToken != null)
             {
@@ -81,6 +84,7 @@ namespace Client.ViewModels
                     else ManageError(result);
                 }
             }
+            Sending = false;
         }
 
         private async void ManageUserSwitch()

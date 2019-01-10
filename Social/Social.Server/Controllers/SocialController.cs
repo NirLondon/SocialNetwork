@@ -21,10 +21,13 @@ namespace Social.Server.Controllers
 
         [HttpPost]
         [Route(api + "PublishPost")]
-        public Post PublishPost([FromBody]string token, [FromBody]Post post)
+        public Tuple<string, Post> PublishPost([FromBody](string, string, byte[]) tuple)
         {
+            string token = tuple.Item1;
+            string text = tuple.Item2;
 
         }
+
 
         [HttpPost]
         [Route(api + "PublishComment")]

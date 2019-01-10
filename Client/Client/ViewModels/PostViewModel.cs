@@ -1,4 +1,5 @@
 ﻿using Client.Common;
+using Client.DataProviders;
 using Client.ServicesInterfaces;
 using System;
 using System.Collections.Generic;
@@ -15,14 +16,16 @@ namespace Client.ViewModels
     public class PostViewModel
     {
         private IPostService _viwService { get; set; }
+        private readonly ISocialDataProvider _dataProvider;
         public Post CurrentPost { get; set; }
         public string CommentText { get; set; }
-        public BitmapImage Image { get; set; }
+        public byte[] Image { get; set; }
 
 
-        public PostViewModel(IPostService service)
+        public PostViewModel(IPostService service, ISocialDataProvider dataprovider)
         {
             _viwService = service;
+            _dataProvider = dataprovider;
         }
 
         public void PublishComment()

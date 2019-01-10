@@ -102,6 +102,9 @@
     <Compile Include="Services\NavigateBack.cs" />
     <Compile Include="Services\PostService.cs" />
     <Compile Include="Services\SignupLoginService.cs" />
+    <Compile Include="UserControls\EditUserDetailsUserControl.xaml.cs">
+      <DependentUpon>EditUserDetailsUserControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="UserControls\FeedUserControl.xaml.cs">
       <DependentUpon>FeedUserControl.xaml</DependentUpon>
     </Compile>
@@ -110,9 +113,6 @@
     </Compile>
     <Compile Include="UserControls\UserProfileUserControl.xaml.cs">
       <DependentUpon>UserProfileUserControl.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\EditUserDetailsView.xaml.cs">
-      <DependentUpon>EditUserDetailsView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\MainPageView.xaml.cs">
       <DependentUpon>MainPageView.xaml</DependentUpon>
@@ -176,6 +176,10 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Page Include="UserControls\EditUserDetailsUserControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="UserControls\FeedUserControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -188,11 +192,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="UserControlls\NavBar.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Views\EditUserDetailsView.xaml">
+    <Page Include="UserControls\NavBar.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
