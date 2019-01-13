@@ -2,6 +2,7 @@
 using Client.ServicesInterfaces;
 using Client.WUP.UserControls;
 using Client.WUP.Views;
+using Client.Models;
 using Microsoft.Toolkit.Uwp.Services.Facebook;
 using System;
 using System.Collections.Generic;
@@ -18,7 +19,7 @@ namespace Client.WUP.Services
 {
     public class MainPageService : IMainPageService
     {
-        public StackPanel stackPanelContent { get; set; }
+        public static StackPanel stackPanelContent { get; set; }
 
         public MainPageService(StackPanel sp)
         {
@@ -37,11 +38,12 @@ namespace Client.WUP.Services
             stackPanelContent.Children.Add(new EditUserDetailsUserControl());
         }
 
-        public async void LogOut()
+        public async void LogOut(bool LoggedWithFacebook)
         {
             HttpHelper.DeleteToken();
-            if (FacebookService.Instance.Provider != null)
+            if (LoggedWithFacebook)
                 await FacebookService.Instance.LogoutAsync();
+
             Window.Current.Content = new SignupLoginView();
         }
     }

@@ -1,4 +1,4 @@
-﻿using Identity.Common.Models;
+﻿using Client.Models;
 using System.Threading.Tasks;
 
 namespace Client.DataProviders

@@ -1,4 +1,4 @@
-﻿using Client.Common;
+﻿using Client.Models;
 using Client.Enum;
 using System;
 using System.Collections.Generic;
@@ -10,6 +10,16 @@ namespace Client.DataProviders
 {
     public interface ISocialDataProvider
     {
-        Task<Tuple<ErrorEnum, Post>> PublishPost(string text, byte[] arr);
+        Task<(ErrorEnum, Post)> PublishPost(string text, byte[] arr);
+
+        Task<(ErrorEnum, Comment)> PublishComment(string text, byte[] arr);
+
+        Task<(ErrorEnum, List<Post>)> GetPosts();
+
+        Task<(ErrorEnum, UserDetails)> GetUserDetails(string userID);
+
+        Task<ErrorEnum> Follow(string userID);
+
+        Task<ErrorEnum> LikePost(string postID);
     }
 }

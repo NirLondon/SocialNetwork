@@ -9,6 +9,11 @@ using Windows.Storage.Pickers;
 using Windows.UI.Xaml.Media.Imaging;
 using System.Drawing;
 using System.IO;
+using Client.ViewModels;
+using Client.Models;
+using Windows.UI.Xaml;
+using Client.WUP.UserControls;
+using Client.DataProviders;
 
 namespace Client.WUP.Services
 {
@@ -36,7 +41,6 @@ namespace Client.WUP.Services
                 {
                     using (var memoryStream = new MemoryStream())
                     {
-
                         stream.CopyTo(memoryStream);
                         arr = memoryStream.ToArray();
                     }
@@ -51,6 +55,12 @@ namespace Client.WUP.Services
             picker.ViewMode = PickerViewMode.Thumbnail;
             picker.FileTypeFilter.Add(".jpg");
             picker.FileTypeFilter.Add(".png");
+        }
+
+        public void GoToProfile(UserDetails userDetails, ISocialDataProvider dataProvider)
+        {
+            MainPageService.stackPanelContent.Children.Clear();
+            MainPageService.stackPanelContent.Children.Add(new UserProfileUserControl(userDetails, dataProvider));
         }
     }
 }

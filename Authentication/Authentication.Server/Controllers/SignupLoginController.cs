@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Net.Http;
 using System.Web.Http;
 using Authentication.Common.BL;
 using Authentication.Common.Enums;
@@ -19,7 +20,16 @@ namespace Authentication.Server.Controllers
         [Route("Signup/{username}/{password}")]
         public Tuple<string, SignupLoginResult> Signup(string username, string password)
         {
-            return _usersManager.Signup(username, password);
+            var result = _usersManager.Signup(username, password);
+            var eror = result.Item2;
+            if (result.Item2 == SignupLoginResult.EverythingIsGood)
+            {
+                NotifyToIdentityService(result.Item1, username);
+
+            }
+            else
+                eror = SignupLoginResult.ConectionFailed;
+            return new Tuple<string, SignupLoginResult> (result.Item1, eror);
         }
 
         [HttpGet]
@@ -55,6 +65,24 @@ namespace Authentication.Server.Controllers
         public SignupLoginResult ResetPassword(string username, string oldPassword, string newPassword)
         {
             return _usersManager.ResetPassword(username, oldPassword, newPassword);
+        }
+
+        private void NotifyToIdentityService(string token, string username)
+        {
+            using (var httpClient = new HttpClient())
+            {
+                httpClient.PostAsJsonAsync("http://localhost:63276/api/users/editdetails",
+                    new
+                    {
+                        Token = token,
+                        EditedDetails = '{' + string.Format(" \"UserID\" : \"{0}\" ", username) + '}'
+                    });
+            }
+        }
+
+        private void NotifyToSocialService(string token, string username)
+        {
+            throw new NotImplementedException();
         }
     }
 }

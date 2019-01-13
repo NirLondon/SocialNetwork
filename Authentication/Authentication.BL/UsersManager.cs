@@ -109,8 +109,6 @@ namespace Authentication.BL
                     };
                     _repository.SaveToken(TM);
                     token = TM.Token;
-
-                    NotifyToIdentityService(token, username);
                 }
                 catch (Exception e)
                 {
@@ -122,18 +120,6 @@ namespace Authentication.BL
             return new Tuple<string, SignupLoginResult>(token, eror);
         }
 
-        private void NotifyToIdentityService(string token, string username)
-        {
-            using (var httpClient = new HttpClient())
-            {
-                httpClient.PutAsJsonAsync("http://localhost:63276/api/users/editdetails",
-                    new
-                    {
-                        Token = token,
-                        EditedDetails = string.Format("{ \"UserID\" : \"{0}\" }", username)
-                    });
-            }
-        }
 
         public SignupLoginResult SwitchToFacebookUser(string username, string passwrod)
         {

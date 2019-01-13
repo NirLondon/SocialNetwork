@@ -24,7 +24,8 @@ namespace Authentication.DAL
         {
             if (Exists(user.UserID))
                 throw new UserAlreadyExistsException(user.UserID);
-            else _usersTable.PutItemAsync(Utils.DocumentFrom(user));
+            var doc = Utils.DocumentFrom(user);
+            _usersTable.PutItemAsync(doc);
         }
 
         public void SaveToken(TokenModel token)

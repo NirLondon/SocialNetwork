@@ -29,6 +29,7 @@ namespace Client.WUP.UserControls
         {
             this.InitializeComponent();
             postService = new PostService();
+            dataProvider = new SocialHttpClient();
             viewModel = new FeedViewModel(postService, dataProvider);
         }
     }

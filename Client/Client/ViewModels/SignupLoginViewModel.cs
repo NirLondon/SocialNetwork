@@ -11,6 +11,7 @@ namespace Client.ViewModels
         public event PropertyChangedEventHandler PropertyChanged;
         private readonly ISignupLoginDataProvider _dataProvider;
         public ISignupLoginService _viewService { get; set; }
+        private bool LoggedWithFacebook = false;
 
         public SignupLoginViewModel(ISignupLoginService service) 
             : this(new SignupLoginHttpClient(), service) { }
@@ -47,9 +48,8 @@ namespace Client.ViewModels
                 ErrorEnum result = await _dataProvider.Signup(Username, Password);
 
                 if (result == ErrorEnum.EverythingIsGood)
-                    _viewService.NavigateToMainPage();
+                    _viewService.NavigateToMainPage(LoggedWithFacebook);
                 else ManageError(result);
-
                 Sending = false;
             }
         }
@@ -62,7 +62,7 @@ namespace Client.ViewModels
                 ErrorEnum result = await _dataProvider.Login(Username, Password);
 
                 if (result == ErrorEnum.EverythingIsGood)
-                    _viewService.NavigateToMainPage();
+                    _viewService.NavigateToMainPage(LoggedWithFacebook);
                 else ManageError(result);
                 Sending = false;
             }
@@ -76,7 +76,10 @@ namespace Client.ViewModels
             {
                 ErrorEnum result = await _dataProvider.LoginWithFacebook(facebookToken);
                 if (result == ErrorEnum.EverythingIsGood)
-                    _viewService.NavigateToMainPage();
+                {
+                    LoggedWithFacebook = true;
+                    _viewService.NavigateToMainPage(LoggedWithFacebook);
+                }
                 else
                 {
                     if (result == ErrorEnum.WrongUsernameOrPassword)

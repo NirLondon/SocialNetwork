@@ -5,7 +5,7 @@
     xmlns:local="using:Client.WUP.UserControls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:models="using:Client.Common"
+    xmlns:models="using:Client.Models"
     xmlns:vm="using:Client.ViewModels"
     xmlns:uc="using:Client.WUP.UserControls"
     mc:Ignorable="d"

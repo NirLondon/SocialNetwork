@@ -25,7 +25,7 @@
             </Button>
             <TextBlock Margin="10" Text="{x:Bind viewModel.Message, Mode=OneWay}"/>
         </StackPanel>
-        <Image x:Name="sendingGif" Visibility="{x:Bind viewModel.Sending, Mode=OneWay}" Width="500">
+        <Image x:Name="sendingGif" Visibility="{x:Bind viewModel.Sending, Mode=OneWay}" Width="600">
             <Image.Source>
                 <BitmapImage x:Name="GifImage" UriSource="/Assets/sending.gif"/>
             </Image.Source>

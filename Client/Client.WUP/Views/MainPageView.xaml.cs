@@ -28,11 +28,11 @@ namespace Client.WUP.Views
         private MainPageViewModel viewModel { get; set; }
         private MainPageService service { get; set; }
 
-        public MainPageView()
+        public MainPageView(bool LoggedWithFacebook)
         {
             this.InitializeComponent();
             service = new MainPageService(contentSP);
-            viewModel = new MainPageViewModel(service);
+            viewModel = new MainPageViewModel(service, LoggedWithFacebook);
         }
     }
 }

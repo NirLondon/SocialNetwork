@@ -3,7 +3,7 @@ using Client.DataProviders;
 using Client.HttpClinents;
 using System.Threading.Tasks;
 using System.ComponentModel;
-using Identity.Common.Models;
+using Client.Models;
 
 namespace Client.ViewModels
 {

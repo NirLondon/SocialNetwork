@@ -10,6 +10,6 @@ namespace Client.ServicesInterfaces
 
         void GoToIdentity();
 
-        void LogOut();
+        void LogOut(bool LoggedWithFacebook);
     }
 }

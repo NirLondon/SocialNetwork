@@ -1,6 +1,6 @@
 ﻿using Client.DataProviders;
 using Client.Enum;
-using Identity.Common.Models;
+using Client.Models;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
@@ -13,7 +13,7 @@ namespace Client.HttpClinents
 {
     public class EditDetailsHttpClient : HttpHelper, IEditDetailsDataProvider
     {
-        public EditDetailsHttpClient() : base("http://localhost:63276/") { }
+        public EditDetailsHttpClient() : base("http://SocialNetwork.Social.com/Social/") { }
 
         public async Task<UserDetails> GetUserDetails()
         {

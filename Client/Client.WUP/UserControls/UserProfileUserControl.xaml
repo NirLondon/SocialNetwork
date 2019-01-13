@@ -10,6 +10,28 @@
     d:DesignWidth="400">
 
     <Grid>
-
+        <StackPanel>
+            <StackPanel Margin="15" Orientation="Horizontal">
+                <StackPanel Margin="10" Orientation="Horizontal">
+                    <TextBlock Margin="5" Text="First name:"/>
+                    <TextBlock Margin="5" Text="{x:Bind viewModel.Details.FirstName}"/>
+                </StackPanel>
+                <StackPanel Margin="10" Orientation="Horizontal">
+                    <TextBlock Margin="5" Text="Last name"/>
+                    <TextBlock Margin="5" Text="{x:Bind viewModel.Details.LastName}"/>
+                </StackPanel>
+            </StackPanel>
+            <StackPanel Margin="15" Orientation="Horizontal">
+                <StackPanel Margin="10" Orientation="Horizontal">
+                    <TextBlock Margin="5" Text="Birth date:"/>
+                    <TextBlock Margin="5" Text="{x:Bind viewModel.Details.BirthDate}"/>
+                </StackPanel>
+                <StackPanel Margin="10" Orientation="Horizontal">
+                    <TextBlock Margin="5" Text="Job"/>
+                    <TextBlock Margin="5" Text="{x:Bind viewModel.Details.Job}"/>
+                </StackPanel>
+            </StackPanel>
+            <Button Margin="10" Content="Follow" Click="{x:Bind viewModel.Follow}"/>
+        </StackPanel>
     </Grid>
 </UserControl>
