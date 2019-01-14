@@ -22,7 +22,10 @@ namespace Social.Server.Controllers
 
         [HttpPost]
         [Route("Users/Add")]
-        public Task<IHttpActionResult> AddUser([frombody])
+        public Task<IHttpActionResult> AddUser([FromBody] User user)
+        {
+            return WrappedAction(userId => _manager.AddUser(user));
+        }
 
         [HttpGet]
         [Route("Search/{searchedUsername}")]

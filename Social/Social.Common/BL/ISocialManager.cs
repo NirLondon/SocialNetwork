@@ -22,5 +22,7 @@ namespace Social.Common.BL
         IEnumerable<SearchResultUser> Search(string searchedUsername);
 
         IEnumerable<User> BlockedBy(string userId);
+
+        bool AddUser(User user);
     }
 }

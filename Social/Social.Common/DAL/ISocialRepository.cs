@@ -16,7 +16,7 @@ namespace Social.Common.DAL
         IEnumerable<User> FollowersOf(string userId);
 
         IEnumerator<Post> PostsForUser(string userId, int amount, int skip);
-
+        bool AddUser(User user);
         void PutPost(string userId, Post post);
 
         void RemoveFollow(string followerId, int followedId);

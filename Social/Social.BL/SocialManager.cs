@@ -14,6 +14,11 @@ namespace Social.BL
             _repository = repository;
         }
 
+        public bool AddUser(User user)
+        {
+            return _repository.AddUser(user);
+        }
+
         public IEnumerable<User> BlockedBy(string userId)
         {
             return _repository.BlockedBy(userId);

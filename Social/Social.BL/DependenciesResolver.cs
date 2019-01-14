@@ -1,6 +1,4 @@
 ﻿using SimpleInjector;
-using Social.Common.DAL;
-using Social.DAL;
 using System;
 
 namespace Social.BL
