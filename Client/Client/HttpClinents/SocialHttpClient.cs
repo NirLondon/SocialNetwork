@@ -115,5 +115,35 @@ namespace Client.HttpClinents
             var tuple = (error, post);
             return tuple;
         }
+
+        public async Task<ErrorEnum> Block(string userID)
+        {
+            var eror = ErrorEnum.ConectionFailed;
+            var response = await httpClient.PostAsJsonAsync($"BlockUser/{userID}", CURRENTTOKEN);
+
+            if (response.IsSuccessStatusCode)
+            {
+                var tuple = response.Content.ReadAsAsync<(ErrorEnum, string)>().Result;
+                eror = tuple.Item1;
+                CURRENTTOKEN = tuple.Item2;
+            }
+            return eror;
+        }
+
+        public async Task<(ErrorEnum, List<UserDetails>)> GetFollowed()
+        {
+            var eror = ErrorEnum.ConectionFailed;
+            List<UserDetails> users = new List<UserDetails>();
+            var response = await httpClient.PostAsJsonAsync("GetFollowedUsers", CURRENTTOKEN);
+
+            if (response.IsSuccessStatusCode)
+            {
+                var result = response.Content.ReadAsAsync<(ErrorEnum, string, List<UserDetails>)>().Result;
+                eror = result.Item1;
+                CURRENTTOKEN = result.Item2;
+                users = result.Item3;
+            }
+            return (eror, users);
+        }
     }
 }

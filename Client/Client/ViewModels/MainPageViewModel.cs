@@ -26,6 +26,11 @@ namespace Client.ViewModels
             _viewService.GoToIdentity();
         }
 
+        public void GoToFollowed()
+        {
+            _viewService.GoToFollowed();
+        }
+
         public void logOut()
         {
              _viewService.LogOut(_loggedWithFacebook);

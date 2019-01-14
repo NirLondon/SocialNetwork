@@ -23,5 +23,10 @@ namespace Client.ViewModels
         {
             var result = await _dataProvider.Follow(Details.UserID);
         }
+
+        public async void Block()
+        {
+            var result = await _dataProvider.Block(Details.UserID);
+        }
     }
 }

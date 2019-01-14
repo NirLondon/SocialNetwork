@@ -46,5 +46,11 @@ namespace Client.WUP.Services
 
             Window.Current.Content = new SignupLoginView();
         }
+
+        public void GoToFollowed()
+        {
+            stackPanelContent.Children.Clear();
+            stackPanelContent.Children.Add(new FollowedUsersUserControl());
+        }
     }
 }

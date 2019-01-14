@@ -1,8 +1,11 @@
 ﻿using System;
 using System.Net.Http;
+using System.Threading.Tasks;
 using System.Web.Http;
 using Authentication.Common.BL;
 using Authentication.Common.Enums;
+using Authentication.Server.Models;
+using Identity.Common.Models;
 
 namespace Authentication.Server.Controllers
 {
@@ -18,32 +21,30 @@ namespace Authentication.Server.Controllers
 
         [HttpGet]
         [Route("Signup/{username}/{password}")]
-        public Tuple<string, SignupLoginResult> Signup(string username, string password)
+        public async Task<Tuple<string, SignupLoginResult>> Signup(string username, string password)
         {
-            var result = _usersManager.Signup(username, password);
-            var eror = result.Item2;
-            if (result.Item2 == SignupLoginResult.EverythingIsGood)
-            {
-                NotifyToIdentityService(result.Item1, username);
-
-            }
-            else
-                eror = SignupLoginResult.ConectionFailed;
-            return new Tuple<string, SignupLoginResult> (result.Item1, eror);
+                var result = _usersManager.Signup(username, password);
+                var eror = result.Item2;
+                if (result.Item2 == SignupLoginResult.EverythingIsGood)
+                {
+                    await NotifyToIdentityService(result.Item1, username);
+                }
+                else eror = SignupLoginResult.ConectionFailed;
+                return new Tuple<string, SignupLoginResult>(result.Item1, eror);
         }
 
         [HttpGet]
         [Route("Login/{username}/{password}")]
         public Tuple<string, SignupLoginResult> Login(string username, string password)
         {
-            return _usersManager.Login(username, password);            
+            return _usersManager.Login(username, password);
         }
 
         [HttpPost]
         [Route("LoginWithFacebook")]
         public Tuple<string, SignupLoginResult> LoginWithFacebook([FromBody] string facebookToken)
         {
-            return _usersManager.LoginWithFacebook(facebookToken);            
+            return _usersManager.LoginWithFacebook(facebookToken);
         }
 
         [HttpGet]
@@ -67,17 +68,19 @@ namespace Authentication.Server.Controllers
             return _usersManager.ResetPassword(username, oldPassword, newPassword);
         }
 
-        private void NotifyToIdentityService(string token, string username)
+        private async Task NotifyToIdentityService(string token, string username)
         {
-            using (var httpClient = new HttpClient())
+            var details = new EditDetailsModel
             {
-                httpClient.PostAsJsonAsync("http://localhost:63276/api/users/editdetails",
-                    new
-                    {
-                        Token = token,
-                        EditedDetails = '{' + string.Format(" \"UserID\" : \"{0}\" ", username) + '}'
-                    });
-            }
+                Token = token,
+                UserDetails = new UserDetails { UserId = username }
+            };
+            HttpClient client = new HttpClient();
+            await client.PutAsJsonAsync("http://localhost:63276/api/users/editdetails", details);
+            //using (var httpClient = new HttpClient())
+            //{
+            //     await httpClient.PutAsJsonAsync("http://localhost:63276/api/users/editdetails", details);
+            //}
         }
 
         private void NotifyToSocialService(string token, string username)

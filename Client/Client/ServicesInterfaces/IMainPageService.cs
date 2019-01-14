@@ -11,5 +11,7 @@ namespace Client.ServicesInterfaces
         void GoToIdentity();
 
         void LogOut(bool LoggedWithFacebook);
+
+        void GoToFollowed();
     }
 }

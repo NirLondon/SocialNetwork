@@ -19,7 +19,7 @@ namespace Identity.Server
         {
             var container = new Container();
 
-            container.Register<IIdentitiesRepository, IdentitiesRpository>();
+            container.RegisterSingleton<IIdentitiesRepository, IdentitiesRpository>();
 
             container.RegisterWebApiControllers(GlobalConfiguration.Configuration);
 

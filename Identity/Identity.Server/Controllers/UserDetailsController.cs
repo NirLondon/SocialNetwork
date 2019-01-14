@@ -19,18 +19,13 @@ namespace Identity.Server.Controllers
 
         [HttpPut]
         [Route("api/users/editdetails")]
-        public async Task<string> EditUserDetails([FromBody] EditDetailsModel model)
+        public async Task EditUserDetails([FromBody] EditDetailsModel model)
         {
             var tokenUser = await GetUserIdAndTokenFromToken(model.Token);
-
             if (tokenUser.UserId != null)
-            {
                 await repository.EditUser(tokenUser.UserId, model.UserDetails);
-                return tokenUser.Token;
-            }
-            return null;
         }
-    
+
         [HttpGet]
         [Route("api/users/details/{token}")]
         public async Task<(string Token, UserDetails)> GetUserDetails(string token)
@@ -45,16 +40,12 @@ namespace Identity.Server.Controllers
         private async Task<(string Token, string UserId)> GetUserIdAndTokenFromToken(string token)
         {
             var httpClient = new HttpClient() { BaseAddress = new Uri("http://localhost:63172/") };
+            var response = await httpClient.GetAsync($"api/Tokens/Validate/{token}");
 
-            using (httpClient)
-            {
-                var response = await httpClient.GetAsync($"api/Tokens/Validate/{token}");
+            if (response.IsSuccessStatusCode)
+                return response.Content.ReadAsAsync<(string, string)>().Result;
 
-                if (response.IsSuccessStatusCode)
-                    return response.Content.ReadAsAsync<(string, string)>().Result;
-
-                throw new Exception("The authentication service is not available. ");
-            }
+            throw new Exception("The authentication service is not available. ");
         }
     }
 }

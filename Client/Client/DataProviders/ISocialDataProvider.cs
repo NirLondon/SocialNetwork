@@ -21,5 +21,9 @@ namespace Client.DataProviders
         Task<ErrorEnum> Follow(string userID);
 
         Task<ErrorEnum> LikePost(string postID);
+
+        Task<ErrorEnum> Block(string userID);
+
+        Task<(ErrorEnum, List<UserDetails>)> GetFollowed();
     }
 }

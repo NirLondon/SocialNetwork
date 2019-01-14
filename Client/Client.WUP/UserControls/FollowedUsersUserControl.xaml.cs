@@ -17,9 +17,9 @@ using Windows.UI.Xaml.Navigation;
 
 namespace Client.WUP.UserControls
 {
-    public sealed partial class NavBar : UserControl
+    public sealed partial class FollowedUsersUserControl : UserControl
     {
-        public NavBar()
+        public FollowedUsersUserControl()
         {
             this.InitializeComponent();
         }

@@ -107,6 +107,9 @@
     <Compile Include="UserControls\FeedUserControl.xaml.cs">
       <DependentUpon>FeedUserControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="UserControls\FollowedUsersUserControl.xaml.cs">
+      <DependentUpon>FollowedUsersUserControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="UserControls\PostUserControl.xaml.cs">
       <DependentUpon>PostUserControl.xaml</DependentUpon>
     </Compile>
@@ -129,6 +132,7 @@
   <ItemGroup>
     <Content Include="Assets\document.png" />
     <Content Include="Assets\facebook.jpg" />
+    <Content Include="Assets\footsteps.png" />
     <Content Include="Assets\key.png" />
     <Content Include="Assets\like.png" />
     <Content Include="Assets\pen.png" />
@@ -183,15 +187,15 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="UserControls\FollowedUsersUserControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="UserControls\PostUserControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="UserControls\UserProfileUserControl.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="UserControls\NavBar.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
