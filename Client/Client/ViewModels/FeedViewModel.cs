@@ -23,6 +23,10 @@ namespace Client.ViewModels
             InitPostsViewModels();
         }
        
+        public async void PublishPost()
+        {
+
+        }
 
         private void InitPostsViewModels()
         {

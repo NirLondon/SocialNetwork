@@ -1,6 +1,8 @@
-﻿using Client.ServicesInterfaces;
+﻿using Client.Common;
+using Client.ServicesInterfaces;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -21,19 +23,30 @@ namespace Client.WUP.Services
             InitPicker();
         }
 
-        public async Task<BitmapImage> ChooseImage()
+        public async Task<byte[]> ChooseImage()
         {
-            Image image;
-            BitmapImage Bitimage = null;
             StorageFile file = await picker.PickSingleFileAsync();
+            byte[] arr = null;
             if (file != null)
             {
-               // image = Image.fromfile
-                var stream = await file.OpenAsync(FileAccessMode.Read);
-                Bitimage = new BitmapImage();
-                Bitimage.SetSource(stream);
+                //var stream = await file.OpenAsync(FileAccessMode.Read);
+                //Bitimage = new BitmapImage();
+                //Bitimage.SetSource(stream);
+                using (Stream stream = await file.OpenStreamForReadAsync())
+                {
+                    using (var memoryStream = new MemoryStream())
+                    {
+                        stream.CopyTo(memoryStream);
+                        arr = memoryStream.ToArray();
+                    }
+                }
             }
-            return Bitimage;
+            return arr;
+        }
+
+        public (string, Post) PublishPost(string text, byte[] arr)
+        {
+
         }
 
         private void InitPicker()

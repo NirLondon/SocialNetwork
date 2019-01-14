@@ -29,5 +29,10 @@ namespace Client.HttpClinents
         {
             httpClient.Dispose();
         }
+
+        public static void DeleteToken()
+        {
+            CURRENTTOKEN = null;
+        }
     }
 }

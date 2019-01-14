@@ -1,4 +1,5 @@
-﻿using Client.ServicesInterfaces;
+﻿using Client.HttpClinents;
+using Client.ServicesInterfaces;
 using Client.WUP.UserControls;
 using Client.WUP.Views;
 using Microsoft.Toolkit.Uwp.Services.Facebook;
@@ -37,7 +38,7 @@ namespace Client.WUP.Services
 
         public async void LogOut()
         {
-            // delete token!!
+            HttpHelper.DeleteToken();
             if (FacebookService.Instance.Provider != null)
                 await FacebookService.Instance.LogoutAsync();
             Window.Current.Content = new SignupLoginView();
