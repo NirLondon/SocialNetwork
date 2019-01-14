@@ -40,12 +40,6 @@
                                     </StackPanel>
                                     <Image Source="{Binding IMGURL}" Width="170"/>
                                     <TextBlock Margin="10" Text="{Binding Text}" FontSize="15"/>
-                                    <!--<Button Margin="10" IsEnabled="{Binding DidLiked, Converter={StaticResource LikeConverter}}">
-                                        <StackPanel Orientation="Horizontal">
-                                            <Image Source="/Assets/like.png" Height="13"/>
-                                            <TextBlock Text="{Binding Likes}"/>
-                                        </StackPanel>
-                                    </Button>-->
                                 </StackPanel>
                             </DataTemplate>
                         </ListView.ItemTemplate>

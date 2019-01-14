@@ -17,16 +17,16 @@ namespace Client.HttpClinents
 
         public async Task<UserDetails> GetUserDetails()
         {
+            UserDetails details = null;
             var response = await httpClient.GetAsync($"api/users/details/{CURRENTTOKEN}");
 
             if (response.IsSuccessStatusCode)
             {
                 var result = await response.Content.ReadAsAsync<(string token, UserDetails)>();
                 CURRENTTOKEN = result.token;
-                return result.Item2;
+                details = result.Item2;
             }
-
-            throw new Exception();
+            return details;
         }
 
         public async Task UpdateUserDetails(UserDetails userDetails)
@@ -41,9 +41,7 @@ namespace Client.HttpClinents
             if (response.IsSuccessStatusCode)
             {
                 CURRENTTOKEN = response.Content.ReadAsStringAsync().Result;
-                return;
             }
-            throw new Exception();
         }
     }
 }

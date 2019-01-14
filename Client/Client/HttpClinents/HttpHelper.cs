@@ -23,6 +23,7 @@ namespace Client.HttpClinents
         {
             httpClient = new HttpClient();
             BaseURL = baseURL;
+            httpClient.DefaultRequestHeaders.Add("Token", CURRENTTOKEN);
         }
 
         ~HttpHelper()

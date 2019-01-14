@@ -24,6 +24,6 @@ namespace Client.DataProviders
 
         Task<ErrorEnum> Block(string userID);
 
-        Task<(ErrorEnum, List<UserDetails>)> GetFollowed();
+        Task<(ErrorEnum, IEnumerable<UserDetails>)> GetFollowed();
     }
 }

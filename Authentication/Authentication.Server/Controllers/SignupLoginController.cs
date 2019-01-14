@@ -76,11 +76,8 @@ namespace Authentication.Server.Controllers
                 UserDetails = new UserDetails { UserId = username }
             };
             HttpClient client = new HttpClient();
+            client.DefaultRequestHeaders.Add("Token", token);
             await client.PutAsJsonAsync("http://localhost:63276/api/users/editdetails", details);
-            //using (var httpClient = new HttpClient())
-            //{
-            //     await httpClient.PutAsJsonAsync("http://localhost:63276/api/users/editdetails", details);
-            //}
         }
 
         private void NotifyToSocialService(string token, string username)

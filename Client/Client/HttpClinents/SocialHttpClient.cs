@@ -130,15 +130,15 @@ namespace Client.HttpClinents
             return eror;
         }
 
-        public async Task<(ErrorEnum, List<UserDetails>)> GetFollowed()
+        public async Task<(ErrorEnum, IEnumerable<UserDetails>)> GetFollowed()
         {
             var eror = ErrorEnum.ConectionFailed;
-            List<UserDetails> users = new List<UserDetails>();
+            IEnumerable<UserDetails> users = new List<UserDetails>();
             var response = await httpClient.PostAsJsonAsync("GetFollowedUsers", CURRENTTOKEN);
 
             if (response.IsSuccessStatusCode)
             {
-                var result = response.Content.ReadAsAsync<(ErrorEnum, string, List<UserDetails>)>().Result;
+                var result = response.Content.ReadAsAsync<(ErrorEnum, string, IEnumerable<UserDetails>)>().Result;
                 eror = result.Item1;
                 CURRENTTOKEN = result.Item2;
                 users = result.Item3;
