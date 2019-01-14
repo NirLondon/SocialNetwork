@@ -49,7 +49,7 @@ namespace Social.BL
             _repository.PutPost(userId, post);
         }
 
-        public void RemoveFollow(string followerId, int followedId)
+        public void RemoveFollow(string followerId, string followedId)
         {
             _repository.RemoveFollow(followerId, followedId);
         }
@@ -59,7 +59,7 @@ namespace Social.BL
             return _repository.Search(searchedUsername);
         }
 
-        public void SetFollow(string followerId, int followedId)
+        public void SetFollow(string followerId, string followedId)
         {
             _repository.SetFollow(followerId, followedId);
         }

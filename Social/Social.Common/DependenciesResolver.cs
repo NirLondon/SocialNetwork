@@ -1,9 +1,9 @@
 ﻿using SimpleInjector;
 using System;
 
-namespace Social.BL
+namespace Social.Common
 {
-    public class DependenciesResolver
+    public abstract class DependenciesResolver
     {
         private readonly Container _container;
 

@@ -9,11 +9,11 @@ namespace Social.Common.BL
 
         IEnumerator<User> GetFollowedBy(string userId);
 
-        void RemoveFollow(string followerId, int followedId);
+        void RemoveFollow(string followerId, string followedId);
 
         IEnumerator<Post> GetPostsFor(string userId,int amount, int from);
 
-        void SetFollow(string followerId, int followedId);
+        void SetFollow(string followerId, string followedId);
 
         void Post(string userId, Post post);
 

@@ -71,14 +71,14 @@ namespace Social.Server.Controllers
 
         [HttpPost]
         [Route("Follow/{FollowedId}")]
-        public Task<IHttpActionResult> Follow(int FollowedId)
+        public Task<IHttpActionResult> Follow(string FollowedId)
         {
             return WrappedAction(userId => _manager.SetFollow(userId, FollowedId));
         }
 
         [HttpGet]
         [Route("Unfollow/{FollowedId}")]
-        public Task<IHttpActionResult> Unfollow(int FollowedId)
+        public Task<IHttpActionResult> Unfollow(string FollowedId)
         {
             return WrappedAction(userId => _manager.RemoveFollow(userId, FollowedId));
         }
@@ -96,6 +96,10 @@ namespace Social.Server.Controllers
         {
             return WrappedAction(userId => _manager.GetFollowersOf(userId));
         }
+
+        [HttpPost]
+        [Route("Block")]
+        public Task<IHttpActionResult> Block(string )
 
         [HttpGet]
         [Route("Blocked")]

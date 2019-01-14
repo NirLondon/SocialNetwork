@@ -5,7 +5,7 @@ namespace Social.Common.DAL
 {
     public interface ISocialRepository
     {
-        void SetFollow(string followerId, int followedId);
+        void SetFollow(string followerId, string followedId);
 
         IEnumerable<User> BlockedBy(string userId);
 
@@ -16,10 +16,12 @@ namespace Social.Common.DAL
         IEnumerable<User> FollowersOf(string userId);
 
         IEnumerator<Post> PostsForUser(string userId, int amount, int skip);
+
         bool AddUser(User user);
+
         void PutPost(string userId, Post post);
 
-        void RemoveFollow(string followerId, int followedId);
+        void RemoveFollow(string followerId, string followedId);
 
         IEnumerable<SearchResultUser> Search(string searchedUsername);
     }

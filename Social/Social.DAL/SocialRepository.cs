@@ -13,7 +13,6 @@ namespace Social.DAL
         private readonly IDriver _driver =
             GraphDatabase.Driver("bolt://34.244.74.143:7687", AuthTokens.Basic("neo4j", "123456"));
 
-
         //private async Task<TResult> RunQueryAsync<TResult>(string query, Dictionary<string, object> parameters)
         //{
         //    using (var session = _driver.Session())
@@ -30,9 +29,16 @@ namespace Social.DAL
         //    }
         //}
 
-        public void SetFollow(string followerId, int followedId)
+        public void SetFollow(string followerId, string followedId)
         {
-            throw new NotImplementedException();
+            var query = "MATCH (u:User{ UserID:\"" + followerId + "\"}), (u2:User{UserID:\"" + followedId + "\"}) " +
+                        "MERGE(u)-[:Follows]->(u2)";
+
+            using (var session = _driver.Session())
+            {
+                session.Run(query);
+            }
+
         }
 
         public IEnumerable<User> BlockedBy(string userId)
@@ -65,7 +71,7 @@ namespace Social.DAL
             throw new NotImplementedException();
         }
 
-        public void RemoveFollow(string followerId, int followedId)
+        public void RemoveFollow(string followerId, string followedId)
         {
             throw new NotImplementedException();
         }
@@ -77,17 +83,14 @@ namespace Social.DAL
 
         public bool AddUser(User user)
         {
-            var parameters = new Dictionary<string, object>
-            {
-                ["userId"] =
-            }
-
-            var query = "CREATE (:User{UserID: \"{userId}\", firstName: \"{firstName}\"}, lastName: \"{lastName}\")";
+            var query = "CREATE (:User{ UserID: \"" + user.UserId + "\", firstName: \"" + user.FirstName + "\", lastName: \"" + user.LastName + "\" })";
 
             using (var session = _driver.Session())
             {
-                var result = session.RunAsync(query, parameters);
+                 session.Run(query);
             }
+
+            return true;
         }
     }
 }
