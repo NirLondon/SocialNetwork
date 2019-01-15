@@ -24,13 +24,15 @@ namespace Client.WUP.UserControls
     {
         private FeedViewModel viewModel { get; set; }
         public PostService postService { get; set; }
-        public SocialHttpClient dataProvider { get; set; }
+        public SocialHttpClient socialDataProvider { get; set; }
+        public EditDetailsHttpClient editDetailsDataProvider { get; set; }
         public FeedUserControl()
         {
             this.InitializeComponent();
             postService = new PostService();
-            dataProvider = new SocialHttpClient();
-            viewModel = new FeedViewModel(postService, dataProvider);
+            socialDataProvider = new SocialHttpClient();
+            editDetailsDataProvider = new EditDetailsHttpClient();
+            viewModel = new FeedViewModel(postService, socialDataProvider, editDetailsDataProvider);
         }
     }
 }

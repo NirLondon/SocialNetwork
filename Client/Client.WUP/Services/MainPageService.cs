@@ -40,7 +40,6 @@ namespace Client.WUP.Services
 
         public async void LogOut(bool LoggedWithFacebook)
         {
-            HttpHelper.DeleteToken();
             if (LoggedWithFacebook)
                 await FacebookService.Instance.LogoutAsync();
 

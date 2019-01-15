@@ -15,11 +15,13 @@ namespace Client.ViewModels
     {
         public event PropertyChangedEventHandler PropertyChanged;
         private IPostService _viewService { get; set; }
-        private readonly ISocialDataProvider _dataProvider;
+        private readonly ISocialDataProvider _socialDataProvider;
+        private readonly IEditDetailsDataProvider _editDetailsDataProvider;
         public ObservableCollection<Post> Posts { get; set; }
         public ObservableCollection<PostViewModel> PostViewModels { get; set; }
         private string PostText { get; set; }
         private byte[] Image { get; set; }
+        public List<string> Tags { get; set; }
 
         private string _message;
         public string Message
@@ -29,21 +31,22 @@ namespace Client.ViewModels
         }
 
 
-        public FeedViewModel(IPostService service, ISocialDataProvider dataProvider)
+        public FeedViewModel(IPostService service, ISocialDataProvider socialDataProvider, IEditDetailsDataProvider editDetailsDataProvider)
         {
             _viewService = service;
-            _dataProvider = dataProvider;
+            _socialDataProvider = socialDataProvider;
+            _editDetailsDataProvider = editDetailsDataProvider;
             InitPosts();
         }
 
 
         public async void PublishPost()
         {
-            var tuple = await _dataProvider.PublishPost(PostText, Image);
+            var tuple = await _socialDataProvider.PublishPost(PostText, Image, Tags.ToArray());
             if (tuple.Item1 == ErrorEnum.EverythingIsGood)
             {
                 //Posts.Add(tuple.Item2);
-                PostViewModels.Add(new PostViewModel(_viewService, _dataProvider) { CurrentPost = tuple.Item2 });
+                PostViewModels.Add(new PostViewModel(_viewService, _socialDataProvider, _editDetailsDataProvider) { CurrentPost = tuple.Item2 });
             }
             else
             {
@@ -95,7 +98,7 @@ namespace Client.ViewModels
             PostViewModels = new ObservableCollection<PostViewModel>();
             foreach (var item in postsList)
             {
-                PostViewModels.Add(new PostViewModel(_viewService, _dataProvider) { CurrentPost = item });
+                PostViewModels.Add(new PostViewModel(_viewService, _socialDataProvider, _editDetailsDataProvider) { CurrentPost = item });
             }
         }
 

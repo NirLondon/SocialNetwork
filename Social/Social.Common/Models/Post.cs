@@ -15,6 +15,6 @@ namespace Social.Common.Models
         public bool DidLiked { get; set; }
         public int ID { get; set; }
 
-        public ObservableCollection<Comment> Comments { get; set; } = new ObservableCollection<Comment>();
+        public List<Comment> Comments { get; set; } = new List<Comment>();
     }
 }

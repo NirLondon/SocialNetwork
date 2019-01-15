@@ -1,12 +1,9 @@
 ﻿using Newtonsoft.Json;
-using Social.Common.BL;
-using System;
-using System.Collections.Generic;
+using Identity.Common.BL;
 using System.Net.Http;
-using System.Text;
 using System.Threading.Tasks;
 
-namespace Social.BL
+namespace Identity.BL
 {
     public class Authenticator : IAuthentiacator
     {
@@ -20,7 +17,7 @@ namespace Social.BL
                 {
                     var json = await response.Content.ReadAsStringAsync();
 
-                    var result = JsonConvert.DeserializeObject<(string Token, string UserId)>(json);
+                    var result = JsonConvert.DeserializeObject<(string Tken, string UserId)>(json);
 
                     return result;
                 }

@@ -1,7 +1,12 @@
-﻿using Social.Common.BL;
+﻿using Amazon;
+using Amazon.S3;
+using Amazon.S3.Model;
+using Social.Common.BL;
 using Social.Common.DAL;
 using Social.Common.Models;
+using System;
 using System.Collections.Generic;
+using System.IO;
 
 namespace Social.BL
 {
@@ -44,9 +49,12 @@ namespace Social.BL
             return _repository.PostsForUser(userId, amount, skip);
         }
 
-        public void Post(string userId, Post post)
+        public void Post(string userId, UploaddedPost uploaddedPost)
         {
-            _repository.PutPost(userId, post);
+            string bucketURL = UploadImageToS3(uploaddedPost.Image);
+            Post post = GeneratePost(userId, uploaddedPost.Content, bucketURL);
+             _repository.PutPost(userId, post);
+
         }
 
         public void RemoveFollow(string followerId, int followedId)
@@ -62,6 +70,43 @@ namespace Social.BL
         public void SetFollow(string followerId, int followedId)
         {
             _repository.SetFollow(followerId, followedId);
+        }
+
+        private string UploadImageToS3(byte[] image)
+        {
+            //string bucketUrl = "";
+            string bucketName = "odedbucket";
+            var s3Client = new AmazonS3Client(RegionEndpoint.EUWest2);
+
+            using (s3Client)
+            {
+                var request = new PutObjectRequest
+                {
+                    BucketName = bucketName,
+                    CannedACL = S3CannedACL.PublicRead,
+                    Key = "imageone"
+                };
+                using (var ms = new MemoryStream(image))
+                {
+                    request.InputStream = ms;
+                    var res = s3Client.PutObjectAsync(request);
+                }
+            }
+
+            return "bucket url";
+        }
+
+        private Post GeneratePost(string userID, string text, string imageURL)
+        {
+            Post post = new Post
+            {
+                Comments = new List<Comment>(),
+                IMGURL = imageURL,
+                PublishDate = DateTime.Now,
+                Publisher = userID,
+                Text = text
+            };
+            return post;
         }
     }
 }

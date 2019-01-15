@@ -18,13 +18,13 @@ namespace Client.ViewModels
             InitUsers();
         }
 
-        private void InitUsers()
+        private async void InitUsers()
         {
             Users = new ObservableCollection<UserDetails>();
-            var list = _dataProvider.GetFollowed();
-            foreach (var user in list)
+            var result = await _dataProvider.GetFollowed();
+            foreach (var user in result.Item2)
             {
-                Users.Add(item);
+                Users.Add(user);
             }
         }
     }

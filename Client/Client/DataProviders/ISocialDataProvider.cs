@@ -10,20 +10,18 @@ namespace Client.DataProviders
 {
     public interface ISocialDataProvider
     {
-        Task<(ErrorEnum, Post)> PublishPost(string text, byte[] arr);
+        Task<Post> PublishPost(string text, byte[] arr, string[] tags);
 
-        Task<(ErrorEnum, Comment)> PublishComment(string text, byte[] arr);
+        Task<Comment> PublishComment(string text, byte[] arr, string[] tags);
 
-        Task<(ErrorEnum, List<Post>)> GetPosts();
+        Task<List<Post>> GetPosts();
 
-        Task<(ErrorEnum, UserDetails)> GetUserDetails(string userID);
+        Task Follow(string userID);
 
-        Task<ErrorEnum> Follow(string userID);
+        Task LikePost(string postID);
 
-        Task<ErrorEnum> LikePost(string postID);
+        Task Block(string userID);
 
-        Task<ErrorEnum> Block(string userID);
-
-        Task<(ErrorEnum, IEnumerable<UserDetails>)> GetFollowed();
+        Task<IEnumerable<UserDetails>> GetFollowed();
     }
 }

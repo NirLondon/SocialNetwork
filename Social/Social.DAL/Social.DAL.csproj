@@ -5,6 +5,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="AWSSDK.S3" Version="3.3.31.10" />
     <PackageReference Include="Neo4j.Driver" Version="1.7.0" />
   </ItemGroup>
 

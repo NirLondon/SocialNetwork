@@ -1,8 +1,12 @@
-﻿using Neo4j.Driver.V1;
+﻿using Amazon;
+using Amazon.S3;
+using Amazon.S3.Model;
+using Neo4j.Driver.V1;
 using Social.Common.DAL;
 using Social.Common.Models;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -60,9 +64,9 @@ namespace Social.DAL
             throw new NotImplementedException();
         }
 
-        public void PutPost(string userId, Post post)
+        public void PutPost(string userID, Post post)
         {
-            throw new NotImplementedException();
+            /////////
         }
 
         public void RemoveFollow(string followerId, int followedId)
@@ -79,8 +83,8 @@ namespace Social.DAL
         {
             var parameters = new Dictionary<string, object>
             {
-                ["userId"] =
-            }
+                //  ["userId"] =
+            };
 
             var query = "CREATE (:User{UserID: \"{userId}\", firstName: \"{firstName}\"}, lastName: \"{lastName}\")";
 
@@ -88,6 +92,7 @@ namespace Social.DAL
             {
                 var result = session.RunAsync(query, parameters);
             }
+            return true;
         }
     }
 }

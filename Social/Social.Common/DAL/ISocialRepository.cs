@@ -17,7 +17,7 @@ namespace Social.Common.DAL
 
         IEnumerator<Post> PostsForUser(string userId, int amount, int skip);
         bool AddUser(User user);
-        void PutPost(string userId, Post post);
+        void PutPost(string userID, Post post);
 
         void RemoveFollow(string followerId, int followedId);
 

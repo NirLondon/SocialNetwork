@@ -17,7 +17,7 @@ namespace Social.Server
 
         private void ConfigureDependencies()
         {
-            var blResolver = new DependenciesResolver();
+            var blResolver = new BLDependenciesResolver();
 
             var container = new Container();
 

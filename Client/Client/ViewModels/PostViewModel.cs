@@ -19,10 +19,12 @@ namespace Client.ViewModels
     {
         public event PropertyChangedEventHandler PropertyChanged;
         private IPostService _viwService { get; set; }
-        private readonly ISocialDataProvider _dataProvider;
+        private readonly ISocialDataProvider _socialDataProvider;
+        private readonly IEditDetailsDataProvider _editDetailsDataProvider;
         public Post CurrentPost { get; set; }
         public string CommentText { get; set; }
         public byte[] Image { get; set; }
+        public List<string> Tags { get; set; }
 
         private string _message;
         public string Message
@@ -32,15 +34,16 @@ namespace Client.ViewModels
         }
 
 
-        public PostViewModel(IPostService service, ISocialDataProvider dataprovider)
+        public PostViewModel(IPostService service, ISocialDataProvider dataprovider, IEditDetailsDataProvider editDetailsDataProvider)
         {
             _viwService = service;
-            _dataProvider = dataprovider;
+            _socialDataProvider = dataprovider;
+            _editDetailsDataProvider = editDetailsDataProvider;
         }
 
         public async void PublishComment()
         {
-            var tuple = await _dataProvider.PublishComment(CommentText, Image);
+            var tuple = await _socialDataProvider.PublishComment(CommentText, Image, Tags.ToArray());
             if (tuple.Item1 == ErrorEnum.EverythingIsGood)
                 CurrentPost.Comments.Add(tuple.Item2);
             else
@@ -54,20 +57,22 @@ namespace Client.ViewModels
 
         public async void GoToProfile()
         {
-            var response = await _dataProvider.GetUserDetails(CurrentPost.Publisher);
-            if (response.Item1 == ErrorEnum.EverythingIsGood)
+            try
             {
-                _viwService.GoToProfile(response.Item2, _dataProvider);
+
+                var response = await _editDetailsDataProvider.GetUserDetails();
+                _viwService.GoToProfile(response, _socialDataProvider);
             }
-            else
+            catch (Exception e)
             {
-                ManageError(response.Item1);
+                ManageError(ErrorEnum.ConectionFailed);
             }
+            
         }
 
         public async void Like()
         {
-            var result = await _dataProvider.LikePost(CurrentPost.ID);
+            var result = await _socialDataProvider.LikePost(CurrentPost.ID);
             if (result == ErrorEnum.EverythingIsGood)
             {
                 CurrentPost.Likes++;

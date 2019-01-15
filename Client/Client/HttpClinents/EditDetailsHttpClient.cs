@@ -1,10 +1,13 @@
 ﻿using Client.DataProviders;
 using Client.Enum;
+using Client.Exeptions;
 using Client.Models;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Net;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
@@ -13,34 +16,35 @@ namespace Client.HttpClinents
 {
     public class EditDetailsHttpClient : HttpHelper, IEditDetailsDataProvider
     {
-        public EditDetailsHttpClient() : base("http://SocialNetwork.Social.com/Social/") { }
-
+        public EditDetailsHttpClient() : base("http://localhost:63276/api/users/") { }
+        //http://localhost:63276/
+        //http://SocialNetwork.Social.com/
         public async Task<UserDetails> GetUserDetails()
         {
-            UserDetails details = null;
-            var response = await httpClient.GetAsync($"api/users/details/{CURRENTTOKEN}");
-
-            if (response.IsSuccessStatusCode)
+            var response = await httpClient.GetAsync($"api/users/GetUserDetails");
+            switch (response.StatusCode)
             {
-                var result = await response.Content.ReadAsAsync<(string token, UserDetails)>();
-                CURRENTTOKEN = result.token;
-                details = result.Item2;
+                case HttpStatusCode.OK:
+                    SetCurrentToken(response.Headers.GetValues("Token").FirstOrDefault());
+                    return await response.Content.ReadAsAsync<UserDetails>();
+                case HttpStatusCode.Unauthorized:
+                    throw new TokenExpiredExeption();
             }
-            return details;
+            return null;
         }
 
         public async Task UpdateUserDetails(UserDetails userDetails)
         {
-            var response = await httpClient.PutAsJsonAsync("api/users/editdetails",
-                new
-                {
-                    Token = CURRENTTOKEN,
-                    UserDetails = userDetails
-                });
+            var response = await httpClient.PutAsJsonAsync("api/UserDetails/EditDetails", userDetails);
 
-            if (response.IsSuccessStatusCode)
+            switch (response.StatusCode)
             {
-                CURRENTTOKEN = response.Content.ReadAsStringAsync().Result;
+                case HttpStatusCode.OK:
+                    var result = await response.Content.ReadAsAsync<UserDetails>();
+                    SetCurrentToken(response.Headers.GetValues("Token").FirstOrDefault());
+                    break;
+                case HttpStatusCode.Unauthorized:
+                    throw new TokenExpiredExeption();
             }
         }
     }

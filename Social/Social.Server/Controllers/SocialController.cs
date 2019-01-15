@@ -42,31 +42,26 @@ namespace Social.Server.Controllers
         }
 
         [HttpPost]
-        [Route("Post")]
-        public Task<IHttpActionResult> Post([FromBody] Post post)
+        [Route("PublishPost")]
+        public Task<IHttpActionResult> PublishPost([FromBody] UploaddedPost post)
         {
             return WrappedAction(userId => _manager.Post(userId, post));
         }
 
         [HttpPost]
-        [Route("Comment")]
-        public Task<IHttpActionResult> Comment([FromBody] Comment comment)
+        [Route("PublishComment")]
+        public Task<IHttpActionResult> PublishComment([FromBody] UploaddedPost comment)
         {
-            return WrappedAction(userid => _manager.Comment(comment));
+            // return WrappedAction(userid => _manager.Comment(comment));
+            return null;
         }
 
         [HttpPost]
         [Route("LikePost/{PostID}")]
         public Task<IHttpActionResult> LikePost(int postId)
         {
-            return WrappedAction(userId => _manager.(userId, postId));
-        }
-
-        [HttpPost]
-        [Route("LikeComment/{CommentID}")]
-        public void LikeComment(int CommentID)
-        {
-
+            //return WrappedAction(userId => _manager.(userId, postId));
+            return null;
         }
 
         [HttpPost]
@@ -84,8 +79,8 @@ namespace Social.Server.Controllers
         }
 
         [HttpGet]
-        [Route("Followed")]
-        public Task<IHttpActionResult> GetFollowed(string token)
+        [Route("GetFollowedUsers")]
+        public Task<IHttpActionResult> GetFollowedUsers()
         {
             return WrappedAction(userId => _manager.GetFollowedBy(userId));
         }

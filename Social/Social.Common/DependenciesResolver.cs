@@ -1,9 +1,9 @@
 ﻿using SimpleInjector;
 using System;
 
-namespace Social.BL
+namespace Social.Common
 {
-    public class DependenciesResolver
+    public abstract class DependenciesResolver
     {
         private readonly Container _container;
 
@@ -16,18 +16,18 @@ namespace Social.BL
             _container.Verify();
         }
 
-        public DependenciesResolver(params (Type service, Type imp)[] ps)
+        public DependenciesResolver(params (Type service, Type imp)[] registrations)
         : this(ds =>
         {
-            foreach (var item in ps)
+            foreach (var item in registrations)
                 ds._container.Register(item.service, item.imp);
         })
         { }
 
-        public DependenciesResolver(params (Type service, Func<object> imp)[] ps)
+        public DependenciesResolver(params (Type service, Func<object> imp)[] registrations)
         : this(ds =>
         {
-            foreach (var item in ps)
+            foreach (var item in registrations)
                 ds._container.Register(item.service, item.imp);
         })
         { }

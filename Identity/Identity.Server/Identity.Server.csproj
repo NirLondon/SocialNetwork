@@ -115,6 +115,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+    <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -126,6 +127,10 @@
     <Folder Include="App_Data\" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Identity.BL\Identity.BL.csproj">
+      <Project>{FADDC9CA-15A2-4621-AE02-6D682082DC4C}</Project>
+      <Name>Identity.BL</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Identity.Common\Identity.Common.csproj">
       <Project>{2f0cd4a7-571a-43ca-af40-48fcf24eb483}</Project>
       <Name>Identity.Common</Name>
