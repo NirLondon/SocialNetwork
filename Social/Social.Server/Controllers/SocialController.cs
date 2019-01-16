@@ -1,5 +1,6 @@
 ﻿using Social.Common.BL;
-using Social.Common.Models;
+using Social.Common.Models.DataBaseDTOs;
+using Social.Common.Models.UploadedDTOs;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -43,30 +44,51 @@ namespace Social.Server.Controllers
 
         [HttpPost]
         [Route("Post")]
-        public Task<IHttpActionResult> Post([FromBody] Post post)
+        public Task<IHttpActionResult> Post([FromBody] UploadedPost post)
         {
             return WrappedAction(userId => _manager.Post(userId, post));
         }
 
         [HttpPost]
         [Route("Comment")]
-        public Task<IHttpActionResult> Comment([FromBody] Comment comment)
+        public Task<IHttpActionResult> Comment([FromBody] UploadedComment comment)
         {
-            return WrappedAction(userid => _manager.Comment(comment));
+            return WrappedAction(userId => _manager.Comment(userId, comment));
+        }
+
+        [HttpGet]
+        [Route("CommentsOf")]
+        public Task<IHttpActionResult> CommentsOf(Guid postId)
+        {
+            return WrappedAction(userId => _manager.CommentsOf(userId, postId));
         }
 
         [HttpPost]
-        [Route("LikePost/{PostID}")]
-        public Task<IHttpActionResult> LikePost(int postId)
+        [Route("LikePost/{postId}")]
+        public Task<IHttpActionResult> LikePost(Guid postId)
         {
-            return WrappedAction(userId => _manager.(userId, postId));
+            return WrappedAction(userId => _manager.Like(postId, userId, LikeOptions.Post));
         }
 
         [HttpPost]
-        [Route("LikeComment/{CommentID}")]
-        public void LikeComment(int CommentID)
+        [Route("LikeComment/{commentId}")]
+        public Task<IHttpActionResult> LikeComment(Guid commentId)
         {
+            return WrappedAction(userId => _manager.Like(CommentId, userId, LikeOptions.Comment));
+        }
 
+        [HttpDelete]
+        [Route("UnlikePost/{postId}")]
+        public Task<IHttpActionResult> UnlikePost(Guid postId)
+        {
+            return WrappedAction(userId => _manager.Unlike(postId, userId, LikeOptions.Post));
+        }
+
+        [HttpDelete]
+        [Route("UnlikeComment/{commentId}")]
+        public Task<IHttpActionResult> UnlikeComment(Guid commentId)
+        {
+            return WrappedAction(userId => _manager.Unlike(commentId, userId, LikeOptions.Post));
         }
 
         [HttpPost]
@@ -76,14 +98,14 @@ namespace Social.Server.Controllers
             return WrappedAction(userId => _manager.SetFollow(userId, FollowedId));
         }
 
-        [HttpGet]
+        [HttpDelete]
         [Route("Unfollow/{FollowedId}")]
         public Task<IHttpActionResult> Unfollow(string FollowedId)
         {
             return WrappedAction(userId => _manager.RemoveFollow(userId, FollowedId));
         }
 
-        [HttpGet]
+        [HttpPost]
         [Route("Followed")]
         public Task<IHttpActionResult> GetFollowed(string token)
         {
@@ -99,8 +121,18 @@ namespace Social.Server.Controllers
 
         [HttpPost]
         [Route("Block")]
-        public Task<IHttpActionResult> Block(string )
+        public Task<IHttpActionResult> Block(string blockedId)
+        {
+            return WrappedAction(userId => _manager.Block(userId, blockedId));
+        }
 
+        [HttpDelete]
+        [Route("Unblock")]
+        public Task<IHttpActionResult> Unblock(string blockedId)
+        {
+            return WrappedAction(userId => _manager.Unblock(userId, blockedId));
+        }
+        
         [HttpGet]
         [Route("Blocked")]
         public Task<IHttpActionResult> Blocked()
@@ -108,35 +140,49 @@ namespace Social.Server.Controllers
             return WrappedAction(userId => _manager.BlockedBy(userId));
         }
 
+        [HttpDelete]
+        [Route("RemovePost/{postId}")]
+        public Task<IHttpActionResult> RemovePost(Guid postId)
+        {
+            return WrappedAction(userId => _manager.Remove(postId, userId, RemoveOptions.Post));
+        }
+
+        [HttpDelete]
+        [Route("RemoveComment/{commentId}")]
+        public Task<IHttpActionResult> RemoveComment(Guid commentId)
+        {
+            return WrappedAction(userId => _manager.Remove(commentId, userId, RemoveOptions.Comment));
+        }
+
         private Task<IHttpActionResult> WrappedAction<TResult>(Func<string, TResult> action)
         {
-            return WrappedAction(userId => Json(action(userId)));
+            return Wrapped(async userId => await Task.FromResult(Json(action(userId))));
         }
 
         private Task<IHttpActionResult> WrappedAction<TResult>(Func<string, Task<TResult>> action)
         {
-            return WrappedAction(async userId => Json(await action(userId)));
+            return Wrapped(async userId => Json(await action(userId)));
         }
 
         private Task<IHttpActionResult> WrappedAction(Action<string> action)
         {
-            return WrappedAction(userId =>
+            return Wrapped(async userId =>
             {
                 action(userId);
-                return Ok();
+                return await Task.FromResult(Ok());
             });
         }
 
         private Task<IHttpActionResult> WrappedAction(Func<string, Task> action)
         {
-            return WrappedAction(async userId =>
+            return Wrapped(async userId =>
             {
                 await action(userId);
                 return Ok();
             });
         }
 
-        private async Task<IHttpActionResult> WrappedAction(Func<string, Task<IHttpActionResult>> action)
+        private async Task<IHttpActionResult> Wrapped(Func<string, Task<IHttpActionResult>> action)
         {
             if (TryGetToken(out string sentToken))
             {

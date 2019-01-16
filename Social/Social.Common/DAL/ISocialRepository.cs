@@ -1,5 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Social.Common.Models;
+using Social.Common.Models.DataBaseDTOs;
+using Social.Common.Models.ReturnedDTOs;
+using Social.Common.Models.UploadedDTOs;
 
 namespace Social.Common.DAL
 {
@@ -7,22 +11,34 @@ namespace Social.Common.DAL
     {
         void SetFollow(string followerId, string followedId);
 
-        IEnumerable<User> BlockedBy(string userId);
+        IEnumerable<UserMention> BlockedBy(string userId);
 
-        void PutComment(Comment comment);
+        void PutComment(string commenterId, DataBaseComment comment);
 
-        IEnumerator<User> UsersFollowedBy(string userId);
+        IEnumerable<UserMention> UsersFollowedBy(string userId);
 
-        IEnumerable<User> FollowersOf(string userId);
+        IEnumerable<UserMention> FollowersOf(string userId);
 
-        IEnumerator<Post> PostsForUser(string userId, int amount, int skip);
+        IEnumerable<ReturnedPost> PostsForUser(string userId, int amount, int skip);
 
-        bool AddUser(User user);
+        void AddUser(User user);
 
-        void PutPost(string userId, Post post);
+        void PutPost(string userId, DataBasePost post);
+
+        void Block(string blockingId, string blockedId);
 
         void RemoveFollow(string followerId, string followedId);
 
-        IEnumerable<SearchResultUser> Search(string searchedUsername);
+        IEnumerable<UserMention> Search(string searchedUsername);
+
+        void Unblock(string blockingId, string blockedId);
+
+        IEnumerable<RetunredComment> CommentsOfPost(Guid postId);
+
+        void Like(Guid id, string likerId, LikeOptions likeOption);
+
+        void Unlike(Guid id, string likerId, LikeOptions likeOption);
+
+        void Remove(Guid id, string uploaderId, RemoveOptions removeOption);
     }
 }
