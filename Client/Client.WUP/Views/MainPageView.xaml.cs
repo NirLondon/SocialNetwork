@@ -26,13 +26,12 @@ namespace Client.WUP.Views
     public sealed partial class MainPageView : Page
     {
         private MainPageViewModel viewModel { get; set; }
-        private MainPageService service { get; set; }
 
         public MainPageView(bool LoggedWithFacebook)
         {
             this.InitializeComponent();
-            service = new MainPageService(contentSP);
-            viewModel = new MainPageViewModel(service, LoggedWithFacebook);
+            MainPageService.Instance.stackPanelContent = contentSP;
+            viewModel = new MainPageViewModel(MainPageService.Instance, LoggedWithFacebook);
         }
     }
 }

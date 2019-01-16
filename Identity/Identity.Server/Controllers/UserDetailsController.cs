@@ -24,9 +24,9 @@ namespace Identity.Server.Controllers
 
         [HttpPut]
         [Route("api/users/EditDetails")]
-        public Task<IHttpActionResult> EditUserDetails([FromBody] UserDetails userDetails)
+        public async Task<IHttpActionResult> EditUserDetails([FromBody] UserDetails userDetails)
         {
-            return WrappedAction(async userId => await _repository.EditUser(userId, userDetails));
+            return await WrappedAction(async userId => await _repository.EditUser(userId, userDetails));
         }
 
         [HttpGet]

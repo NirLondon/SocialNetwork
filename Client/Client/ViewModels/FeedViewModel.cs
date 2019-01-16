@@ -19,7 +19,7 @@ namespace Client.ViewModels
         private readonly IEditDetailsDataProvider _editDetailsDataProvider;
         public ObservableCollection<Post> Posts { get; set; }
         public ObservableCollection<PostViewModel> PostViewModels { get; set; }
-        private string PostText { get; set; }
+        public string PostText { get; set; } = "";
         private byte[] Image { get; set; }
         public List<string> Tags { get; set; }
 
@@ -40,22 +40,28 @@ namespace Client.ViewModels
         }
 
 
+        public async void ChooseImage()
+        {
+            Image = await _viewService.ChooseImage();
+        }
+
         public async void PublishPost()
         {
-            var tuple = await _socialDataProvider.PublishPost(PostText, Image, Tags.ToArray());
-            if (tuple.Item1 == ErrorEnum.EverythingIsGood)
+            try
             {
+                var post = await _socialDataProvider.PublishPost(PostText, Image, Tags.ToArray());
                 //Posts.Add(tuple.Item2);
-                PostViewModels.Add(new PostViewModel(_viewService, _socialDataProvider, _editDetailsDataProvider) { CurrentPost = tuple.Item2 });
+                PostViewModels.Add(new PostViewModel(_viewService, _socialDataProvider, _editDetailsDataProvider) { CurrentPost = post });
             }
-            else
+            catch (UnauthorizedAccessException e)
             {
-                ManageError(tuple.Item1);
+                ExpiredToken();
             }
         }
 
         private async void InitPosts()
         {
+            Tags = new List<string>();
             Posts = new ObservableCollection<Post>();
             Post p1 = new Post()
             {
@@ -102,20 +108,9 @@ namespace Client.ViewModels
             }
         }
 
-        private void ManageError(ErrorEnum eror)
+        private void ExpiredToken()
         {
-            switch (eror)
-            {
-                case ErrorEnum.WrongUsernameOrPassword:
-                    Message = "Wrong username or password";
-                    return;
-                case ErrorEnum.ConectionFailed:
-                    Message = "Bad internet conection";
-                    return;
-                case ErrorEnum.UsernameAlreadyExist:
-                    Message = "Username already exist";
-                    return;
-            }
+            _viewService.LogOut();
         }
 
         private void OnPropertyChange(string propname = null)

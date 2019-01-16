@@ -13,5 +13,7 @@ namespace Client.ServicesInterfaces
         Task<byte[]> ChooseImage();
 
         void GoToProfile(UserDetails userDetails, ISocialDataProvider dataProvider);
+
+        void LogOut();
     }
 }

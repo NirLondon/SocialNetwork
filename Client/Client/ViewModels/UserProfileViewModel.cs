@@ -21,12 +21,12 @@ namespace Client.ViewModels
 
         public async void Follow()
         {
-            var result = await _dataProvider.Follow(Details.UserID);
+            //var result = await _dataProvider.Follow(Details.UserID);
         }
 
         public async void Block()
         {
-            var result = await _dataProvider.Block(Details.UserID);
+           // var result = await _dataProvider.Block(Details.UserID);
         }
     }
 }

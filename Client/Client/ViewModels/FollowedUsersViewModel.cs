@@ -21,11 +21,23 @@ namespace Client.ViewModels
         private async void InitUsers()
         {
             Users = new ObservableCollection<UserDetails>();
-            var result = await _dataProvider.GetFollowed();
-            foreach (var user in result.Item2)
+            try
             {
-                Users.Add(user);
+                var result = await _dataProvider.GetFollowed();
+                foreach (var user in Users)
+                {
+                    Users.Add(user);
+                }
             }
+            catch (UnauthorizedAccessException e)
+            {
+                ExpiredTpken();
+            }
+        }
+
+        private void ExpiredTpken()
+        {
+
         }
     }
 }

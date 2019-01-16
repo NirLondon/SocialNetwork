@@ -14,17 +14,32 @@ using Windows.Storage.Pickers;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media.Imaging;
+using Client.ViewModels;
 
 namespace Client.WUP.Services
 {
     public class MainPageService : IMainPageService
     {
-        public static StackPanel stackPanelContent { get; set; }
+        public StackPanel stackPanelContent { get; set; }
 
-        public MainPageService(StackPanel sp)
+        private static readonly object _lock = new object();
+        private static MainPageService _instance;
+
+        public static MainPageService Instance
         {
-            stackPanelContent = sp;
+            get
+            {
+                if (_instance == null)
+                    lock (_lock)
+                    {
+                        if (_instance == null)
+                            _instance = new MainPageService();
+                    }
+                return _instance;
+            }
         }
+
+        private MainPageService() { }
 
         public void GoToFeed()
         {
@@ -38,9 +53,9 @@ namespace Client.WUP.Services
             stackPanelContent.Children.Add(new EditUserDetailsUserControl());
         }
 
-        public async void LogOut(bool LoggedWithFacebook)
+        public async void LogOut()
         {
-            if (LoggedWithFacebook)
+            if (MainPageViewModel._loggedWithFacebook)
                 await FacebookService.Instance.LogoutAsync();
 
             Window.Current.Content = new SignupLoginView();

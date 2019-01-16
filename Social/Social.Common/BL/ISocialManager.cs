@@ -1,5 +1,6 @@
 ﻿using Social.Common.Models;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Social.Common.BL
 {
@@ -15,9 +16,9 @@ namespace Social.Common.BL
 
         void SetFollow(string followerId, int followedId);
 
-        void Post(string userId, UploaddedPost post);
+        Task PublishPost(string userId, UploaddedPost post);
 
-        void Comment(Comment comment);
+        void PublishComment(Comment comment);
 
         IEnumerable<SearchResultUser> Search(string searchedUsername);
 

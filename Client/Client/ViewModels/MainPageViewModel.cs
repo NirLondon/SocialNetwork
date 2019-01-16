@@ -8,7 +8,7 @@ namespace Client.ViewModels
     public class MainPageViewModel
     {
         private IMainPageService _viewService { get; set; }
-        private bool _loggedWithFacebook { get; set; }
+        public static bool _loggedWithFacebook { get; private set; }
 
         public MainPageViewModel(IMainPageService service, bool loggedWithFacebook)
         {
@@ -33,7 +33,7 @@ namespace Client.ViewModels
 
         public void logOut()
         {
-             _viewService.LogOut(_loggedWithFacebook);
+            _viewService.LogOut();
         }
     }
 }

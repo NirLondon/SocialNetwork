@@ -1,5 +1,6 @@
 ﻿using Client.DataProviders;
 using Client.Enum;
+using Client.Exeptions;
 using Client.HttpClinents;
 using Client.ServicesInterfaces;
 using System.ComponentModel;
@@ -45,11 +46,15 @@ namespace Client.ViewModels
             if (ValidateInput())
             {
                 Sending = true;
-                ErrorEnum result = await _dataProvider.Signup(Username, Password);
-
-                if (result == ErrorEnum.EverythingIsGood)
+                try
+                {
+                    await _dataProvider.Signup(Username, Password);
                     _viewService.NavigateToMainPage(LoggedWithFacebook);
-                else ManageError(result);
+                }
+                catch (UsernameAlreadyExistException e)
+                {
+                    Message = "Username already exist";
+                }
                 Sending = false;
             }
         }
@@ -59,11 +64,19 @@ namespace Client.ViewModels
             if (ValidateInput())
             {
                 Sending = true;
-                ErrorEnum result = await _dataProvider.Login(Username, Password);
-
-                if (result == ErrorEnum.EverythingIsGood)
+                try
+                {
+                    await _dataProvider.Login(Username, Password);
                     _viewService.NavigateToMainPage(LoggedWithFacebook);
-                else ManageError(result);
+                }
+                catch (WrongUsernameOrPasswordException e)
+                {
+                    Message = "Wrong username or password";
+                }
+                catch (UsernameAlreadyExistException e)
+                {
+                    Message = "User with this name already exist";
+                }
                 Sending = false;
             }
         }
@@ -74,17 +87,15 @@ namespace Client.ViewModels
             string facebookToken = await _viewService.LoginWithFacebook();
             if (facebookToken != null)
             {
-                ErrorEnum result = await _dataProvider.LoginWithFacebook(facebookToken);
-                if (result == ErrorEnum.EverythingIsGood)
+                try
                 {
+                    await _dataProvider.LoginWithFacebook(facebookToken);
                     LoggedWithFacebook = true;
                     _viewService.NavigateToMainPage(LoggedWithFacebook);
                 }
-                else
+                catch (WrongUsernameOrPasswordException e)
                 {
-                    if (result == ErrorEnum.WrongUsernameOrPassword)
-                        ManageUserSwitch();
-                    else ManageError(result);
+                    ManageUserSwitch();
                 }
             }
             Sending = false;
@@ -97,10 +108,15 @@ namespace Client.ViewModels
                 bool wantToSwitch = await _viewService.SwitchToFacebookMessage();
                 if (wantToSwitch)
                 {
-                    ErrorEnum result = await _dataProvider.SwitchToFacebookUser(Username, Password);
-                    if (result == ErrorEnum.EverythingIsGood)
+                    try
+                    {
+                        await _dataProvider.SwitchToFacebookUser(Username, Password);
                         Message = "User converted to facebook user!";
-                    else ManageError(result);
+                    }
+                    catch (UserIsBlockedException e)
+                    {
+                        Message = "User is blocked!";
+                    }
                 }
             }
         }
@@ -114,21 +130,6 @@ namespace Client.ViewModels
             return false;
         }
 
-        private void ManageError(ErrorEnum eror)
-        {
-            switch (eror)
-            {
-                case ErrorEnum.WrongUsernameOrPassword:
-                    Message = "Wrong username or password";
-                    return;
-                case ErrorEnum.ConectionFailed:
-                    Message = "Bad internet conection";
-                    return;
-                case ErrorEnum.UsernameAlreadyExist:
-                    Message = "Username already exist";
-                    return;
-            }
-        }
 
         private void OnPropertyChange(string propname = null)
         {

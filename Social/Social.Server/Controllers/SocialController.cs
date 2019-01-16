@@ -43,9 +43,11 @@ namespace Social.Server.Controllers
 
         [HttpPost]
         [Route("PublishPost")]
-        public Task<IHttpActionResult> PublishPost([FromBody] UploaddedPost post)
+        public async Task<IHttpActionResult> PublishPostAsync([FromBody] UploaddedPost post)
         {
-            return WrappedAction(userId => _manager.Post(userId, post));
+            var token = ActionContext.Request.Headers.GetValues("Token").FirstOrDefault();
+            await _manager.PublishPost(token, post);        
+            return await WrappedAction(userId => _manager.PublishPost(userId, post));
         }
 
         [HttpPost]

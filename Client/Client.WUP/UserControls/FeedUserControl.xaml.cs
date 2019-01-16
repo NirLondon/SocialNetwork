@@ -1,4 +1,5 @@
 ﻿using Client.HttpClinents;
+using Client.ServicesInterfaces;
 using Client.ViewModels;
 using Client.WUP.Services;
 using System;

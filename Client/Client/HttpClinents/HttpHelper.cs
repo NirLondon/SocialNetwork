@@ -32,6 +32,7 @@ namespace Client.HttpClinents
         {
             httpClient = new HttpClient();
             BaseURL = baseURL;
+            SetCurrentToken(_currentToken);
         }
 
         ~HttpHelper()

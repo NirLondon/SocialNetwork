@@ -7,6 +7,7 @@ using Social.Common.Models;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Threading.Tasks;
 
 namespace Social.BL
 {
@@ -29,8 +30,10 @@ namespace Social.BL
             return _repository.BlockedBy(userId);
         }
 
-        public void Comment(Comment comment)
+        public async void PublishComment(string userId, UploaddedPost uploaddedPost)
         {
+            string bucketURL = await UploadImageToS3(uploaddedPost.Image);
+            Comment comment = GenerateComment(userId, uploaddedPost.Content, bucketURL);
             _repository.PutComment(comment);
         }
 
@@ -49,12 +52,11 @@ namespace Social.BL
             return _repository.PostsForUser(userId, amount, skip);
         }
 
-        public void Post(string userId, UploaddedPost uploaddedPost)
+        public async Task PublishPost(string userId, UploaddedPost uploaddedPost)
         {
-            string bucketURL = UploadImageToS3(uploaddedPost.Image);
+            string bucketURL = await UploadImageToS3(uploaddedPost.Image);
             Post post = GeneratePost(userId, uploaddedPost.Content, bucketURL);
              _repository.PutPost(userId, post);
-
         }
 
         public void RemoveFollow(string followerId, int followedId)
@@ -72,28 +74,28 @@ namespace Social.BL
             _repository.SetFollow(followerId, followedId);
         }
 
-        private string UploadImageToS3(byte[] image)
+        private async Task<string> UploadImageToS3(byte[] image)
         {
-            //string bucketUrl = "";
+            string bucketUrl = "https://s3-eu-west-1.amazonaws.com/odedbucket/";
             string bucketName = "odedbucket";
-            var s3Client = new AmazonS3Client(RegionEndpoint.EUWest2);
-
+            string key = GetNewToken();
+            var s3Client = new AmazonS3Client(RegionEndpoint.EUWest1);
             using (s3Client)
             {
                 var request = new PutObjectRequest
                 {
                     BucketName = bucketName,
                     CannedACL = S3CannedACL.PublicRead,
-                    Key = "imageone"
+                    Key = key
                 };
                 using (var ms = new MemoryStream(image))
                 {
                     request.InputStream = ms;
-                    var res = s3Client.PutObjectAsync(request);
+                    await s3Client.PutObjectAsync(request);                  
                 }
             }
 
-            return "bucket url";
+            return bucketUrl + key;
         }
 
         private Post GeneratePost(string userID, string text, string imageURL)
@@ -107,6 +109,25 @@ namespace Social.BL
                 Text = text
             };
             return post;
+        }
+
+        private Comment GenerateComment(string UserId, string text, string imageURL)
+        {
+            Comment comment = new Comment
+            {
+                Content = text,
+                Publisher = UserId,
+                PublishDate = DateTime.Now,
+                IMGURL = imageURL
+            };
+            return comment;
+        }
+
+        public static string GetNewToken()
+        {
+            byte[] arr = new byte[16];
+            new Random().NextBytes(arr);
+            return Convert.ToBase64String(arr);
         }
     }
 }

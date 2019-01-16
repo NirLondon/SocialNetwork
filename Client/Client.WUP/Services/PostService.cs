@@ -21,7 +21,6 @@ namespace Client.WUP.Services
     {
         public FileOpenPicker picker { get; set; }
 
-
         public PostService()
         {
             InitPicker();
@@ -49,18 +48,23 @@ namespace Client.WUP.Services
             return arr;
         }
 
+        public void GoToProfile(UserDetails userDetails, ISocialDataProvider dataProvider)
+        {
+            MainPageService.Instance.stackPanelContent.Children.Clear();
+            MainPageService.Instance.stackPanelContent.Children.Add(new UserProfileUserControl(userDetails, dataProvider));
+        }
+
+        public void LogOut()
+        {
+            MainPageService.Instance.LogOut();
+        }
+
         private void InitPicker()
         {
             picker = new FileOpenPicker();
             picker.ViewMode = PickerViewMode.Thumbnail;
             picker.FileTypeFilter.Add(".jpg");
             picker.FileTypeFilter.Add(".png");
-        }
-
-        public void GoToProfile(UserDetails userDetails, ISocialDataProvider dataProvider)
-        {
-            MainPageService.stackPanelContent.Children.Clear();
-            MainPageService.stackPanelContent.Children.Add(new UserProfileUserControl(userDetails, dataProvider));
         }
     }
 }

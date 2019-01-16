@@ -13,8 +13,6 @@ namespace Client.WUP.UserControls
 
         }
 
-
-
         private void PublishComment(object sender, RoutedEventArgs e)
         {
             ((PostViewModel)DataContext).PublishComment();
