@@ -38,17 +38,17 @@ namespace Identity.Server.Controllers
 
         private Task<IHttpActionResult> WrappedAction<TResult>(Func<string, TResult> action)
         {
-            return WrappedAction(userId => Json(action(userId)));
+            return Wrapped(async userId => Json(action(userId)));
         }
 
         private Task<IHttpActionResult> WrappedAction<TResult>(Func<string, Task<TResult>> action)
         {
-            return WrappedAction(async userId => Json(await action(userId)));
+            return Wrapped(async userId => Json(await action(userId)));
         }
 
         private Task<IHttpActionResult> WrappedAction(Action<string> action)
         {
-            return WrappedAction(userId =>
+            return Wrapped(async userId =>
             {
                 action(userId);
                 return Ok();
@@ -57,14 +57,14 @@ namespace Identity.Server.Controllers
 
         private Task<IHttpActionResult> WrappedAction(Func<string, Task> action)
         {
-            return WrappedAction(async userId =>
+            return Wrapped(async userId =>
             {
                 await action(userId);
                 return Ok();
             });
         }
 
-        private async Task<IHttpActionResult> WrappedAction(Func<string, Task<IHttpActionResult>> action)
+        private async Task<IHttpActionResult> Wrapped(Func<string, Task<IHttpActionResult>> action)
         {
             if (TryGetToken(out string sentToken))
             {

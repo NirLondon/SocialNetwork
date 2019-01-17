@@ -74,7 +74,7 @@ namespace Social.Server.Controllers
         [Route("LikeComment/{commentId}")]
         public Task<IHttpActionResult> LikeComment(Guid commentId)
         {
-            return WrappedAction(userId => _manager.Like(CommentId, userId, LikeOptions.Comment));
+            return WrappedAction(userId => _manager.Like(commentId, userId, LikeOptions.Comment));
         }
 
         [HttpDelete]
@@ -156,7 +156,7 @@ namespace Social.Server.Controllers
 
         private Task<IHttpActionResult> WrappedAction<TResult>(Func<string, TResult> action)
         {
-            return Wrapped(async userId => await Task.FromResult(Json(action(userId))));
+            return Wrapped(async userId => Json(action(userId)));
         }
 
         private Task<IHttpActionResult> WrappedAction<TResult>(Func<string, Task<TResult>> action)
@@ -169,7 +169,7 @@ namespace Social.Server.Controllers
             return Wrapped(async userId =>
             {
                 action(userId);
-                return await Task.FromResult(Ok());
+                return Ok();
             });
         }
 

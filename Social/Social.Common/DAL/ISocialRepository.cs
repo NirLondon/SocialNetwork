@@ -33,7 +33,7 @@ namespace Social.Common.DAL
 
         void Unblock(string blockingId, string blockedId);
 
-        IEnumerable<RetunredComment> CommentsOfPost(Guid postId);
+        IEnumerable<RetunredComment> CommentsOfPost(Guid postId, string userId);
 
         void Like(Guid id, string likerId, LikeOptions likeOption);
 

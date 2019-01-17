@@ -1,9 +1,6 @@
 ﻿using Newtonsoft.Json;
 using Social.Common.BL;
-using System;
-using System.Collections.Generic;
 using System.Net.Http;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Social.BL

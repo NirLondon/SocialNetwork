@@ -3,15 +3,14 @@ using Social.Common.Models.ReturnedDTOs;
 using Social.Common.Models.UploadedDTOs;
 using System;
 using System.Collections.Generic;
-using System.Threading.Tasks;
 
 namespace Social.Common.BL
 {
     public interface ISocialManager
     {
-        IEnumerable<User> GetFollowersOf(string userId);
+        IEnumerable<UserMention> GetFollowersOf(string userId);
 
-        IEnumerable<User> GetFollowedBy(string userId);
+        IEnumerable<UserMention> GetFollowedBy(string userId);
 
         void RemoveFollow(string followerId, string followedId);
 
@@ -25,7 +24,7 @@ namespace Social.Common.BL
 
         IEnumerable<UserMention> Search(string searchedUsername);
 
-        IEnumerable<User> BlockedBy(string userId);
+        IEnumerable<UserMention> BlockedBy(string userId);
 
         void AddUser(User user);
 

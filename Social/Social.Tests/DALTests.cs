@@ -169,7 +169,7 @@ namespace Social.Tests
         [TestMethod]
         public void CommentsOfPost()
         {
-            var x = repo.CommentsOfPost(Ids("Post")[0]);
+            var x = repo.CommentsOfPost(Ids("Post")[0], users[0].UserId);
         }
 
         [TestMethod]

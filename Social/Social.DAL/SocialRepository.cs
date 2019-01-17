@@ -1,10 +1,6 @@
-﻿using Amazon;
-using Amazon.S3;
-using Amazon.S3.Model;
-using Neo4j.Driver.V1;
+﻿using Neo4j.Driver.V1;
 using Newtonsoft.Json;
 using Social.Common.DAL;
-using Social.Common.Models;
 using Social.Common.Models.DataBaseDTOs;
 using Social.Common.Models.ReturnedDTOs;
 using Social.Common.Models.UploadedDTOs;
@@ -83,11 +79,11 @@ namespace Social.DAL
                 return
                     session.Run(
                         "MATCH\n" +
-                            $"\t(u: User{{ UserID: \"{userId}\" }})-[:Follows]->(:User)-[:Uploaded]->(p: Post),\n" +
+                            $"\t(u: User{{ UserID: \"{userId}\" }})-[:Follows]->(:User)-[:Uploaded]->(p1: Post),\n" +
                             "\t(u)<-[:Tags]-(p2: Post),\n" +
                             "\t(p3: Post)-[:Has]->(c: Comment)-[:Tags]->(u)\n" +
                         "WITH\n" +
-                            "\tcollect(p) +\n" +
+                            "\tcollect(p1) +\n" +
                             "\tcollect(p2) +\n" +
                             "\tcollect(p3)\n" +
                             "\tAS res, u\n" +
@@ -102,12 +98,13 @@ namespace Social.DAL
                              "\tPost.Content AS Content,\n" +
                              "\tPost.UploadingTime AS UploadingTime,\n" +
                              "\tPost.ImageURL AS ImageURL,\n" +
+                             "\tEXISTS((Post)-[:Liked_by]->(u)) AS IsLiked,\n" +
                              "\t[(Post)-[:Liked_by]->(liker:User) |\n" +
                              "\t\t{\n" +
                                 "\t\t\tUserId : liker.UserID,\n" +
                                 "\t\t\tFullName : liker.firstName + \" \" + liker.lastName\n" +
                              "\t\t}] AS Likes,\n" +
-                             "\t[(Post) -[:Tags]->(taged: User) |\n" +
+                             "\t[(Post)-[:Tags]->(taged: User) |\n" +
                                      "\t\t{\n" +
                                          "\t\t\tUserId : taged.UserID,\n" +
                                         "\t\t\tFullName : taged.firstName + \" \" + taged.lastName\n" +
@@ -122,6 +119,7 @@ namespace Social.DAL
                                 Poster = ConvertTo<UserMention>(record["Poster"].As<Dictionary<string, object>>()),
                                 Content = record["Content"].ToString(),
                                 ImageURL = record["ImageURL"].ToString(),
+                                IsLiked = bool.Parse(record["IsLiked"].ToString()),
                                 UploadingTime = DateTime.Parse(record["UploadingTime"].ToString()),
                                 Likes = ConvertTo<UserMention[]>(record["Likes"].As<List<Dictionary<string, object>>>()),
                                 Tags = ConvertTo<UserMention[]>(record["Tags"].As<List<Dictionary<string, object>>>()),
@@ -232,20 +230,21 @@ namespace Social.DAL
             }
         }
 
-        public IEnumerable<RetunredComment> CommentsOfPost(Guid postId)
+        public IEnumerable<RetunredComment> CommentsOfPost(Guid postId, string userId)
         {
             using (var session = _driver.Session())
             {
                 return
-                    session.Run(
-                           "MATCH\n" +
-                               $"\t(:Post{{ PostID: \"{postId}\" }})-[:Has]->(comment: Comment)-[:Uploaded_by]->(u: User)\n" +
-                           "RETURN\n" +
-                               "\tcomment,\n" +
-                               "\t{ UserId: u.UserID, FullName: u.firstName + \" \" + u.lastName } as commenter,\n" +
-                               "\t[(comment)-[:Tags]->(t) | { UserId : t.UserID, FullName : t.firstName + \" \" + t.lastName }] as taged,\n" +
-                               "\t[(comment)-[:Liked_by]->(l) | { UserId : l.UserID, FullName : l.firstName + \" \" + l.lastName }] as likes")
-                           .Select(r =>
+                     session.Run(
+                            "MATCH\n" +
+                                $"\t(:Post{{ PostID: \"{postId}\" }})-[:Has]->(comment: Comment)-[:Uploaded_by]->(u: User)\n" +
+                            "RETURN\n" +
+                                "\tcomment,\n" +
+                                "\t{ UserId: u.UserID, FullName: u.firstName + \" \" + u.lastName } AS commenter,\n" +
+                                "\t[(comment)-[:Tags]->(t) | { UserId : t.UserID, FullName : t.firstName + \" \" + t.lastName }] AS taged,\n" +
+                                "\t[(comment)-[:Liked_by]->(l) | { UserId : l.UserID, FullName : l.firstName + \" \" + l.lastName }] AS likes,\n" +
+                                $"\tEXISTS((:User{{ UserID: \"{userId}\" }})<-[:Liked_by]-(comment)) AS IsLiked")
+                            .Select(r =>
                            {
                                var comment = r["comment"].As<INode>();
                                return new RetunredComment
@@ -253,6 +252,7 @@ namespace Social.DAL
                                    CommentId = Guid.Parse(comment["CommentID"].ToString()),
                                    Content = comment["Content"].ToString(),
                                    ImageURL = comment["ImageURL"].ToString(),
+                                   IsLiked = bool.Parse(r["IsLiked"].ToString()),
                                    UploadingTime = DateTime.Parse(comment["UploadingTime"].ToString()),
                                    Tags = ConvertTo<UserMention[]>(r["taged"].As<List<Dictionary<string, object>>>()),
                                    Likes = ConvertTo<UserMention[]>(r["likes"].As<List<Dictionary<string, object>>>()),
