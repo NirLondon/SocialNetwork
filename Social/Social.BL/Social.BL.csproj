@@ -4,4 +4,16 @@
     <TargetFramework>netstandard2.0</TargetFramework>
   </PropertyGroup>
 
+  <ItemGroup>
+    <PackageReference Include="AWSSDK.Core" Version="3.3.31.2" />
+    <PackageReference Include="AWSSDK.S3" Version="3.3.31.10" />
+    <PackageReference Include="Newtonsoft.Json" Version="12.0.1" />
+    <PackageReference Include="SimpleInjector" Version="4.4.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Social.Common\Social.Common.csproj" />
+    <ProjectReference Include="..\Social.DAL\Social.DAL.csproj" />
+  </ItemGroup>
+
 </Project>

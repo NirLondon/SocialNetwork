@@ -1,16 +1,15 @@
-<Project Sdk="Microsoft.NET.Sdk">
-
+<Project Sdk="Microsoft.NET.Sdk" ToolsVersion="15.0">
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
+    <FileUpgradeFlags>40</FileUpgradeFlags>
+    <UpgradeBackupLocation>C:\Users\oded\source\repos\SocialNetwork.git\Authentication\Backup\Authentication.DAL\</UpgradeBackupLocation>
+    <OldToolsVersion>2.0</OldToolsVersion>
   </PropertyGroup>
-
   <ItemGroup>
     <PackageReference Include="AWSSDK.DynamoDBv2" Version="3.3.16" />
     <PackageReference Include="Newtonsoft.Json" Version="12.0.1" />
   </ItemGroup>
-
   <ItemGroup>
     <ProjectReference Include="..\Authentication.Common\Authentication.Common.csproj" />
   </ItemGroup>
-
 </Project>

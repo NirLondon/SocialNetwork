@@ -14,8 +14,7 @@ namespace Authentication.DAL
 
         public static T FromDocument<T>(Document document) where T : new()
         {
-            var json = document.ToJson();
-            return JsonConvert.DeserializeObject<T>(json);
+            return JsonConvert.DeserializeObject<T>(document.ToJson());
         }
     }
 }

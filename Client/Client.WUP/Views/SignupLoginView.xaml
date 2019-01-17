@@ -20,12 +20,12 @@
             </StackPanel>
             <Button Margin="10" Content="Signp" Click="{x:Bind viewModel.Signup}"/>
             <Button Margin="10" Content="Login" Click="{x:Bind viewModel.Login}"/>
-            <Button Click="{x:Bind viewModel.LoginWithFacebook}">
-                <Image Margin="10" Source="/Assets/facebook.jpg" Height="100" Width="300" />
+            <Button Click="{x:Bind viewModel.LoginWithFacebook}" Background="Transparent">
+                <Image Source="/Assets/facebook.jpg" Height="100"/>
             </Button>
             <TextBlock Margin="10" Text="{x:Bind viewModel.Message, Mode=OneWay}"/>
         </StackPanel>
-        <Image x:Name="sendingGif" Visibility="{x:Bind viewModel.Sending, Mode=OneWay}" Width="500">
+        <Image x:Name="sendingGif" Visibility="{x:Bind viewModel.Sending, Mode=OneWay}" Width="600">
             <Image.Source>
                 <BitmapImage x:Name="GifImage" UriSource="/Assets/sending.gif"/>
             </Image.Source>

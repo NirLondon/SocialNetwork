@@ -18,7 +18,7 @@ namespace Authentication.BL
             _repository = repository;
         }
 
-        public Tuple<string, SignupLoginResult> Login(string username, string password)
+        public (string token, SignupLoginResult) Login(string username, string password)
         {
             string token = null;
             SignupLoginResult eror = SignupLoginResult.WrongUsernameOrPassword;
@@ -43,10 +43,10 @@ namespace Authentication.BL
                     token = TM.Token;
                 }
             }
-            return new Tuple<string, SignupLoginResult>(token, eror);
+            return (token, eror);
         }
 
-        public Tuple<string, SignupLoginResult> LoginWithFacebook(string facebookToken)
+        public (string token, SignupLoginResult) LoginWithFacebook(string facebookToken)
         {
             string token = null;
             SignupLoginResult eror = SignupLoginResult.EverythingIsGood;
@@ -78,7 +78,7 @@ namespace Authentication.BL
             }
             else eror = SignupLoginResult.WrongUsernameOrPassword;
 
-            return new Tuple<string, SignupLoginResult>(token, eror);
+            return (token, eror);
         }
 
         public SignupLoginResult ResetPassword(string username, string oldPassword, string newPassword)
@@ -86,7 +86,7 @@ namespace Authentication.BL
             return _repository.ResetPassword(username, oldPassword, newPassword);
         }
 
-        public Tuple<string, SignupLoginResult> Signup(string username, string password)
+        public (string token, SignupLoginResult) Signup(string username, string password)
         {
             string token = null;
             SignupLoginResult eror = SignupLoginResult.EverythingIsGood;
@@ -109,8 +109,6 @@ namespace Authentication.BL
                     };
                     _repository.SaveToken(TM);
                     token = TM.Token;
-
-                    NotifyToIdentityService(token, username);
                 }
                 catch (Exception e)
                 {
@@ -119,20 +117,7 @@ namespace Authentication.BL
             }
             else
                 eror = SignupLoginResult.WrongUsernameOrPassword;
-            return new Tuple<string, SignupLoginResult>(token, eror);
-        }
-
-        private void NotifyToIdentityService(string token, string username)
-        {
-            using (var httpClient = new HttpClient())
-            {
-                httpClient.PutAsJsonAsync("http://localhost:63276/api/users/editdetails",
-                    new
-                    {
-                        Token = token,
-                        EditedDetails = string.Format("{ \"UserID\" : \"{0}\" }", username)
-                    });
-            }
+            return (token, eror);
         }
 
         public SignupLoginResult SwitchToFacebookUser(string username, string passwrod)

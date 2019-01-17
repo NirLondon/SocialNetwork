@@ -1,5 +1,6 @@
 ﻿using Client.DataProviders;
 using Client.Enum;
+using Client.Exeptions;
 using Client.HttpClinents;
 using Client.ServicesInterfaces;
 using System.ComponentModel;
@@ -11,6 +12,7 @@ namespace Client.ViewModels
         public event PropertyChangedEventHandler PropertyChanged;
         private readonly ISignupLoginDataProvider _dataProvider;
         public ISignupLoginService _viewService { get; set; }
+        private bool LoggedWithFacebook = false;
 
         public SignupLoginViewModel(ISignupLoginService service) 
             : this(new SignupLoginHttpClient(), service) { }
@@ -44,12 +46,15 @@ namespace Client.ViewModels
             if (ValidateInput())
             {
                 Sending = true;
-                ErrorEnum result = await _dataProvider.Signup(Username, Password);
-
-                if (result == ErrorEnum.EverythingIsGood)
-                    _viewService.NavigateToMainPage();
-                else ManageError(result);
-
+                try
+                {
+                    await _dataProvider.Signup(Username, Password);
+                    _viewService.NavigateToMainPage(LoggedWithFacebook);
+                }
+                catch (UsernameAlreadyExistException e)
+                {
+                    Message = "Username already exist";
+                }
                 Sending = false;
             }
         }
@@ -58,29 +63,42 @@ namespace Client.ViewModels
         {
             if (ValidateInput())
             {
-                ErrorEnum result = await _dataProvider.Login(Username, Password);
-
-                if (result == ErrorEnum.EverythingIsGood)
-                    _viewService.NavigateToMainPage();
-                else ManageError(result);
+                Sending = true;
+                try
+                {
+                    await _dataProvider.Login(Username, Password);
+                    _viewService.NavigateToMainPage(LoggedWithFacebook);
+                }
+                catch (WrongUsernameOrPasswordException e)
+                {
+                    Message = "Wrong username or password";
+                }
+                catch (UsernameAlreadyExistException e)
+                {
+                    Message = "User with this name already exist";
+                }
+                Sending = false;
             }
         }
 
         public async void LoginWithFacebook()
         {
+            Sending = true;
             string facebookToken = await _viewService.LoginWithFacebook();
             if (facebookToken != null)
             {
-                ErrorEnum result = await _dataProvider.LoginWithFacebook(facebookToken);
-                if (result == ErrorEnum.EverythingIsGood)
-                    _viewService.NavigateToMainPage();
-                else
+                try
                 {
-                    if (result == ErrorEnum.WrongUsernameOrPassword)
-                        ManageUserSwitch();
-                    else ManageError(result);
+                    await _dataProvider.LoginWithFacebook(facebookToken);
+                    LoggedWithFacebook = true;
+                    _viewService.NavigateToMainPage(LoggedWithFacebook);
+                }
+                catch (WrongUsernameOrPasswordException e)
+                {
+                    ManageUserSwitch();
                 }
             }
+            Sending = false;
         }
 
         private async void ManageUserSwitch()
@@ -90,10 +108,15 @@ namespace Client.ViewModels
                 bool wantToSwitch = await _viewService.SwitchToFacebookMessage();
                 if (wantToSwitch)
                 {
-                    ErrorEnum result = await _dataProvider.SwitchToFacebookUser(Username, Password);
-                    if (result == ErrorEnum.EverythingIsGood)
+                    try
+                    {
+                        await _dataProvider.SwitchToFacebookUser(Username, Password);
                         Message = "User converted to facebook user!";
-                    else ManageError(result);
+                    }
+                    catch (UserIsBlockedException e)
+                    {
+                        Message = "User is blocked!";
+                    }
                 }
             }
         }
@@ -107,21 +130,6 @@ namespace Client.ViewModels
             return false;
         }
 
-        private void ManageError(ErrorEnum eror)
-        {
-            switch (eror)
-            {
-                case ErrorEnum.WrongUsernameOrPassword:
-                    Message = "Wrong username or password";
-                    return;
-                case ErrorEnum.ConectionFailed:
-                    Message = "Bad internet conection";
-                    return;
-                case ErrorEnum.UsernameAlreadyExist:
-                    Message = "Username already exist";
-                    return;
-            }
-        }
 
         private void OnPropertyChange(string propname = null)
         {

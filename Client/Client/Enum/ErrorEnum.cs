@@ -11,6 +11,5 @@ namespace Client.Enum
         ConectionFailed,
         UsernameAlreadyExist,
         UserIsBlocked, 
-        TokenExpired
     }
 }

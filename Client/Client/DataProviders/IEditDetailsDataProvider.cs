@@ -1,4 +1,5 @@
-﻿using Identity.Common.Models;
+﻿using Client.Enum;
+using Client.Models;
 using System.Threading.Tasks;
 
 namespace Client.DataProviders

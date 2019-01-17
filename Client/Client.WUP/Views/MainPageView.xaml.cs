@@ -1,5 +1,6 @@
 ﻿using Client.ViewModels;
 using Client.WUP.Services;
+using Client.WUP.UserControls;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -25,18 +26,12 @@ namespace Client.WUP.Views
     public sealed partial class MainPageView : Page
     {
         private MainPageViewModel viewModel { get; set; }
-        private MainPageService service { get; set; }
 
-        public MainPageView()
+        public MainPageView(bool LoggedWithFacebook)
         {
             this.InitializeComponent();
-            viewModel = new MainPageViewModel(service);
-        }
-
-        private void Button_Click(object sender, RoutedEventArgs e)
-        {
-            Window.Current.Content = new EditUserDetailsView();
-            //Frame.Navigate(typeof(EditUserDetailsView));
+            MainPageService.Instance.stackPanelContent = contentSP;
+            viewModel = new MainPageViewModel(MainPageService.Instance, LoggedWithFacebook);
         }
     }
 }

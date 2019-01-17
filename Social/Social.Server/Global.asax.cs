@@ -1,9 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using System.Web.Http;
-using System.Web.Routing;
+﻿using System.Web.Http;
+using SimpleInjector;
+using SimpleInjector.Integration.WebApi;
+using Social.BL;
+using Social.Common.BL;
 
 namespace Social.Server
 {
@@ -12,6 +11,25 @@ namespace Social.Server
         protected void Application_Start()
         {
             GlobalConfiguration.Configure(WebApiConfig.Register);
+
+            ConfigureDependencies();
+        }
+
+        private void ConfigureDependencies()
+        {
+            var blResolver = new BLDependenciesResolver();
+
+            var container = new Container();
+
+            container.RegisterSingleton<IAuthentiacator, Authenticator>();
+            container.RegisterSingleton<ISocialManager>(() => blResolver.GetInstanceOf<ISocialManager>());
+
+            container.RegisterWebApiControllers(GlobalConfiguration.Configuration);
+
+            container.Verify();
+
+            GlobalConfiguration.Configuration.DependencyResolver
+                = new SimpleInjectorWebApiDependencyResolver(container);
         }
     }
 }
