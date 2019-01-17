@@ -6,9 +6,9 @@ namespace Client.DataProviders
 {
     public interface ISignupLoginDataProvider
     {
-        Task<ErrorEnum> Login(string username, string password);
-        Task<ErrorEnum> LoginWithFacebook(string facebookToken);
-        Task<ErrorEnum> Signup(string username, string password);
-        Task<ErrorEnum> SwitchToFacebookUser(string username, string password);
+        Task Login(string username, string password);
+        Task LoginWithFacebook(string facebookToken);
+        Task Signup(string username, string password);
+        Task SwitchToFacebookUser(string username, string password);
     }
 }

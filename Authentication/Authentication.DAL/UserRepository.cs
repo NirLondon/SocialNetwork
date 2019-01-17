@@ -40,35 +40,35 @@ namespace Authentication.DAL
             tokensTable.PutItemAsync(tokenDocument);
         }
 
-        public ErrorEnum Login(UserModel user)
+        public SignupLoginResult Login(UserModel user)
         {
-            ErrorEnum eror = ErrorEnum.EverythingIsGood;
+            SignupLoginResult eror = SignupLoginResult.EverythingIsGood;
             Document result = usersTable.GetItemAsync(user.UserID).Result;
 
             if (result == null || result["Password"] != user.Password)
             {
-                eror = ErrorEnum.WrongUsernameOrPassword;
+                eror = SignupLoginResult.WrongUsernameOrPassword;
             }
-            else if (result["State"] == ErrorEnum.UserIsBlocked.ToString())
+            else if (result["State"] == SignupLoginResult.UserIsBlocked.ToString())
             {
-                eror = ErrorEnum.UserIsBlocked;
+                eror = SignupLoginResult.UserIsBlocked;
             }
             return eror;
         }
 
-        public ErrorEnum LoginWithFacebook(UserModel user)
+        public SignupLoginResult LoginWithFacebook(UserModel user)
         {
-            ErrorEnum eror = ErrorEnum.EverythingIsGood;
+            SignupLoginResult eror = SignupLoginResult.EverythingIsGood;
             Document userdoc = usersTable.GetItemAsync(user.UserID).Result;
             if (userdoc == null)
             {
                 userdoc = GenerateUserDocument(user);
                 usersTable.PutItemAsync(userdoc);
-                eror = ErrorEnum.EverythingIsGood;
+                eror = SignupLoginResult.EverythingIsGood;
             }
-            else if (userdoc["State"] == ErrorEnum.UserIsBlocked.ToString())
+            else if (userdoc["State"] == SignupLoginResult.UserIsBlocked.ToString())
             {
-                eror = ErrorEnum.UserIsBlocked;
+                eror = SignupLoginResult.UserIsBlocked;
             }
 
             return eror;
@@ -79,7 +79,7 @@ namespace Authentication.DAL
             Document userdoc = usersTable.GetItemAsync(username).Result;
             if (userdoc != null)
             {
-                userdoc["State"] = UserStateEnum.Blocked.ToString();
+                userdoc["State"] = UserState.Blocked.ToString();
                 usersTable.PutItemAsync(userdoc);
             }
         }
@@ -89,18 +89,18 @@ namespace Authentication.DAL
             Document userdoc = usersTable.GetItemAsync(username).Result;
             if (userdoc != null)
             {
-                userdoc["State"] = UserStateEnum.Open.ToString();
+                userdoc["State"] = UserState.Open.ToString();
                 usersTable.PutItemAsync(userdoc);
             }
         }
 
-        public ErrorEnum SwitchToFacebookUser(string username, string password)
+        public SignupLoginResult SwitchToFacebookUser(string username, string password)
         {
-            ErrorEnum eror = ErrorEnum.WrongUsernameOrPassword;
+            SignupLoginResult eror = SignupLoginResult.WrongUsernameOrPassword;
             Document userdoc = usersTable.GetItemAsync(username).Result;
             if (userdoc != null && userdoc["Password"] == password)
             {
-                eror = ErrorEnum.EverythingIsGood;
+                eror = SignupLoginResult.EverythingIsGood;
                 userdoc["Username/Token"] = "_" + username;
                 userdoc["Password"] = "";
                 usersTable.PutItemAsync(userdoc);
@@ -108,13 +108,13 @@ namespace Authentication.DAL
             return eror;
         }
 
-        public ErrorEnum ResetPassword(string username, string oldPassword, string newPassword)
+        public SignupLoginResult ResetPassword(string username, string oldPassword, string newPassword)
         {
-            ErrorEnum eror = ErrorEnum.EverythingIsGood;
+            SignupLoginResult eror = SignupLoginResult.EverythingIsGood;
             var userdoc = usersTable.GetItemAsync(username).Result;
             if (userdoc == null || userdoc["Password"] != oldPassword)
             {
-                eror = ErrorEnum.WrongUsernameOrPassword;
+                eror = SignupLoginResult.WrongUsernameOrPassword;
             }
             else
             {
@@ -144,8 +144,8 @@ namespace Authentication.DAL
         {
             var tokenDocument = new Document();
             tokenDocument["Token"] = token.Token;
-            tokenDocument["User"] = token.AssignedUser;
-            tokenDocument["State"] = token.State.ToString();
+            tokenDocument["User"] = token.UserID;
+            tokenDocument["CreationDate"] = token.CreationTime;
 
             return tokenDocument;
         }

@@ -1,4 +1,7 @@
-﻿using Social.Common.BL;
+﻿using Amazon;
+using Amazon.S3;
+using Amazon.S3.Model;
+using Social.Common.BL;
 using Social.Common.DAL;
 using Social.Common.Models;
 using Social.Common.Models.DataBaseDTOs;
@@ -6,6 +9,8 @@ using Social.Common.Models.ReturnedDTOs;
 using Social.Common.Models.UploadedDTOs;
 using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Threading.Tasks;
 
 namespace Social.BL
 {
@@ -104,6 +109,62 @@ namespace Social.BL
         public void SetFollow(string followerId, string followedId)
         {
             _repository.SetFollow(followerId, followedId);
+        }
+
+        private async Task<string> UploadImageToS3(byte[] image)
+        {
+            string bucketUrl = "https://s3-eu-west-1.amazonaws.com/odedbucket/";
+            string bucketName = "odedbucket";
+            string key = GetNewToken();
+            var s3Client = new AmazonS3Client(RegionEndpoint.EUWest1);
+            using (s3Client)
+            {
+                var request = new PutObjectRequest
+                {
+                    BucketName = bucketName,
+                    CannedACL = S3CannedACL.PublicRead,
+                    Key = key
+                };
+                using (var ms = new MemoryStream(image))
+                {
+                    request.InputStream = ms;
+                    await s3Client.PutObjectAsync(request);                  
+                }
+            }
+
+            return bucketUrl + key;
+        }
+
+        private Post GeneratePost(string userID, string text, string imageURL)
+        {
+            Post post = new Post
+            {
+                Comments = new List<Comment>(),
+                IMGURL = imageURL,
+                PublishDate = DateTime.Now,
+                Publisher = userID,
+                Text = text
+            };
+            return post;
+        }
+
+        private Comment GenerateComment(string UserId, string text, string imageURL)
+        {
+            Comment comment = new Comment
+            {
+                Content = text,
+                Publisher = UserId,
+                PublishDate = DateTime.Now,
+                IMGURL = imageURL
+            };
+            return comment;
+        }
+
+        public static string GetNewToken()
+        {
+            byte[] arr = new byte[16];
+            new Random().NextBytes(arr);
+            return Convert.ToBase64String(arr);
         }
 
         public void Unblock(string blockingId, string blockedId)

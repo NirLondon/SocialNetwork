@@ -43,7 +43,16 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="AWSSDK.Core, Version=3.3.0.0, Culture=neutral, PublicKeyToken=885c28607f98e604, processorArchitecture=MSIL">
+      <HintPath>..\packages\AWSSDK.Core.3.3.31.2\lib\net45\AWSSDK.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="AWSSDK.S3, Version=3.3.0.0, Culture=neutral, PublicKeyToken=885c28607f98e604, processorArchitecture=MSIL">
+      <HintPath>..\packages\AWSSDK.S3.3.3.31.10\lib\net45\AWSSDK.S3.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.CSharp" />
+    <Reference Include="Neo4j.Driver, Version=1.7.91.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Neo4j.Driver.1.7.0\lib\net452\Neo4j.Driver.dll</HintPath>
+    </Reference>
     <Reference Include="SimpleInjector, Version=4.4.3.0, Culture=neutral, PublicKeyToken=984cb50dea722e99, processorArchitecture=MSIL">
       <HintPath>..\packages\SimpleInjector.4.4.3\lib\net45\SimpleInjector.dll</HintPath>
     </Reference>
@@ -122,6 +131,9 @@
       <Project>{1355CA7B-CB95-4748-9970-EBCCB7BD91D0}</Project>
       <Name>Social.Common</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Analyzer Include="..\packages\AWSSDK.S3.3.3.31.10\analyzers\dotnet\cs\AWSSDK.S3.CodeAnalysis.dll" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

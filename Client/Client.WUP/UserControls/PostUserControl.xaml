@@ -5,7 +5,7 @@
     xmlns:local="using:Client.WUP.UserControls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:models="using:Client.Common"
+    xmlns:models="using:Client.Models"
     xmlns:vm="using:Client.ViewModels"
     xmlns:converter="using:Client.WUP.Converters"
     mc:Ignorable="d"
@@ -18,7 +18,7 @@
         <StackPanel>
             <StackPanel Margin="20">
                 <StackPanel Orientation="Horizontal">
-                    <TextBlock Margin="10" Text="{Binding CurrentPost.Publisher}" FontSize="20" FontWeight="Black"/>
+                    <TextBlock Margin="10" Text="{Binding CurrentPost.Publisher}" FontSize="20" FontWeight="Black" DoubleTapped="GoToProfile"/>
                     <TextBlock Margin="10" Text="{Binding CurrentPost.PublishDate}" FontSize="20" FontWeight="Bold"/>
                 </StackPanel>
                 <Image Margin="10" Source="{Binding CurrentPost.IMGURL}" Width="280"/>
@@ -40,12 +40,6 @@
                                     </StackPanel>
                                     <Image Source="{Binding IMGURL}" Width="170"/>
                                     <TextBlock Margin="10" Text="{Binding Text}" FontSize="15"/>
-                                    <Button Margin="10" IsEnabled="{Binding DidLiked, Converter={StaticResource LikeConverter}}">
-                                        <StackPanel Orientation="Horizontal">
-                                            <Image Source="/Assets/like.png" Height="13"/>
-                                            <TextBlock Text="{Binding Likes}"/>
-                                        </StackPanel>
-                                    </Button>
                                 </StackPanel>
                             </DataTemplate>
                         </ListView.ItemTemplate>

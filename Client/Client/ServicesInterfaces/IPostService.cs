@@ -1,4 +1,5 @@
-﻿using Client.Common;
+﻿using Client.DataProviders;
+using Client.Models;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -11,6 +12,8 @@ namespace Client.ServicesInterfaces
     {
         Task<byte[]> ChooseImage();
 
-        (string, Post) PublishPost(string text, byte[] arr);
+        void GoToProfile(UserDetails userDetails, ISocialDataProvider dataProvider);
+
+        void LogOut();
     }
 }

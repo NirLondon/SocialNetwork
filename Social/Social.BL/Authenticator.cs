@@ -20,7 +20,7 @@ namespace Social.BL
                 {
                     var json = await response.Content.ReadAsStringAsync();
 
-                    var result = JsonConvert.DeserializeObject<(string Tken, string UserId)>(json);
+                    var result = JsonConvert.DeserializeObject<(string Token, string UserId)>(json);
 
                     return result;
                 }

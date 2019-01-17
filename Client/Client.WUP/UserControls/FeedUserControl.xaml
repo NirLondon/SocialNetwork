@@ -5,7 +5,7 @@
     xmlns:local="using:Client.WUP.UserControls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:models="using:Client.Common"
+    xmlns:models="using:Client.Models"
     xmlns:vm="using:Client.ViewModels"
     xmlns:uc="using:Client.WUP.UserControls"
     mc:Ignorable="d"
@@ -17,7 +17,13 @@
     <StackPanel>
         <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
             <TextBlock VerticalAlignment="Top" Text="Posts" FontSize="40"/>
-            <ScrollViewer Margin="0,25,0,0" HorizontalScrollBarVisibility="Visible" Height="600">
+            <StackPanel Margin="15" Orientation="Horizontal">
+                <TextBlock Margin="5" Text="Share your thougths:"/>
+                <TextBox Margin="5" Text="{x:Bind viewModel.PostText, Mode=TwoWay}"/>
+                <Button Margin="5" Content="Choose image" Click="{x:Bind viewModel.ChooseImage}"/>
+            </StackPanel>
+            <Button Margin="5" Background="Transparent" Content="Publish" Click="{x:Bind viewModel.PublishPost}" FontWeight="ExtraBlack"/>
+            <ScrollViewer Margin="0,30,0,0" HorizontalScrollBarVisibility="Visible" Height="600">
                 <ListView ItemsSource="{x:Bind viewModel.PostViewModels, Mode=TwoWay}" SelectionMode="None">
                     <ListView.ItemTemplate>
                         <DataTemplate>

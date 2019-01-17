@@ -1,4 +1,5 @@
-﻿using Client.ServicesInterfaces;
+﻿using Client.HttpClinents;
+using Client.ServicesInterfaces;
 using Client.ViewModels;
 using Client.WUP.Services;
 using System;
@@ -23,12 +24,16 @@ namespace Client.WUP.UserControls
     public sealed partial class FeedUserControl : UserControl
     {
         private FeedViewModel viewModel { get; set; }
-        public IPostService postService { get; set; }
+        public PostService postService { get; set; }
+        public SocialHttpClient socialDataProvider { get; set; }
+        public EditDetailsHttpClient editDetailsDataProvider { get; set; }
         public FeedUserControl()
         {
             this.InitializeComponent();
             postService = new PostService();
-            viewModel = new FeedViewModel(postService);
+            socialDataProvider = new SocialHttpClient();
+            editDetailsDataProvider = new EditDetailsHttpClient();
+            viewModel = new FeedViewModel(postService, socialDataProvider, editDetailsDataProvider);
         }
     }
 }

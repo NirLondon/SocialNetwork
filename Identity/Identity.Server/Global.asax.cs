@@ -1,5 +1,7 @@
 ﻿using Identity.Common.DAL;
+using Identity.Common.BL;
 using Identity.DAL;
+using Identity.BL;
 using SimpleInjector;
 using SimpleInjector.Integration.WebApi;
 using System.Web.Http;
@@ -19,7 +21,8 @@ namespace Identity.Server
         {
             var container = new Container();
 
-            container.Register<IIdentitiesRepository, IdentitiesRpository>();
+            container.RegisterSingleton<IIdentitiesRepository, IdentitiesRpository>();
+            container.RegisterSingleton<IAuthentiacator, Authenticator>();
 
             container.RegisterWebApiControllers(GlobalConfiguration.Configuration);
 

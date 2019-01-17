@@ -99,20 +99,22 @@
     <Compile Include="Converters\OppositeBoolConverter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\MainPageService.cs" />
-    <Compile Include="Services\NavigateBack.cs" />
     <Compile Include="Services\PostService.cs" />
     <Compile Include="Services\SignupLoginService.cs" />
+    <Compile Include="UserControls\EditUserDetailsUserControl.xaml.cs">
+      <DependentUpon>EditUserDetailsUserControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="UserControls\FeedUserControl.xaml.cs">
       <DependentUpon>FeedUserControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UserControls\FollowedUsersUserControl.xaml.cs">
+      <DependentUpon>FollowedUsersUserControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="UserControls\PostUserControl.xaml.cs">
       <DependentUpon>PostUserControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="UserControls\UserProfileUserControl.xaml.cs">
       <DependentUpon>UserProfileUserControl.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\EditUserDetailsView.xaml.cs">
-      <DependentUpon>EditUserDetailsView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\MainPageView.xaml.cs">
       <DependentUpon>MainPageView.xaml</DependentUpon>
@@ -130,6 +132,7 @@
   <ItemGroup>
     <Content Include="Assets\document.png" />
     <Content Include="Assets\facebook.jpg" />
+    <Content Include="Assets\footsteps.png" />
     <Content Include="Assets\key.png" />
     <Content Include="Assets\like.png" />
     <Content Include="Assets\pen.png" />
@@ -176,7 +179,15 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Page Include="UserControls\EditUserDetailsUserControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="UserControls\FeedUserControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UserControls\FollowedUsersUserControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -185,14 +196,6 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="UserControls\UserProfileUserControl.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="UserControlls\NavBar.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Views\EditUserDetailsView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

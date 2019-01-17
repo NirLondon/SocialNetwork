@@ -1,4 +1,7 @@
-﻿using Neo4j.Driver.V1;
+﻿using Amazon;
+using Amazon.S3;
+using Amazon.S3.Model;
+using Neo4j.Driver.V1;
 using Newtonsoft.Json;
 using Social.Common.DAL;
 using Social.Common.Models;

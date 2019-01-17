@@ -3,6 +3,7 @@ using Social.Common.Models.ReturnedDTOs;
 using Social.Common.Models.UploadedDTOs;
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Social.Common.BL
 {

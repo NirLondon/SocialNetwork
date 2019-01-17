@@ -1,7 +1,4 @@
 ﻿using Authentication.Common.Enums;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Authentication.Common.Models
 {

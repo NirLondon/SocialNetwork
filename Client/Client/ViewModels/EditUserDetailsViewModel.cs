@@ -3,12 +3,13 @@ using Client.DataProviders;
 using Client.HttpClinents;
 using System.Threading.Tasks;
 using System.ComponentModel;
-using Identity.Common.Models;
+using Client.Models;
 
 namespace Client.ViewModels
 {
     public class EditUserDetailsViewModel : INotifyPropertyChanged
     {
+        public event PropertyChangedEventHandler PropertyChanged;
         private readonly IEditDetailsDataProvider _dataProvider;
 
         public EditUserDetailsViewModel(IEditDetailsDataProvider dataProvider)
@@ -36,15 +37,15 @@ namespace Client.ViewModels
             }
         }
 
-        public event PropertyChangedEventHandler PropertyChanged;
+        public void SaveChanges()
+        {
+            _dataProvider.UpdateUserDetails(UserDetails);
+        }
+
         private void OnPropertyChanged(string propertyName = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
-        public void SaveChanges()
-        {
-            _dataProvider.UpdateUserDetails(UserDetails);
-        }
     }
 }

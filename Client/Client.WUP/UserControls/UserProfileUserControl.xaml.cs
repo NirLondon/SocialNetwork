@@ -1,4 +1,5 @@
 ﻿using Client.ViewModels;
+using Client.Models;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -13,6 +14,7 @@ using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
+using Client.DataProviders;
 
 // The User Control item template is documented at https://go.microsoft.com/fwlink/?LinkId=234236
 
@@ -21,10 +23,10 @@ namespace Client.WUP.UserControls
     public sealed partial class UserProfileUserControl : UserControl
     {
         public UserProfileViewModel viewModel { get; set; }
-        public UserProfileUserControl()
+        public UserProfileUserControl(UserDetails details, ISocialDataProvider dataProvider)
         {
             this.InitializeComponent();
-            viewModel = new UserProfileViewModel();
+            viewModel = new UserProfileViewModel(details, dataProvider);
         }
     }
 }

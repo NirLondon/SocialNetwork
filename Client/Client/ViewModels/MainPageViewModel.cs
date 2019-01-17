@@ -8,10 +8,12 @@ namespace Client.ViewModels
     public class MainPageViewModel
     {
         private IMainPageService _viewService { get; set; }
+        public static bool _loggedWithFacebook { get; private set; }
 
-        public MainPageViewModel(IMainPageService service)
+        public MainPageViewModel(IMainPageService service, bool loggedWithFacebook)
         {
             _viewService = service;
+            _loggedWithFacebook = loggedWithFacebook;
         }
 
         public void GoToFeed()
@@ -24,9 +26,14 @@ namespace Client.ViewModels
             _viewService.GoToIdentity();
         }
 
+        public void GoToFollowed()
+        {
+            _viewService.GoToFollowed();
+        }
+
         public void logOut()
         {
-             _viewService.LogOut();
+            _viewService.LogOut();
         }
     }
 }
