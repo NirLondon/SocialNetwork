@@ -1,10 +1,4 @@
-﻿//using Authentication.BL;
-using Authentication.Common.BL;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
+﻿using Authentication.Common.BL;
 using System.Web.Http;
 
 namespace Authentication.Server.Controllers

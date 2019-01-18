@@ -14,10 +14,12 @@ namespace Authentication.Server.Controllers
     public class SignupLoginController : ApiController
     {
         private readonly IUsersManager _usersManager;
+        private readonly INotifier _notifier;
 
-        public SignupLoginController(IUsersManager usersManager)
+        public SignupLoginController(IUsersManager usersManager, INotifier notifier)
         {
             _usersManager = usersManager;
+            _notifier = notifier;
         }
 
         [HttpGet]
@@ -28,6 +30,7 @@ namespace Authentication.Server.Controllers
             var response = await Json(result).ExecuteAsync(new CancellationToken());
             if (result == SignupLoginResult.EverythingIsGood)
             {
+                _notifier.NotifyToIdentityService()
                 await NotifyToIdentityService(token, username);
                 response.Headers.Add("Token", token);
             }
