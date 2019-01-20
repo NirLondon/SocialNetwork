@@ -31,6 +31,16 @@ namespace Client.ViewModels
             _viewService.GoToFollowed();
         }
 
+        public void GoToFollowers()
+        {
+            _viewService.GoToFollowers();
+        }
+
+        public void GoToBlocked()
+        {
+            _viewService.GoToBlocked();
+        }
+
         public void logOut()
         {
             _viewService.LogOut();

@@ -10,5 +10,6 @@ namespace Client.Models
         public DateTime? BirthDate { get; set; }
         public string Job { get; set; }
         public bool IsBlocked { get; set; }
+        public bool IsFollowed { get; set; }
     }
 }

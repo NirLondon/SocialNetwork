@@ -1,4 +1,4 @@
-﻿using Client.Enum;
+﻿using Client.Enums;
 using Client.Models;
 using System.Threading.Tasks;
 

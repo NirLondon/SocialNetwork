@@ -1,6 +1,6 @@
 ﻿using Client.Models;
 using Client.DataProviders;
-using Client.Enum;
+using Client.Enums;
 using Client.ServicesInterfaces;
 using System;
 using System.Collections.Generic;
@@ -12,6 +12,8 @@ using Windows.Graphics.Imaging;
 using Windows.Storage;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Media.Imaging;
+using Social.Common.Models.ReturnedDTOs;
+using System.Collections.ObjectModel;
 
 namespace Client.ViewModels
 {
@@ -21,10 +23,14 @@ namespace Client.ViewModels
         private IPostService _viewService { get; set; }
         private readonly ISocialDataProvider _socialDataProvider;
         private readonly IEditDetailsDataProvider _editDetailsDataProvider;
-        public Post CurrentPost { get; set; }
+        public ReturnedPost CurrentPost { get; set; }
+        public ObservableCollection<RetunredComment> Comments { get; set; }
+        private List<RetunredComment> _hiddenComments { get; set; }
         public string CommentText { get; set; }
         public byte[] Image { get; set; }
         public List<string> Tags { get; set; }
+        public int Likes { get; set; }
+        public bool ShowComments { get; set; }
 
         private string _message;
         public string Message
@@ -39,14 +45,18 @@ namespace Client.ViewModels
             _viewService = service;
             _socialDataProvider = dataprovider;
             _editDetailsDataProvider = editDetailsDataProvider;
+            CommentText = string.Empty;
+            Image = new byte[32];
+            Tags = new List<string>();
+            ShowComments = false;
         }
 
         public async void PublishComment()
         {
             try
             {
-                var comment = await _socialDataProvider.PublishComment(CommentText, Image, Tags.ToArray());
-                CurrentPost.Comments.Add(comment);
+                var comment = await _socialDataProvider.Comment(CommentText, Image, Tags.ToArray());
+                Comments.Add(comment);
             }
             catch (UnauthorizedAccessException e)
             {
@@ -77,9 +87,17 @@ namespace Client.ViewModels
         {
             try
             {
-                await _socialDataProvider.LikePost(CurrentPost.ID);
-                CurrentPost.Likes++;
-                CurrentPost.DidLiked = true;
+                if (CurrentPost.IsLiked)
+                {
+                    await _socialDataProvider.LikePost(CurrentPost.PostId);
+                    Likes--;
+                }
+                else
+                {
+                    await _socialDataProvider.DisLikePost(CurrentPost.PostId);
+                    Likes++;
+                }
+                CurrentPost.IsLiked = !CurrentPost.IsLiked;
             }
             catch (UnauthorizedAccessException e)
             {
@@ -87,9 +105,38 @@ namespace Client.ViewModels
             }
         }
 
+        public async void ExpandComments()
+        {
+            if (ShowComments)
+            {
+                Comments.Clear();
+            }
+            else
+            {
+                if (Comments == null)
+                {
+                    _hiddenComments = new List<RetunredComment>();
+                    Comments = new ObservableCollection<RetunredComment>();
+                    try
+                    {
+                        _hiddenComments = await _socialDataProvider.GetComments(CurrentPost.PostId);
+                    }
+                    catch (UnauthorizedAccessException e)
+                    {
+                        ExpiredToken();
+                    }
+                }
+                foreach (var comment in _hiddenComments)
+                {
+                    Comments.Add(comment);
+                }
+            }
+            ShowComments = !ShowComments;
+        }
+
         private void ExpiredToken()
         {
-             _viewService.LogOut();
+            _viewService.LogOut();
         }
 
         private void OnPropertyChange(string propname = null)

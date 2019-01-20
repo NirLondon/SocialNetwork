@@ -1,6 +1,6 @@
 ﻿using Client.Models;
 using Client.DataProviders;
-using Client.Enum;
+using Client.Enums;
 using System;
 using System.Collections.Generic;
 using System.Net.Http;
@@ -10,6 +10,8 @@ using Windows.UI.Xaml.Media.Imaging;
 using System.Linq;
 using System.Net;
 using Client.Exeptions;
+using Social.Common.Models.UploadedDTOs;
+using Social.Common.Models.ReturnedDTOs;
 
 namespace Client.HttpClinents
 {
@@ -35,21 +37,34 @@ namespace Client.HttpClinents
             }
         }
 
-        public async Task<List<Post>> GetPosts()
+        public async Task UnFollow(string userID)
+        {
+            var response = await httpClient.GetAsync($"UnFollow/{userID}");
+            switch (response.StatusCode)
+            {
+                case HttpStatusCode.OK:
+                    SetCurrentToken(response.Headers.GetValues("Token").FirstOrDefault());
+                    break;
+                case HttpStatusCode.Unauthorized:
+                    throw new TokenExpiredExeption();
+            }
+        }
+
+        public async Task<List<ReturnedPost>> GetPosts()
         {
             var response = await httpClient.GetAsync($"GetPosts/{SkipPostAmount}/{GetPostIndex}");
             switch (response.StatusCode)
             {
                 case HttpStatusCode.OK:
                     SetCurrentToken(response.Headers.GetValues("Token").FirstOrDefault());
-                    return await response.Content.ReadAsAsync<List<Post>>();
+                    return await response.Content.ReadAsAsync<List<ReturnedPost>>();
                 case HttpStatusCode.Unauthorized:
                     throw new TokenExpiredExeption();
             }
             return null;
         }
 
-        public async Task LikePost(string postID)
+        public async Task LikePost(Guid postID)
         {
             var response = await httpClient.GetAsync($"Like/{postID}");
             switch (response.StatusCode)
@@ -62,9 +77,22 @@ namespace Client.HttpClinents
             }
         }
 
-        public async Task<Comment> PublishComment(string text, byte[] arr, string[] tags)
+        public async Task DisLikePost(Guid postID)
         {
-            var response = await httpClient.PostAsJsonAsync($"PublishComment", new UploaddedPost
+            var response = await httpClient.GetAsync($"UnLike/{postID}");
+            switch (response.StatusCode)
+            {
+                case HttpStatusCode.OK:
+                    SetCurrentToken(response.Headers.GetValues("Token").FirstOrDefault());
+                    break;
+                case HttpStatusCode.Unauthorized:
+                    throw new TokenExpiredExeption();
+            }
+        }
+
+        public async Task<RetunredComment> Comment(string text, byte[] arr, string[] tags)
+        {
+            var response = await httpClient.PostAsJsonAsync($"PublishComment", new UploadedPost
             {
                 Image = arr,
                 Content = text,
@@ -74,26 +102,21 @@ namespace Client.HttpClinents
             {
                 case HttpStatusCode.OK:
                     SetCurrentToken(response.Headers.GetValues("Token").FirstOrDefault());
-                    return response.Content.ReadAsAsync<Comment>().Result;
+                    return response.Content.ReadAsAsync<RetunredComment>().Result;
                 case HttpStatusCode.Unauthorized:
                     throw new TokenExpiredExeption();
             }
             return null;
         }
 
-        public async Task<Post> PublishPost(string text, byte[] arr, string[] tags)
+        public async Task<ReturnedPost> Post(UploadedPost post)
         {
-            var response = await httpClient.PostAsJsonAsync($"PublishPost", new UploaddedPost
-            {
-                Image = arr,
-                Content = text,
-                TagedUsersIds = tags
-            });
+            var response = await httpClient.PostAsJsonAsync($"Post", post);
             switch (response.StatusCode)
             {
                 case HttpStatusCode.OK:
                     SetCurrentToken(response.Headers.GetValues("Token").FirstOrDefault());
-                    return response.Content.ReadAsAsync<Post>().Result;
+                    return response.Content.ReadAsAsync<ReturnedPost>().Result;
                 case HttpStatusCode.Unauthorized:
                     throw new TokenExpiredExeption();
             }
@@ -114,15 +137,74 @@ namespace Client.HttpClinents
             }
         }
 
-        public async Task<IEnumerable<UserDetails>> GetFollowed()
+        public async Task UnBlock(string userID)
         {
-            var response = await httpClient.GetAsync("GetFollowedUsers");
+            var response = await httpClient.GetAsync($"UnBlockUser/{userID}");
 
             switch (response.StatusCode)
             {
                 case HttpStatusCode.OK:
                     SetCurrentToken(response.Headers.GetValues("Token").FirstOrDefault());
-                    return response.Content.ReadAsAsync<IEnumerable<UserDetails>>().Result;
+                    break;
+                case HttpStatusCode.Unauthorized:
+                    throw new TokenExpiredExeption();
+            }
+        }
+
+        public async Task<List<UserDetails>> GetFollowed()
+        {
+            var response = await httpClient.GetAsync("Followed");
+
+            switch (response.StatusCode)
+            {
+                case HttpStatusCode.OK:
+                    SetCurrentToken(response.Headers.GetValues("Token").FirstOrDefault());
+                    return response.Content.ReadAsAsync<List<UserDetails>>().Result;
+                case HttpStatusCode.Unauthorized:
+                    throw new TokenExpiredExeption();
+            }
+            return null;
+        }
+
+        public async Task<List<UserDetails>> GetFollowers()
+        {
+            var response = await httpClient.GetAsync("Followers");
+
+            switch (response.StatusCode)
+            {
+                case HttpStatusCode.OK:
+                    SetCurrentToken(response.Headers.GetValues("Token").FirstOrDefault());
+                    return response.Content.ReadAsAsync<List<UserDetails>>().Result;
+                case HttpStatusCode.Unauthorized:
+                    throw new TokenExpiredExeption();
+            }
+            return null;
+        }
+
+        public async Task<List<UserDetails>> GetBlocked()
+        {
+            var response = await httpClient.GetAsync("Blocked");
+
+            switch (response.StatusCode)
+            {
+                case HttpStatusCode.OK:
+                    SetCurrentToken(response.Headers.GetValues("Token").FirstOrDefault());
+                    return response.Content.ReadAsAsync<List<UserDetails>>().Result;
+                case HttpStatusCode.Unauthorized:
+                    throw new TokenExpiredExeption();
+            }
+            return null;
+        }
+
+        public async Task<List<RetunredComment>> GetComments(Guid postID)
+        {
+            var response = await httpClient.GetAsync($"GetComments/{postID}");
+
+            switch (response.StatusCode)
+            {
+                case HttpStatusCode.OK:
+                    SetCurrentToken(response.Headers.GetValues("Token").FirstOrDefault());
+                    return response.Content.ReadAsAsync<List<RetunredComment>>().Result;
                 case HttpStatusCode.Unauthorized:
                     throw new TokenExpiredExeption();
             }

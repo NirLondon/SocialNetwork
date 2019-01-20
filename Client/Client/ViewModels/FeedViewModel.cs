@@ -1,6 +1,6 @@
 ﻿using Client.Models;
 using Client.DataProviders;
-using Client.Enum;
+using Client.Enums;
 using Client.ServicesInterfaces;
 using System;
 using System.Collections.Generic;
@@ -8,6 +8,8 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Text;
 using Windows.UI.Xaml.Media.Imaging;
+using Social.Common.Models.ReturnedDTOs;
+using Social.Common.Models.UploadedDTOs;
 
 namespace Client.ViewModels
 {
@@ -17,11 +19,13 @@ namespace Client.ViewModels
         private IPostService _viewService { get; set; }
         private readonly ISocialDataProvider _socialDataProvider;
         private readonly IEditDetailsDataProvider _editDetailsDataProvider;
-        public ObservableCollection<Post> Posts { get; set; }
+        public ObservableCollection<ReturnedPost> Posts { get; set; }
         public ObservableCollection<PostViewModel> PostViewModels { get; set; }
         public string PostText { get; set; } = "";
         private byte[] Image { get; set; }
         public List<string> Tags { get; set; }
+        public ObservableCollection<string> PostVisibility { get; set; }
+        public int VisibilityIndex { get; set; } = -1;
 
         private string _message;
         public string Message
@@ -49,8 +53,7 @@ namespace Client.ViewModels
         {
             try
             {
-                var post = await _socialDataProvider.PublishPost(PostText, Image, Tags.ToArray());
-                //Posts.Add(tuple.Item2);
+                var post = await _socialDataProvider.Post(GeneratePostToUpload());
                 PostViewModels.Add(new PostViewModel(_viewService, _socialDataProvider, _editDetailsDataProvider) { CurrentPost = post });
             }
             catch (UnauthorizedAccessException e)
@@ -59,37 +62,52 @@ namespace Client.ViewModels
             }
         }
 
+        public void SelectVisibility(object sender, object e)
+        {
+
+        }
+
         private async void InitPosts()
         {
-            Tags = new List<string>();
-            Posts = new ObservableCollection<Post>();
-            Post p1 = new Post()
+            UserMention u1 = new UserMention
             {
-                Publisher = "oded",
-                IMGURL = "https://static.boredpanda.com/blog/wp-content/uploads/2018/04/5acb63d83493f__700-png.jpg",
-                Text = "this is the new post. bla bla",
-                PublishDate = DateTime.Now,
-                Likes = 20
+                FullName = "oded bartov",
+                UserId = "1234"
             };
-            Post p2 = new Post()
+            UserMention u2 = new UserMention
             {
-                Publisher = "nir",
-                IMGURL = "https://media.mnn.com/assets/images/2018/07/cat_eating_fancy_ice_cream.jpg.838x0_q80.jpg",
-                Text = "this is nir post, just another post",
-                PublishDate = DateTime.Now - new TimeSpan(100, 0, 0, 0, 0),
-                Likes = 12
+                FullName = "nir london",
+                UserId = "5678"
+            };
+            Tags = new List<string>();
+            Posts = new ObservableCollection<ReturnedPost>();
+            ReturnedPost p1 = new ReturnedPost()
+            {
+                Poster = u1,
+                ImageURL = "https://static.boredpanda.com/blog/wp-content/uploads/2018/04/5acb63d83493f__700-png.jpg",
+                Content = "this is the new post. bla bla",
+                UploadingTime = DateTime.Now,
+                IsLiked = true,
+                PostId = new Guid(new byte[16])
+            };
+            ReturnedPost p2 = new ReturnedPost()
+            {
+                Poster = u2,
+                ImageURL = "https://media.mnn.com/assets/images/2018/07/cat_eating_fancy_ice_cream.jpg.838x0_q80.jpg",
+                Content = "this is nir post, just another post",
+                UploadingTime = DateTime.Now - new TimeSpan(100, 0, 0, 0, 0),
+                IsLiked = false,
+                PostId = new Guid(new byte[16])
             };
             Posts.Add(p1);
             Posts.Add(p2);
 
-            Comment c1 = new Comment()
+            PostVisibility = new ObservableCollection<string>();
+            var arr = Enum.GetNames(typeof(PostVisibility));
+            foreach (var item in arr)
             {
-                PublishDate = DateTime.Now,
-                Publisher = "Avi",
-                Text = "just a comment without an image"
-            };
-            p1.Comments.Add(c1);
-
+                PostVisibility.Add(item);
+            }
             InitPostsViewModels(Posts);
 
             //var tuple = await _dataProvider.GetPosts();
@@ -99,7 +117,7 @@ namespace Client.ViewModels
             //    ManageError(tuple.Item1);
         }
 
-        private void InitPostsViewModels(IEnumerable<Post> postsList)
+        private void InitPostsViewModels(IEnumerable<ReturnedPost> postsList)
         {
             PostViewModels = new ObservableCollection<PostViewModel>();
             foreach (var item in postsList)
@@ -111,6 +129,17 @@ namespace Client.ViewModels
         private void ExpiredToken()
         {
             _viewService.LogOut();
+        }
+
+        private UploadedPost GeneratePostToUpload()
+        {
+            UploadedPost post = new UploadedPost
+            {
+                Content = PostText,
+                Image = Image,
+                TagedUsersIds = Tags.ToArray()
+            };
+            return post;
         }
 
         private void OnPropertyChange(string propname = null)

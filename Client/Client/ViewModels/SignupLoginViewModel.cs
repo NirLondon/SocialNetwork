@@ -1,5 +1,5 @@
 ﻿using Client.DataProviders;
-using Client.Enum;
+using Client.Enums;
 using Client.Exeptions;
 using Client.HttpClinents;
 using Client.ServicesInterfaces;

@@ -27,5 +27,10 @@ namespace Client.WUP.UserControls
         {
             ((PostViewModel)DataContext).GoToProfile();
         }
+
+        private void ExpandComments(object sender, RoutedEventArgs e)
+        {
+            ((PostViewModel)DataContext).ExpandComments();
+        }
     }
 }

@@ -66,5 +66,17 @@ namespace Client.WUP.Services
             stackPanelContent.Children.Clear();
             stackPanelContent.Children.Add(new FollowedUsersUserControl());
         }
+
+        public void GoToFollowers()
+        {
+            stackPanelContent.Children.Clear();
+            stackPanelContent.Children.Add(new FollowersUserControl());
+        }
+
+        public void GoToBlocked()
+        {
+            stackPanelContent.Children.Clear();
+            stackPanelContent.Children.Add(new BlockedUserControl());
+        }
     }
 }

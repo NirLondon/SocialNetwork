@@ -5,7 +5,7 @@
     xmlns:local="using:Client.WUP.UserControls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:models="using:Client.Models"
+    xmlns:models="using:Social.Common.Models.ReturnedDTOs"
     xmlns:vm="using:Client.ViewModels"
     xmlns:converter="using:Client.WUP.Converters"
     mc:Ignorable="d"
@@ -16,30 +16,30 @@
     </UserControl.Resources>
     <Grid>
         <StackPanel>
-            <StackPanel Margin="20">
+            <StackPanel Margin="10">
                 <StackPanel Orientation="Horizontal">
-                    <TextBlock Margin="10" Text="{Binding CurrentPost.Publisher}" FontSize="20" FontWeight="Black" DoubleTapped="GoToProfile"/>
-                    <TextBlock Margin="10" Text="{Binding CurrentPost.PublishDate}" FontSize="20" FontWeight="Bold"/>
+                    <TextBlock Margin="10" Text="{Binding CurrentPost.Poster.FullName}" FontSize="20" FontWeight="Black" DoubleTapped="GoToProfile"/>
+                    <TextBlock Margin="10" Text="{Binding CurrentPost.UploadingTime}" FontSize="20" FontWeight="Bold"/>
                 </StackPanel>
-                <Image Margin="10" Source="{Binding CurrentPost.IMGURL}" Width="280"/>
-                <TextBlock Margin="10" Text="{Binding CurrentPost.Text}" FontSize="20"/>
-                <Button Margin="10" IsEnabled="{Binding CurrentPost.DidLiked, Converter={StaticResource LikeConverter}}">
+                <Image Margin="10" Source="{Binding CurrentPost.ImageURL}" Width="280"/>
+                <TextBlock Margin="10" Text="{Binding CurrentPost.Content}" FontSize="20"/>
+                <Button Margin="10" IsEnabled="{Binding CurrentPost.IsLiked, Converter={StaticResource LikeConverter}}">
                     <StackPanel Orientation="Horizontal">
                         <Image Source="/Assets/like.png" Height="20"/>
                         <TextBlock Text="{Binding CurrentPost.Likes}"/>
                     </StackPanel>
                 </Button>
                 <StackPanel Margin="10">
-                    <ListView ItemsSource="{Binding CurrentPost.Comments}" SelectionMode="None">
+                    <ListView ItemsSource="{Binding Comments}" SelectionMode="None">
                         <ListView.ItemTemplate>
-                            <DataTemplate x:DataType="models:Post">
+                            <DataTemplate x:DataType="models:RetunredComment">
                                 <StackPanel>
                                     <StackPanel Orientation="Horizontal">
-                                        <TextBlock Margin="10" Text="{Binding Publisher}" FontSize="15" FontWeight="Black"/>
-                                        <TextBlock Margin="10" Text="{Binding PublishDate}" FontSize="15" FontWeight="Bold"/>
+                                        <TextBlock Margin="10" Text="{Binding Commenter.FullName}" FontSize="15" FontWeight="Black"/>
+                                        <TextBlock Margin="10" Text="{Binding UploadingTime}" FontSize="15" FontWeight="Bold"/>
                                     </StackPanel>
-                                    <Image Source="{Binding IMGURL}" Width="170"/>
-                                    <TextBlock Margin="10" Text="{Binding Text}" FontSize="15"/>
+                                    <Image Source="{Binding ImageURL}" Width="170"/>
+                                    <TextBlock Margin="10" Text="{Binding Content}" FontSize="15"/>
                                 </StackPanel>
                             </DataTemplate>
                         </ListView.ItemTemplate>
@@ -51,7 +51,8 @@
                     </StackPanel>
                     <Button Margin="5" Background="Transparent" Content="Publish" Click="PublishComment" FontWeight="ExtraBlack"/>
                 </StackPanel>
-                <TextBlock Margin="10" Text="-----------------------------------------------------------------------------------------------------------------------"/>
+                <Button Margin="5" HorizontalAlignment="Center" Content="Show/Hide Comments" Click="ExpandComments"/>
+                <TextBlock Margin="10" Text="-------------------------------------------------------------------------------------"/>
             </StackPanel>
         </StackPanel>
     </Grid>

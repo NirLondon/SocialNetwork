@@ -1,5 +1,5 @@
 ﻿<UserControl
-    x:Class="Client.WUP.UserControls.FollowedUsersUserControl"
+    x:Class="Client.WUP.UserControls.BlockedUserControl"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:Client.WUP.UserControls"
@@ -11,7 +11,7 @@
 
     <Grid>
         <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
-            <TextBlock Margin="20" Text="Followed users" FontWeight="ExtraBold" FontSize="50"/>
+            <TextBlock Margin="20" Text="Blocked users" FontWeight="ExtraBold" FontSize="50"/>
             <ScrollViewer Margin="0,10,0,0" HorizontalScrollBarVisibility="Visible" Height="300">
                 <ListView ItemsSource="{x:Bind viewModel.Users, Mode=TwoWay}" SelectedItem="{x:Bind viewModel.SelectedUser, Mode=TwoWay}">
                     <ListView.ItemTemplate>
@@ -24,9 +24,9 @@
                     </ListView.ItemTemplate>
                 </ListView>
             </ScrollViewer>
-            <StackPanel Margin="10" HorizontalAlignment="Center" Orientation="Horizontal">
-                <Button Margin="5" Content="UnFollow" Click="{x:Bind viewModel.UnFollow}" IsEnabled="{x:Bind viewModel.IsItemSelected, Mode=OneWay}"/>
-                <Button Margin="5" Content="Go to profile" Click="{x:Bind viewModel.GoToProfile}" IsEnabled="{x:Bind viewModel.IsItemSelected, Mode=OneWay}"/>
+            <StackPanel Margin="10" HorizontalAlignment="Center" VerticalAlignment="Top" Orientation="Horizontal">
+                <Button Margin="5" Content="UnFollow" Click="{x:Bind viewModel.UnBlock}"/>
+                <Button Margin="5" Content="Go to profile" Click="{x:Bind viewModel.GoToProfile}"/>
             </StackPanel>
         </StackPanel>
     </Grid>

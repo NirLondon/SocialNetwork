@@ -9,7 +9,7 @@ using System.Text;
 
 namespace Client.ViewModels
 {
-    public class FollowedUsersViewModel : INotifyPropertyChanged
+    public class BlockedViewModel : INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler PropertyChanged;
         public ISocialDataProvider _dataProvider { get; set; }
@@ -35,19 +35,19 @@ namespace Client.ViewModels
             set { _isItemSelected = value; OnPropertyChange(); }
         }
 
-        public FollowedUsersViewModel(ISocialDataProvider dataProvider, IFollowedUsersService followedService)
+        public BlockedViewModel(ISocialDataProvider dataProvider, IFollowedUsersService followedService)
         {
             _dataProvider = dataProvider;
             _followedService = followedService;
-             InitUsers();
+            InitUsers();
         }
 
 
-        public async void UnFollow()
+        public async void UnBlock()
         {
             try
             {
-                await _dataProvider.UnFollow(SelectedUser.UserID);
+                await _dataProvider.UnBlock(SelectedUser.UserID);
                 Users.Remove(SelectedUser);
             }
             catch (UnauthorizedAccessException e)
@@ -61,12 +61,13 @@ namespace Client.ViewModels
             _followedService.GoToUserProfile(SelectedUser, _dataProvider);
         }
 
+
         private async void InitUsers()
         {
             Users = new ObservableCollection<UserDetails>();
             try
             {
-                var result = await _dataProvider.GetFollowed();
+                var result = await _dataProvider.GetBlocked();
                 foreach (var user in Users)
                 {
                     Users.Add(user);
@@ -87,6 +88,5 @@ namespace Client.ViewModels
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propname));
         }
-
     }
 }

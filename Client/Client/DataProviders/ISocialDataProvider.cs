@@ -1,27 +1,41 @@
 ﻿using Client.Models;
-using Client.Enum;
+using Client.Enums;
 using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 using Windows.UI.Xaml.Media.Imaging;
+using Social.Common.Models.ReturnedDTOs;
+using Social.Common.Models.UploadedDTOs;
 
 namespace Client.DataProviders
 {
     public interface ISocialDataProvider
     {
-        Task<Post> PublishPost(string text, byte[] arr, string[] tags);
+        Task<ReturnedPost> Post(UploadedPost post);
 
-        Task<Comment> PublishComment(string text, byte[] arr, string[] tags);
+        Task<RetunredComment> Comment(string text, byte[] arr, string[] tags);
 
-        Task<List<Post>> GetPosts();
+        Task<List<ReturnedPost>> GetPosts();
 
         Task Follow(string userID);
 
-        Task LikePost(string postID);
+        Task LikePost(Guid postID);
+
+        Task DisLikePost(Guid postID);
 
         Task Block(string userID);
 
-        Task<IEnumerable<UserDetails>> GetFollowed();
+        Task UnBlock(string userID);
+
+        Task<List<UserDetails>> GetBlocked();
+
+        Task<List<UserDetails>> GetFollowed();
+
+        Task<List<UserDetails>> GetFollowers();
+
+        Task<List<RetunredComment>> GetComments(Guid postID);
+
+        Task UnFollow(string userID);
     }
 }
