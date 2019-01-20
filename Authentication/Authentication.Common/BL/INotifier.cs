@@ -2,8 +2,8 @@
 {
     public interface INotifier
     {
-        void NotifyToSocailService(string username);
+        void NotifyToSocailService(string userId, string token);
 
-        void NotifyToIdentityService(string username);
+        void NotifyToIdentityService(string userId, string token);
     }
 }

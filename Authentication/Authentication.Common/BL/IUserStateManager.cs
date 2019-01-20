@@ -1,6 +1,6 @@
 ﻿namespace Authentication.Common.BL
 {
-    public interface IUserState
+    public interface IUserStateManager
     {
         void BlockUser(string username);
 

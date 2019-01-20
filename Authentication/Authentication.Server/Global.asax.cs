@@ -22,9 +22,10 @@ namespace Authentication.Server
             var container = new Container();
             container.Options.DefaultScopedLifestyle = new AsyncScopedLifestyle();
 
-            container.Register<IUsersManager>(() => BlResolver.GetInstanceOf<IUsersManager>());
-            container.Register<IUserState>(() => BlResolver.GetInstanceOf<IUserState>());
-            container.Register<ITokensValidator>(() => BlResolver.GetInstanceOf<ITokensValidator>());
+            container.RegisterSingleton<IUsersManager>(() => BlResolver.GetInstanceOf<IUsersManager>());
+            container.RegisterSingleton<IUserStateManager>(() => BlResolver.GetInstanceOf<IUserStateManager>());
+            container.RegisterSingleton<ITokensValidator>(() => BlResolver.GetInstanceOf<ITokensValidator>());
+            container.RegisterSingleton<INotifier>(() => BlResolver.GetInstanceOf<INotifier>());
 
             container.RegisterWebApiControllers(GlobalConfiguration.Configuration);
 

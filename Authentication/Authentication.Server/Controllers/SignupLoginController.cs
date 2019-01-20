@@ -1,12 +1,9 @@
-﻿using System;
-using System.Net.Http;
+﻿using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Web.Http;
 using Authentication.Common.BL;
 using Authentication.Common.Enums;
-using Authentication.Server.Models;
-using Identity.Common.Models;
 
 namespace Authentication.Server.Controllers
 {
@@ -30,8 +27,8 @@ namespace Authentication.Server.Controllers
             var response = await Json(result).ExecuteAsync(new CancellationToken());
             if (result == SignupLoginResult.EverythingIsGood)
             {
-                _notifier.NotifyToIdentityService()
-                await NotifyToIdentityService(token, username);
+                _notifier.NotifyToIdentityService(username, token);
+                _notifier.NotifyToSocailService(username, token);
                 response.Headers.Add("Token", token);
             }
             return response;
@@ -78,21 +75,6 @@ namespace Authentication.Server.Controllers
         public SignupLoginResult ResetPassword(string username, string oldPassword, string newPassword)
         {
             return _usersManager.ResetPassword(username, oldPassword, newPassword);
-        }
-
-        private async Task NotifyToIdentityService(string token, string username)
-        {
-            var details = new UserDetails { UserId = username };
-            HttpClient client = new HttpClient();
-            client.DefaultRequestHeaders.Add("Token", token);
-            await client.PutAsJsonAsync("http://localhost:63276/api/users/editdetails", details);
-            //http://localhost:63276/
-            //http://SocialNetwork.Identity.com
-        }
-
-        private void NotifyToSocialService(string token, string username)
-        {
-            throw new NotImplementedException();
         }
     }
 }

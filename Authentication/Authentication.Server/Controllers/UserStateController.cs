@@ -1,31 +1,38 @@
 ﻿using Authentication.Common.BL;
+using System;
 using System.Web.Http;
 
 namespace Authentication.Server.Controllers
 {
+    [RoutePrefix("api/Users")]
     public class UserStateController : ApiController
     {
-        IUserState repository;
-        const string api = "api/UserState/";
+        IUserStateManager _manager;
 
-        public UserStateController(IUserState manager)
+        public UserStateController(IUserStateManager manager)
         {
-            repository = manager;
+            _manager = manager;
         }
 
-
-        [HttpGet]
-        [Route(api + "BlockUser/{username}")]
-        public void BlockUser(string username)
+        [HttpPut]
+        [Route("{userId}/Block")]
+        public void BlockUser(string userId)
         {
-            repository.BlockUser(username);
+            if (IsAuthorized())
+                _manager.BlockUser(userId);
         }
 
-        [HttpGet]
-        [Route(api + "UnBlockUser/{username}")]
-        public void UnBlockUser(string username)
+        [HttpPut]
+        [Route("{userId}/Unblock")]
+        public void UnBlockUser(string userId)
         {
-            repository.UnblockUser(username);
+            if (IsAuthorized())
+                _manager.UnblockUser(userId);
+        }
+
+        private bool IsAuthorized()
+        {
+            throw new NotImplementedException();
         }
     }
 }

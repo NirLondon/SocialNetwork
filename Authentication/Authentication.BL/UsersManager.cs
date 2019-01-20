@@ -22,7 +22,7 @@ namespace Authentication.BL
         {
             string token = null;
             SignupLoginResult eror = SignupLoginResult.WrongUsernameOrPassword;
-            if (password != null || password != "")
+            if (!string.IsNullOrEmpty(password))
             {
                 UserModel user = new UserModel
                 {
