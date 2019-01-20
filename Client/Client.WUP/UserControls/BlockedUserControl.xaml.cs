@@ -21,17 +21,17 @@ using Windows.UI.Xaml.Navigation;
 
 namespace Client.WUP.UserControls
 {
-    public sealed partial class FollowedUsersUserControl : UserControl
+    public sealed partial class BlockedUserControl : UserControl
     {
-        public FollowedUsersViewModel viewModel { get; set; }
+        public BlockedViewModel viewModel { get; set; }
         public ISocialDataProvider dataProvider { get; set; }
-        public FollowedUserService followedService  { get; set; }
-        public FollowedUsersUserControl()
+        public FollowedUserService followedService { get; set; }
+        public BlockedUserControl()
         {
             this.InitializeComponent();
             dataProvider = new SocialHttpClient();
             followedService = new FollowedUserService();
-            viewModel = new FollowedUsersViewModel(dataProvider, followedService);
+            viewModel = new BlockedViewModel(dataProvider, followedService);
         }
     }
 }

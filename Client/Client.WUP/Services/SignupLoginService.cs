@@ -1,4 +1,4 @@
-﻿using Client.Enum;
+﻿using Client.Enums;
 using Client.ServicesInterfaces;
 using Client.WUP.Views;
 using Microsoft.Toolkit.Uwp.Services.Facebook;

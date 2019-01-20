@@ -34,7 +34,6 @@
             </StackPanel>
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Spacing="25">
                 <Button Content="Save changes" Click="{x:Bind ViewModel.SaveChanges}"/>
-                <Button Content="Cancel"/>
             </StackPanel>
         </StackPanel>
     </Grid>

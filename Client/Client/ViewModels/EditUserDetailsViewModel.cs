@@ -4,6 +4,7 @@ using Client.HttpClinents;
 using System.Threading.Tasks;
 using System.ComponentModel;
 using Client.Models;
+using Client.ServicesInterfaces;
 
 namespace Client.ViewModels
 {
@@ -11,21 +12,7 @@ namespace Client.ViewModels
     {
         public event PropertyChangedEventHandler PropertyChanged;
         private readonly IEditDetailsDataProvider _dataProvider;
-
-        public EditUserDetailsViewModel(IEditDetailsDataProvider dataProvider)
-        {
-            this._dataProvider = dataProvider ?? throw new ArgumentNullException(nameof(dataProvider));
-
-            UserDetails = new UserDetails();
-            InitializeUserDetails();
-        }
-
-        public EditUserDetailsViewModel() : this(new EditDetailsHttpClient()) { }
-
-        private async Task InitializeUserDetails()
-        {
-            UserDetails = await _dataProvider.GetUserDetails();
-        }
+        public IFollowedUsersService _followedService { get; set; }
 
         private UserDetails _userDetails;
         public UserDetails UserDetails
@@ -37,15 +24,47 @@ namespace Client.ViewModels
             }
         }
 
-        public void SaveChanges()
+        public EditUserDetailsViewModel(IEditDetailsDataProvider dataProvider, IFollowedUsersService followService)
         {
-            _dataProvider.UpdateUserDetails(UserDetails);
+            _dataProvider = dataProvider;
+            _followedService = followService;
+            UserDetails = new UserDetails();
+            InitializeUserDetails();
+        }
+
+        public async void SaveChanges()
+        {
+            try
+            {
+                await _dataProvider.UpdateUserDetails(UserDetails);
+            }
+            catch (UnauthorizedAccessException e)
+            {
+                ExpiredTpken();
+            }
+        }
+
+
+        private async void InitializeUserDetails()
+        {
+            try
+            {
+                UserDetails = await _dataProvider.GetUserDetails();
+            }
+            catch (UnauthorizedAccessException e)
+            {
+                ExpiredTpken();
+            }
+        }
+
+        private void ExpiredTpken()
+        {
+            _followedService.LogOut();
         }
 
         private void OnPropertyChanged(string propertyName = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
-
     }
 }

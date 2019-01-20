@@ -21,9 +21,11 @@
                 <TextBlock Margin="5" Text="Share your thougths:"/>
                 <TextBox Margin="5" Text="{x:Bind viewModel.PostText, Mode=TwoWay}"/>
                 <Button Margin="5" Content="Choose image" Click="{x:Bind viewModel.ChooseImage}"/>
+                <TextBlock Margin="5" Text="Visibility"/>
+                <ComboBox Margin="5" SelectedIndex="{x:Bind viewModel.VisibilityIndex, Mode=TwoWay}" ItemsSource="{x:Bind viewModel.PostVisibility}"/>
             </StackPanel>
-            <Button Margin="5" Background="Transparent" Content="Publish" Click="{x:Bind viewModel.PublishPost}" FontWeight="ExtraBlack"/>
-            <ScrollViewer Margin="0,30,0,0" HorizontalScrollBarVisibility="Visible" Height="600">
+            <Button Background="Transparent" Content="Publish" Click="{x:Bind viewModel.PublishPost}" FontWeight="ExtraBlack"/>
+            <ScrollViewer Margin="0,15,0,0" HorizontalScrollBarVisibility="Visible" Height="450">
                 <ListView ItemsSource="{x:Bind viewModel.PostViewModels, Mode=TwoWay}" SelectionMode="None">
                     <ListView.ItemTemplate>
                         <DataTemplate>

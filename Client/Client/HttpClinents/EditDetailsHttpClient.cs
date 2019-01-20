@@ -1,5 +1,5 @@
 ﻿using Client.DataProviders;
-using Client.Enum;
+using Client.Enums;
 using Client.Exeptions;
 using Client.Models;
 using Newtonsoft.Json;
@@ -21,7 +21,7 @@ namespace Client.HttpClinents
         //http://SocialNetwork.Social.com/
         public async Task<UserDetails> GetUserDetails()
         {
-            var response = await httpClient.GetAsync($"api/users/GetUserDetails");
+            var response = await httpClient.GetAsync($"GetUserDetails");
             switch (response.StatusCode)
             {
                 case HttpStatusCode.OK:

@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
-using Client.Enum;
+using Client.Enums;
 
 namespace Client.DataProviders
 {
