@@ -13,11 +13,13 @@ namespace Authentication.BL
         {
             _container = new Container();
 
-            _container.Register<IUsersRepository>(() => new UsersRepository());
-            _container.Register<ITokensRepository>(() => new TokensRepository());
-            _container.Register<IUsersManager, UsersManager>();
-            _container.Register<ITokensValidator, TokensValidator>();
-            _container.Register<IUserState, UserStateManager>();
+            _container.RegisterSingleton<IUsersRepository>(() => new UsersRepository());
+            _container.RegisterSingleton<ITokensRepository>(() => new TokensRepository());
+
+            _container.RegisterSingleton<IUsersManager, UsersManager>();
+            _container.RegisterSingleton<ITokensValidator, TokensValidator>();
+            _container.RegisterSingleton<IUserStateManager, UserStateManager>();
+            _container.RegisterSingleton<INotifier, Notifier>();
 
             _container.Verify();
         }

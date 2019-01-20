@@ -1,12 +1,9 @@
 ﻿using Authentication.Common.BL;
 using Authentication.DAL;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Authentication.BL
 {
-    public class UserStateManager : IUserState
+    public class UserStateManager : IUserStateManager
     {
         UsersRepository repository;
 
