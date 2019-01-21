@@ -21,7 +21,7 @@ namespace Social.Common.DAL
 
         IEnumerable<ReturnedPost> PostsForUser(string userId, int amount, int skip);
 
-        void AddUser(User user);
+        void AddUser(string userId);
 
         void PutPost(string userId, DataBasePost post);
 
@@ -40,5 +40,7 @@ namespace Social.Common.DAL
         void Unlike(Guid id, string likerId, LikeOptions likeOption);
 
         void Remove(Guid id, string uploaderId, RemoveOptions removeOption);
+
+        void EditUser(User user);
     }
 }

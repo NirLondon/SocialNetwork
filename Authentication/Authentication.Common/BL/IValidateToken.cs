@@ -1,7 +1,9 @@
-﻿namespace Authentication.Common.BL
+﻿using System.Threading.Tasks;
+
+namespace Authentication.Common.BL
 {
     public interface ITokensValidator
     {
-        (string Token, string UserId) ValidateToken(string token);
+        Task<(string Token, string UserId)> ValidateToken(string token);
     }
 }

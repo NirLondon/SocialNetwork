@@ -51,33 +51,35 @@ namespace Authentication.BL
             string token = null;
             SignupLoginResult eror = SignupLoginResult.EverythingIsGood;
             HttpClient httpClient = new HttpClient();
-            var result = httpClient.GetAsync("https://graph.facebook.com/me?access_token=" + facebookToken).Result;
-            if (result.IsSuccessStatusCode)
+            using (httpClient)
             {
-                var facebookUser = result.Content.ReadAsStringAsync().Result;
-                var parsedUser = JObject.Parse(facebookUser).ToObject<dynamic>();
-                UserModel user = new UserModel
+                var result = httpClient.GetAsync("https://graph.facebook.com/me?access_token=" + facebookToken).Result;
+                if (result.IsSuccessStatusCode)
                 {
-                    UserID = '_' + parsedUser.id.Value,
-                    Password = string.Empty,
-                    State = UserState.Open
-                };
-
-                eror = _repository.LoginWithFacebook(user);
-                if (eror == SignupLoginResult.EverythingIsGood)
-                {
-                    TokenModel TM = new TokenModel
+                    var facebookUser = result.Content.ReadAsStringAsync().Result;
+                    var parsedUser = JObject.Parse(facebookUser).ToObject<dynamic>();
+                    UserModel user = new UserModel
                     {
-                        UserID = user.UserID,
-                        CreationTime = DateTime.Now,
-                        Token = Utils.GetNewToken()
+                        UserID = '_' + parsedUser.id.Value,
+                        Password = string.Empty,
+                        State = UserState.Open
                     };
-                    _repository.SaveToken(TM);
-                    token = TM.Token;
-                }
-            }
-            else eror = SignupLoginResult.WrongUsernameOrPassword;
 
+                    eror = _repository.LoginWithFacebook(user);
+                    if (eror == SignupLoginResult.EverythingIsGood)
+                    {
+                        TokenModel TM = new TokenModel
+                        {
+                            UserID = user.UserID,
+                            CreationTime = DateTime.Now,
+                            Token = Utils.GetNewToken()
+                        };
+                        _repository.SaveToken(TM);
+                        token = TM.Token;
+                    }
+                }
+                else eror = SignupLoginResult.WrongUsernameOrPassword;
+            }
             return (token, eror);
         }
 
@@ -120,11 +122,6 @@ namespace Authentication.BL
             return (token, eror);
         }
 
-        public SignupLoginResult SwitchToFacebookUser(string username, string passwrod)
-        {
-            return _repository.SwitchToFacebookUser(username, passwrod);
-        }
-
         private SignupLoginResult ManageError(Exception exception)
         {
             SignupLoginResult er = SignupLoginResult.EverythingIsGood;
@@ -139,12 +136,6 @@ namespace Authentication.BL
                     break;
             }
             return er;
-        }
-
-        public void ExipreToken(string token)
-        {
-            //_repository.ExpireToken(token);
-            throw new NotImplementedException();
-        }
+        }        
     }
 }

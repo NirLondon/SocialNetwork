@@ -25,7 +25,7 @@ namespace Authentication.Server
             container.RegisterSingleton<IUsersManager>(() => BlResolver.GetInstanceOf<IUsersManager>());
             container.RegisterSingleton<IUserStateManager>(() => BlResolver.GetInstanceOf<IUserStateManager>());
             container.RegisterSingleton<ITokensValidator>(() => BlResolver.GetInstanceOf<ITokensValidator>());
-            container.RegisterSingleton<INotifier>(() => BlResolver.GetInstanceOf<INotifier>());
+            container.Register<INotifier>(() => BlResolver.GetInstanceOf<INotifier>());
 
             container.RegisterWebApiControllers(GlobalConfiguration.Configuration);
 

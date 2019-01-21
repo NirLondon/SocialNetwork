@@ -12,12 +12,12 @@ namespace Social.Tests
     [TestClass]
     public class DALTests
     {
-        SocialRepository repo;
+        Neo4jSocialRepository repo;
         User[] users;
 
         public DALTests()
         {
-            repo = new SocialRepository();
+            repo = new Neo4jSocialRepository();
             users = new User[3];
             for (int i = 0; i < users.Length; i++)
             {

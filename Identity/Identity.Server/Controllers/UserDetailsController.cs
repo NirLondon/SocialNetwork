@@ -11,26 +11,55 @@ using System.Web.Http;
 
 namespace Identity.Server.Controllers
 {
+    [RoutePrefix("api/Users")]
     public class UserDetailsController : ApiController
     {
         private readonly IAuthentiacator _authentiacator;
         private readonly IIdentitiesRepository _repository;
+        private readonly INotifier _notifier;
 
-        public UserDetailsController(IAuthentiacator authentiacator, IIdentitiesRepository repository)
+        public UserDetailsController(IAuthentiacator authentiacator, IIdentitiesRepository repository, INotifier notifier)
         {
             _authentiacator = authentiacator;
             _repository = repository;
+            _notifier = notifier;
+        }
+
+        [HttpPost]
+        [Route("Add")]
+        public Task<IHttpActionResult> AddUser([FromBody] string userId)
+        {
+            return WrappedAction(() => _repository.AddUser(userId));
         }
 
         [HttpPut]
-        [Route("api/users/EditDetails")]
+        [Route("EditDetails")]
         public async Task<IHttpActionResult> EditUserDetails([FromBody] UserDetails userDetails)
         {
-            return await WrappedAction(async userId => await _repository.EditUser(userId, userDetails));
+            if (TryGetToken(out string sentToken))
+            {
+                var (token, userId) = await _authentiacator.Authenticate(sentToken);
+                if (!string.IsNullOrEmpty(token) && !string.IsNullOrEmpty(userId))
+                {
+                    await _repository.EditUser(userId, userDetails);
+                    if (!string.IsNullOrEmpty(userDetails.FirstName) || !string.IsNullOrEmpty(userDetails.LastName))
+                    {
+                        _notifier.Token = token;
+                        _notifier.NotifyToSocialService(new UserToSocial
+                        {
+                            UserId = userId,
+                            FirstName = userDetails.FirstName,
+                            LastName = userDetails.LastName
+                        });
+                    }
+                    return Ok();
+                }
+            }
+            return Unauthorized();
         }
 
         [HttpGet]
-        [Route("api/Users/GetUserDetails")]
+        [Route("GetUserDetails")]
         public Task<IHttpActionResult> GetUserDetails()
         {
             return WrappedAction(userId => _repository.GetUserDetailsAsync(userId));
@@ -44,6 +73,15 @@ namespace Identity.Server.Controllers
         private Task<IHttpActionResult> WrappedAction<TResult>(Func<string, Task<TResult>> action)
         {
             return Wrapped(async userId => Json(await action(userId)));
+        }
+
+        private Task<IHttpActionResult> WrappedAction(Action action)
+        {
+            return Wrapped(async str =>
+            {
+                action();
+                return Ok();
+            });
         }
 
         private Task<IHttpActionResult> WrappedAction(Action<string> action)
@@ -69,7 +107,7 @@ namespace Identity.Server.Controllers
             if (TryGetToken(out string sentToken))
             {
                 var (token, userId) = await _authentiacator.Authenticate(sentToken);
-                if (token != null && userId != null)
+                if (!string.IsNullOrEmpty(token) && !string.IsNullOrEmpty(userId))
                     return await action(userId);
             }
             return Unauthorized();
@@ -85,27 +123,5 @@ namespace Identity.Server.Controllers
             sentToken = null;
             return false;
         }
-
-        //[HttpGet]
-        //[Route("api/users/details/{token}")]
-        //public async Task<(string Token, UserDetails)> GetUserDetails(string token)
-        //{
-        //    var tokenUser = await GetUserIdAndTokenFromToken(token);
-
-        //    if (tokenUser.UserId != null)
-        //        return (tokenUser.Token, await repository.GetUserDetailsAsync(tokenUser.UserId));
-        //    return (null, null);
-        //}
-
-        //private async Task<(string Token, string UserId)> GetUserIdAndTokenFromToken(string token)
-        //{
-        //    var httpClient = new HttpClient() { BaseAddress = new Uri("http://localhost:63172/") };
-        //    var response = await httpClient.GetAsync($"api/Tokens/Validate/{token}");
-
-        //    if (response.IsSuccessStatusCode)
-        //        return response.Content.ReadAsAsync<(string, string)>().Result;
-
-        //    throw new Exception("The authentication service is not available. ");
-        //}
     }
 }

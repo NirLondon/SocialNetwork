@@ -10,10 +10,6 @@ namespace Authentication.Common.BL
 
         (string token, SignupLoginResult) LoginWithFacebook(string facebookToken);
 
-        SignupLoginResult SwitchToFacebookUser(string username, string password);
-
         SignupLoginResult ResetPassword(string username, string oldPassword, string newPassword);
-
-        void ExipreToken(string token);
     }
 }

@@ -1,10 +1,11 @@
 ﻿using Authentication.Common.Models;
+using System.Threading.Tasks;
 
 namespace Authentication.Common.DAL
 {
     public interface ITokensRepository
     {
         TokenModel GetTokenModel(string token);
-        void SaveToken(TokenModel tokenModel);
+        Task SaveTokenAsync(TokenModel tokenModel);
     }
 }

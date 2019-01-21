@@ -3,6 +3,7 @@ using Amazon.DynamoDBv2.DocumentModel;
 using Identity.Common.DAL;
 using Identity.Common.Models;
 using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -23,8 +24,7 @@ namespace Identity.DAL
         {
             var doc = new Document();
             doc["UserID"] = userId;
-
-            _identitiesTable.PutItemAsync(doc);
+                _identitiesTable.PutItemAsync(doc);
         }
 
         public async Task EditUser(string userid, UserDetails editedFields)

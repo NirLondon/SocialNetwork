@@ -1,14 +1,14 @@
 using System.Web.Http;
 using WebActivatorEx;
-using Identity.Server;
+using Authentication.Server;
 using Swashbuckle.Application;
 using Swashbuckle.Swagger;
-using System.Web.Http.Description;
 using System.Collections.Generic;
+using System.Web.Http.Description;
 
 [assembly: PreApplicationStartMethod(typeof(SwaggerConfig), "Register")]
 
-namespace Identity.Server
+namespace Authentication.Server
 {
     class AddDefaultResponse : IOperationFilter
     {
@@ -52,7 +52,7 @@ namespace Identity.Server
                         // hold additional metadata for an API. Version and title are required but you can also provide
                         // additional fields by chaining methods off SingleApiVersion.
                         //
-                        c.SingleApiVersion("v1", "Identity.Server");
+                        c.SingleApiVersion("v1", "Authentication.Server");
 
                         // If you want the output Swagger docs to be indented properly, enable the "PrettyPrint" option.
                         //

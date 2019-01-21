@@ -23,6 +23,7 @@ namespace Identity.Server
 
             container.RegisterSingleton<IIdentitiesRepository, IdentitiesRpository>();
             container.RegisterSingleton<IAuthentiacator, Authenticator>();
+            container.Register<INotifier, HttpNotifier>();
 
             container.RegisterWebApiControllers(GlobalConfiguration.Configuration);
 

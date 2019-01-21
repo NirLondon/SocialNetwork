@@ -19,7 +19,7 @@ namespace Authentication.BL
             _container.RegisterSingleton<IUsersManager, UsersManager>();
             _container.RegisterSingleton<ITokensValidator, TokensValidator>();
             _container.RegisterSingleton<IUserStateManager, UserStateManager>();
-            _container.RegisterSingleton<INotifier, Notifier>();
+            _container.Register<INotifier, Notifier>();
 
             _container.Verify();
         }
