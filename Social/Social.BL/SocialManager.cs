@@ -19,9 +19,9 @@ namespace Social.BL
             _photosStorage = photosStorage;
         }
 
-        public void AddUser(User user)
+        public void AddUser(string userId)
         {
-            _repository.AddUser(user);
+            _repository.AddUser(userId);
         }
 
         public void Block(string blockingId, string blockedId)
@@ -36,7 +36,9 @@ namespace Social.BL
 
         public void Comment(string commenterId, UploadedComment comment)
         {
-            _photosStorage.UploadPhoto(comment.Image, out string photoURL);
+            string photoURL = null;
+            if (comment.Image != null)
+                _photosStorage.UploadPhoto(comment.Image, out photoURL);
 
             _repository.PutComment(commenterId, new DataBaseComment
             {
@@ -50,6 +52,11 @@ namespace Social.BL
         public IEnumerable<RetunredComment> CommentsOf(string userId, Guid postId)
         {
             return _repository.CommentsOfPost(postId, userId);
+        }
+
+        public void EditUser(User user)
+        {
+            _repository.EditUser(user);
         }
 
         public IEnumerable<UserMention> GetFollowedBy(string userId)
@@ -74,7 +81,9 @@ namespace Social.BL
 
         public void Post(string userId, UploadedPost post)
         {
-            _photosStorage.UploadPhoto(post.Image, out string photoURL);
+            string photoURL = null;
+            if (post.Image != null)
+                _photosStorage.UploadPhoto(post.Image, out photoURL);
 
             _repository.PutPost(userId, new DataBasePost
             {

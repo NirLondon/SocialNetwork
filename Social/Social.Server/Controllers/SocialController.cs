@@ -23,9 +23,16 @@ namespace Social.Server.Controllers
 
         [HttpPost]
         [Route("Users/Add")]
-        public Task<IHttpActionResult> AddUser([FromBody] User user)
+        public Task<IHttpActionResult> AddUser([FromBody] string userId)
         {
-            return WrappedAction(userId => _manager.AddUser(user));
+            return WrappedAction(() => _manager.AddUser(userId));
+        }
+
+        [HttpPut]
+        [Route("Users/Edit")]
+        public Task<IHttpActionResult> EditUser([FromBody] User user)
+        {
+            return WrappedAction(() => _manager.EditUser(user));
         }
 
         [HttpGet]
@@ -105,9 +112,9 @@ namespace Social.Server.Controllers
             return WrappedAction(userId => _manager.RemoveFollow(userId, FollowedId));
         }
 
-        [HttpPost]
+        [HttpGet]
         [Route("Followed")]
-        public Task<IHttpActionResult> GetFollowed(string token)
+        public Task<IHttpActionResult> GetFollowed()
         {
             return WrappedAction(userId => _manager.GetFollowedBy(userId));
         }
@@ -132,7 +139,7 @@ namespace Social.Server.Controllers
         {
             return WrappedAction(userId => _manager.Unblock(userId, blockedId));
         }
-        
+
         [HttpGet]
         [Route("Blocked")]
         public Task<IHttpActionResult> Blocked()
@@ -162,6 +169,15 @@ namespace Social.Server.Controllers
         private Task<IHttpActionResult> WrappedAction<TResult>(Func<string, Task<TResult>> action)
         {
             return Wrapped(async userId => Json(await action(userId)));
+        }
+
+        private Task<IHttpActionResult> WrappedAction(Action action)
+        {
+            return Wrapped(async str =>
+            {
+                action();
+                return Ok();
+            });
         }
 
         private Task<IHttpActionResult> WrappedAction(Action<string> action)

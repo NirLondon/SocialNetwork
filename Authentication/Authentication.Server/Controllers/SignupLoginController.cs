@@ -27,8 +27,9 @@ namespace Authentication.Server.Controllers
             var response = await Json(result).ExecuteAsync(new CancellationToken());
             if (result == SignupLoginResult.EverythingIsGood)
             {
-                _notifier.NotifyToIdentityService(username, token);
-                _notifier.NotifyToSocailService(username, token);
+                _notifier.Token = token;
+                _notifier.NotifyToIdentityService(username);
+                _notifier.NotifyToSocailService(username);
                 response.Headers.Add("Token", token);
             }
             return response;
@@ -54,20 +55,6 @@ namespace Authentication.Server.Controllers
             if (result == SignupLoginResult.EverythingIsGood)
                 response.Headers.Add("Token", token);
             return response;
-        }
-
-        [HttpGet]
-        [Route("SwitchToFacebookUser/{username}/{password}")]
-        public SignupLoginResult SwitchToFacebookUser(string username, string password)
-        {
-            return _usersManager.SwitchToFacebookUser(username, password);
-        }
-
-        [HttpGet]
-        [Route("Logout/{token}")]
-        public void Logout(string token)
-        {
-            _usersManager.ExipreToken(token);
         }
 
         [HttpGet]

@@ -86,20 +86,6 @@ namespace Authentication.DAL
             }
         }
 
-        public SignupLoginResult SwitchToFacebookUser(string username, string password)
-        {
-            SignupLoginResult result = SignupLoginResult.WrongUsernameOrPassword;
-            Document userDoc = _usersTable.GetItemAsync(username).Result;
-            if (userDoc != null && userDoc["Password"] == password)
-            {
-                result = SignupLoginResult.EverythingIsGood;
-                userDoc["Username/Token"] = '_' + username;
-                userDoc["Password"] = string.Empty;
-                _usersTable.PutItemAsync(userDoc);
-            }
-            return result;
-        }
-
         public SignupLoginResult ResetPassword(string username, string oldPassword, string newPassword)
         {
             SignupLoginResult eror = SignupLoginResult.EverythingIsGood;
@@ -120,14 +106,19 @@ namespace Authentication.DAL
         {
             return _usersTable.GetItemAsync(userID).Result != null;
         }
-
-        public void ExpireToken(string token)
-        {
-            _tokensTable.PutItemAsync(new Document
-            {
-                {"Token", token },
-                {"IsExpired", true }
-            });
-        }
+        
+        //public SignupLoginResult SwitchToFacebookUser(string username, string password)
+        //{
+        //    SignupLoginResult result = SignupLoginResult.WrongUsernameOrPassword;
+        //    Document userDoc = _usersTable.GetItemAsync(username).Result;
+        //    if (userDoc != null && userDoc["Password"] == password)
+        //    {
+        //        result = SignupLoginResult.EverythingIsGood;
+        //        userDoc["UserID"] = '_' + username;
+        //        userDoc["Password"] = string.Empty;
+        //        _usersTable.PutItemAsync(userDoc);
+        //    }
+        //    return result;
+        //}
     }
 }

@@ -2,6 +2,7 @@
 using Authentication.Common.DAL;
 using Authentication.Common.Models;
 using System;
+using System.Threading.Tasks;
 
 namespace Authentication.BL
 {
@@ -16,7 +17,7 @@ namespace Authentication.BL
             _repository = repository;
         }
 
-        public (string Token, string UserId) ValidateToken(string token)
+        public async Task<(string Token, string UserId)> ValidateToken(string token)
         {
             var tokenModel = _repository.GetTokenModel(token);
 
@@ -33,7 +34,7 @@ namespace Authentication.BL
                         CreationTime = DateTime.Now,
                         UserID = tokenModel.UserID
                     };
-                    _repository.SaveToken(tokenModel);
+                    await _repository.SaveTokenAsync(tokenModel);
                     return (tokenModel.Token, tokenModel.UserID);
                 }
                 return (token, tokenModel.UserID);

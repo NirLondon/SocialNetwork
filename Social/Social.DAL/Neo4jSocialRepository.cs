@@ -10,7 +10,7 @@ using System.Linq;
 
 namespace Social.DAL
 {
-    public class SocialRepository : ISocialRepository
+    public class Neo4jSocialRepository : ISocialRepository
     {
         private readonly IDriver _driver =
             GraphDatabase.Driver("bolt://34.244.74.143:7687", AuthTokens.Basic("neo4j", "123456"));
@@ -45,16 +45,18 @@ namespace Social.DAL
 
             using (var session = _driver.Session())
             {
-                session.Run(
+                var x = session.Run(
                    "MATCH " +
                    $"(p: Post{{ PostID: \"{comment.PostId}\" }}), " +
-                   $"(u: User{{ UserID: \"{commenterId}\" }}), " +
-                   (hasTags ? tagedUsersMatch + "\n" : string.Empty) +
+                   $"(u: User{{ UserID: \"{commenterId}\" }}) " +
+                   (hasTags ? ", " + tagedUsersMatch + "\n" : string.Empty) +
                    "CREATE " +
-                   $"(c: Comment{{ CommentID: \"{Guid.NewGuid()}\", Content: \"{comment.Content}\", ImageURL: \"{comment.ImagURL}\", UploadingTime: \"{DateTime.Now}\" }}), " +
+                   "(c: Comment{ CommentID: \"" + $"{Guid.NewGuid()}\", Content: \"{comment.Content}\"" + 
+                   (comment.ImagURL != null ? $", ImageURL: \"{comment.ImagURL}\"" : string.Empty) + 
+                   $", UploadingTime: \"{DateTime.Now}\"" + " }), " +
                    "(c) < -[:Has] - (p), " +
-                   "(c) -[:Uploaded_by]->(u), " +
-                   (hasTags ? tagsCreate : string.Empty));
+                   "(c) -[:Uploaded_by]->(u) " +
+                   (hasTags ?", " + tagsCreate : string.Empty));
             }
         }
 
@@ -129,31 +131,36 @@ namespace Social.DAL
 
         public void PutPost(string posterID, DataBasePost post)
         {
-            var tagedUsersMatch = string.Join(",\n\t",
-                post.TagedUsersIds
-                .Select((userId, i) => $"(t{i}:User{{ UserID: \"{userId}\" }})"));
+            string tagedUsersMatch, tagsCreate;
+            tagedUsersMatch = "\n\t";
+            tagsCreate = string.Empty;
 
-            var tagsCreate = string.Join(",\n\t",
-                post.TagedUsersIds
-                .Select((userId, i) => $"(t{i})<-[:Tags]-(p)"));
+            if (post.TagedUsersIds != null && post.TagedUsersIds.Any())
+            {
+                tagedUsersMatch = ",\n\t" + string.Join(",\n\t",
+                    post.TagedUsersIds
+                    .Select((userId, i) => $"(t{i}:User{{ UserID: \"{userId}\" }})")) + "\n";
 
-            bool hasTags = post.TagedUsersIds.Any();
+                tagsCreate = ",\n\t" + string.Join(",\n\t",
+                    post.TagedUsersIds
+                    .Select((userId, i) => $"(t{i})<-[:Tags]-(p)"));
+            }
 
             using (var session = _driver.Session())
             {
-                session.Run(
-                    $"MATCH\n\t(u:User{{ UserID: \"{posterID}\" }}),\n\t" +
-                    (hasTags ? tagedUsersMatch + "\n" : string.Empty) +
+                var x = session.Run(
+                    $"MATCH\n\t(u:User{{ UserID: \"{posterID}\" }})" +
+                    tagedUsersMatch +
                     $"CREATE\n" +
                     "\t(p:Post\n\t{\n" +
                     $"\t\t\tPostID: \"{Guid.NewGuid()}\",\n" +
                     $"\t\t\tContent:\n\t\t\t\"{post.Content}\",\n" +
                     $"\t\t\tUploadingTime: \"{DateTime.Now}\",\n" +
-                    $"\t\t\tImageURL: \"{post.ImageURL}\",\n" +
+                    (post.ImageURL != null? $"\t\t\tImageURL: \"{post.ImageURL}\",\n" : string.Empty) +
                     $"\t\t\tVisibility: \"{(byte)post.Visibility}\"\n" +
                     "\t}),\n" +
-                    "\t(u)-[:Uploaded]->(p),\n\t" +
-                    (hasTags ? tagsCreate : string.Empty));
+                    "\t(u)-[:Uploaded]->(p)" +
+                    tagsCreate);
             }
         }
 
@@ -186,9 +193,9 @@ namespace Social.DAL
             }
         }
 
-        public void AddUser(User user)
+        public void AddUser(string userId)
         {
-            var query = "CREATE (:User{ UserID: \"" + user.UserId + "\", firstName: \"" + user.FirstName + "\", lastName: \"" + user.LastName + "\" })";
+            var query = $"CREATE (:User{{ UserID: \"{userId}\" }})";
 
             using (var session = _driver.Session())
                 session.Run(query);
@@ -300,6 +307,16 @@ namespace Social.DAL
         private T ConvertTo<T>(object obj)
         {
             return JsonConvert.DeserializeObject<T>(JsonConvert.SerializeObject(obj));
+        }
+
+        public void EditUser(User user)
+        {
+            using (var sessoin = _driver.Session())
+            {
+                sessoin.Run($"MATCH (u:User{{ UserID: \"{user.UserId}\" }})\n" + 
+                    $"SET u.FirstName = \"{user.FirstName}\",\n" + 
+                    $"u.LastName = \"{user.LastName}\"");
+            }
         }
     }
 }

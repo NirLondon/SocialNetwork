@@ -4,7 +4,7 @@ namespace Identity.Common.Models
 {
     public class UserDetails
     {
-        public string UserId { get; set; }
+        public string UserID { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public DateTime? BirthDate { get; set; }

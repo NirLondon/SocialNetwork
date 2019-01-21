@@ -26,7 +26,9 @@ namespace Social.Common.BL
 
         IEnumerable<UserMention> BlockedBy(string userId);
 
-        void AddUser(User user);
+        void AddUser(string userId);
+
+        void EditUser(User user);
 
         void Block(string userId, string blockedId);
 

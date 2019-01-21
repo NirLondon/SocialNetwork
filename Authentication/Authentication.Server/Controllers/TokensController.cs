@@ -1,4 +1,5 @@
 ﻿using Authentication.Common.BL;
+using System.Threading.Tasks;
 using System.Web.Http;
 
 namespace Authentication.Server.Controllers
@@ -15,7 +16,7 @@ namespace Authentication.Server.Controllers
 
         [HttpGet]
         [Route("Validate/{token}")]
-        public (string Token, string UserId) Validate(string token)
+        public Task<(string Token, string UserId)> Validate(string token)
         {
             return _validator.ValidateToken(token);
         }

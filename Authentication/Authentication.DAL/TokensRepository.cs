@@ -2,6 +2,7 @@
 using Amazon.DynamoDBv2.DocumentModel;
 using Authentication.Common.DAL;
 using Authentication.Common.Models;
+using System.Threading.Tasks;
 
 namespace Authentication.DAL
 {
@@ -22,7 +23,7 @@ namespace Authentication.DAL
             return doc != null ? Utils.FromDocument<TokenModel>(doc) : null;
         }
 
-        public async void SaveToken(TokenModel tokenModel)
+        public async Task SaveTokenAsync(TokenModel tokenModel)
         {
             await _tokensTable.PutItemAsync(Utils.DocumentFrom(tokenModel));
         }

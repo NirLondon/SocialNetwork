@@ -23,14 +23,8 @@ namespace Social.BL
                 using (var ms = new MemoryStream(photo))
                 {
                     request.InputStream = ms;
-                    try
-                    {
-                        await s3Client.PutObjectAsync(request);
-                    }
-                    catch (Exception)
-                    {
-                        throw;
-                    }
+                        await s3Client.PutObjectAsync(request)
+                            .ConfigureAwait(false);
                 }
                 return "https://s3-eu-west-1.amazonaws.com/odedbucket/" + request.Key;
             }

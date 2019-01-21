@@ -13,14 +13,10 @@ namespace Authentication.Common.DAL
 
         SignupLoginResult LoginWithFacebook(UserModel user);
 
-        SignupLoginResult SwitchToFacebookUser(string username, string password);
-
         SignupLoginResult ResetPassword(string username, string oldPassword, string newPassword);
 
         void BlockUser(string username);
 
         void UnBlockUser(string username);
-
-        void ExpireToken(string token);
     }
 }
