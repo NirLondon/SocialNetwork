@@ -8,8 +8,8 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Text;
 using Windows.UI.Xaml.Media.Imaging;
-using Social.Common.Models.ReturnedDTOs;
-using Social.Common.Models.UploadedDTOs;
+using Client.Models.UploadedDTOs;
+using Client.Models.ReturnedDTOs;
 
 namespace Client.ViewModels
 {
@@ -21,9 +21,10 @@ namespace Client.ViewModels
         private readonly IEditDetailsDataProvider _editDetailsDataProvider;
         public ObservableCollection<ReturnedPost> Posts { get; set; }
         public ObservableCollection<PostViewModel> PostViewModels { get; set; }
+        public ObservableCollection<UserMention> Followed { get; set; }
         public string PostText { get; set; } = "";
         private byte[] Image { get; set; }
-        public List<string> Tags { get; set; }
+        public object Tags { get; set; }
         public ObservableCollection<string> PostVisibility { get; set; }
         public int VisibilityIndex { get; set; } = -1;
 
@@ -40,6 +41,7 @@ namespace Client.ViewModels
             _viewService = service;
             _socialDataProvider = socialDataProvider;
             _editDetailsDataProvider = editDetailsDataProvider;
+            InitFollowed();
             InitPosts();
         }
 
@@ -51,9 +53,10 @@ namespace Client.ViewModels
 
         public async void PublishPost()
         {
+            var tagsList = _viewService.TagUser(Tags);
             try
             {
-                var post = await _socialDataProvider.Post(GeneratePostToUpload());
+                var post = await _socialDataProvider.Post(GeneratePostToUpload(tagsList));
                 PostViewModels.Add(new PostViewModel(_viewService, _socialDataProvider, _editDetailsDataProvider) { CurrentPost = post });
             }
             catch (UnauthorizedAccessException e)
@@ -65,6 +68,11 @@ namespace Client.ViewModels
         public void SelectVisibility(object sender, object e)
         {
 
+        }
+
+        public void TagUser(object usersLIst, object e)
+        {
+            Tags = usersLIst;
         }
 
         private async void InitPosts()
@@ -117,12 +125,29 @@ namespace Client.ViewModels
             //    ManageError(tuple.Item1);
         }
 
+        private async void InitFollowed()
+        {
+            try
+            {
+                var _followed = await _socialDataProvider.GetFollowed();
+                Followed = new ObservableCollection<UserMention>();
+                foreach (var item in _followed)
+                {
+                    Followed.Add(item);
+                }
+            }
+            catch (UnauthorizedAccessException e)
+            {
+                ExpiredToken();
+            }
+        }
+
         private void InitPostsViewModels(IEnumerable<ReturnedPost> postsList)
         {
             PostViewModels = new ObservableCollection<PostViewModel>();
             foreach (var item in postsList)
             {
-                PostViewModels.Add(new PostViewModel(_viewService, _socialDataProvider, _editDetailsDataProvider) { CurrentPost = item });
+                PostViewModels.Add(new PostViewModel(_viewService, _socialDataProvider, _editDetailsDataProvider) { CurrentPost = item, Followed = this.Followed });
             }
         }
 
@@ -131,13 +156,13 @@ namespace Client.ViewModels
             _viewService.LogOut();
         }
 
-        private UploadedPost GeneratePostToUpload()
+        private UploadedPost GeneratePostToUpload(List<string> tagsList)
         {
             UploadedPost post = new UploadedPost
             {
                 Content = PostText,
-                Image = Image,
-                TagedUsersIds = Tags.ToArray()
+                Image = Image, 
+                TagedUsersIds = tagsList.ToArray()
             };
             return post;
         }

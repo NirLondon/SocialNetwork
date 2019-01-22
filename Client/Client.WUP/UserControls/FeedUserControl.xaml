@@ -5,9 +5,8 @@
     xmlns:local="using:Client.WUP.UserControls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:models="using:Client.Models"
-    xmlns:vm="using:Client.ViewModels"
     xmlns:uc="using:Client.WUP.UserControls"
+    xmlns:models="using:Client.Models.ReturnedDTOs"
     mc:Ignorable="d"
     d:DesignHeight="300"
     d:DesignWidth="400">
@@ -18,11 +17,21 @@
         <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
             <TextBlock VerticalAlignment="Top" Text="Posts" FontSize="40"/>
             <StackPanel Margin="15" Orientation="Horizontal">
-                <TextBlock Margin="5" Text="Share your thougths:"/>
-                <TextBox Margin="5" Text="{x:Bind viewModel.PostText, Mode=TwoWay}"/>
-                <Button Margin="5" Content="Choose image" Click="{x:Bind viewModel.ChooseImage}"/>
+                <TextBlock Margin="0, 0, 10, 0" Text="Share your thougths:"/>
+                <TextBox Margin="0, 0, 10, 0" Text="{x:Bind viewModel.PostText, Mode=TwoWay}"/>
+                <Button Margin="10, 0, 10, 0" Content="Choose image" Click="{x:Bind viewModel.ChooseImage}" VerticalAlignment="Top"/>
                 <TextBlock Margin="5" Text="Visibility"/>
-                <ComboBox Margin="5" SelectedIndex="{x:Bind viewModel.VisibilityIndex, Mode=TwoWay}" ItemsSource="{x:Bind viewModel.PostVisibility}"/>
+                <ComboBox Margin="0, 0, 10, 0" SelectedIndex="{x:Bind viewModel.VisibilityIndex, Mode=TwoWay}" ItemsSource="{x:Bind viewModel.PostVisibility}"/>
+                <TextBlock Margin="5" Text="Tags"/>
+                <ScrollViewer HorizontalScrollBarVisibility="Visible" Height="100">
+                    <ListBox Margin="10" SelectionMode="Multiple" ItemsSource="{x:Bind viewModel.Followed, Mode=TwoWay}" SelectionChanged="{x:Bind viewModel.TagUser}" VerticalAlignment="Top">
+                        <ListBox.ItemTemplate>
+                            <DataTemplate x:DataType="models:UserMention">
+                                <TextBlock Text="{Binding FullName}"/>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+                </ScrollViewer>
             </StackPanel>
             <Button Background="Transparent" Content="Publish" Click="{x:Bind viewModel.PublishPost}" FontWeight="ExtraBlack"/>
             <ScrollViewer Margin="0,15,0,0" HorizontalScrollBarVisibility="Visible" Height="450">

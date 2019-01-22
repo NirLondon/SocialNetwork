@@ -14,6 +14,8 @@ using Client.Models;
 using Windows.UI.Xaml;
 using Client.WUP.UserControls;
 using Client.DataProviders;
+using Windows.UI.Xaml.Controls;
+using Client.Models.ReturnedDTOs;
 
 namespace Client.WUP.Services
 {
@@ -57,6 +59,16 @@ namespace Client.WUP.Services
         public void LogOut()
         {
             MainPageService.Instance.LogOut();
+        }
+
+        public List<string> TagUser(object tagsList)
+        {
+            List<string> l = new List<string>();
+            foreach (UserMention user in ((ListBox)tagsList).SelectedItems)
+            {
+                l.Add(user.UserId);
+            }
+            return l;
         }
 
         private void InitPicker()

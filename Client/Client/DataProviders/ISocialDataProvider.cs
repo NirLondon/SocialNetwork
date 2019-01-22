@@ -5,8 +5,8 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 using Windows.UI.Xaml.Media.Imaging;
-using Social.Common.Models.ReturnedDTOs;
-using Social.Common.Models.UploadedDTOs;
+using Client.Models.ReturnedDTOs;
+using Client.Models.UploadedDTOs;
 
 namespace Client.DataProviders
 {
@@ -14,7 +14,7 @@ namespace Client.DataProviders
     {
         Task<ReturnedPost> Post(UploadedPost post);
 
-        Task<RetunredComment> Comment(string text, byte[] arr, string[] tags);
+        Task<RetunredComment> Comment(UploadedComment comment);
 
         Task<List<ReturnedPost>> GetPosts();
 
@@ -28,11 +28,11 @@ namespace Client.DataProviders
 
         Task UnBlock(string userID);
 
-        Task<List<UserDetails>> GetBlocked();
+        Task<List<UserMention>> GetBlocked();
 
-        Task<List<UserDetails>> GetFollowed();
+        Task<List<UserMention>> GetFollowed();
 
-        Task<List<UserDetails>> GetFollowers();
+        Task<List<UserMention>> GetFollowers();
 
         Task<List<RetunredComment>> GetComments(Guid postID);
 

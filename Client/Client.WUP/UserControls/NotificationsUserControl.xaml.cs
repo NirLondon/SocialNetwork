@@ -1,9 +1,10 @@
 ﻿using Client.HttpClinents;
+using Client.Models.ReturnedDTOs;
 using Client.ViewModels;
 using Client.WUP.Services;
-using Client.WUP.UserControls;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
@@ -17,24 +18,21 @@ using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 
-// The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=234238
+// The User Control item template is documented at https://go.microsoft.com/fwlink/?LinkId=234236
 
-namespace Client.WUP.Views
+namespace Client.WUP.UserControls
 {
-    /// <summary>
-    /// An empty page that can be used on its own or navigated to within a Frame.
-    /// </summary>
-    public sealed partial class MainPageView : Page
+    public sealed partial class NotificationsUserControl : UserControl
     {
-        private MainPageViewModel viewModel { get; set; }
+        public NotificationViewModel viewModel { get; set; }
         public NotificationPusher Pusher { get; set; }
-
-        public MainPageView(bool LoggedWithFacebook)
+        public NotificationService service { get; set; }
+        public NotificationsUserControl(ObservableCollection<Notification> notifications)
         {
             this.InitializeComponent();
-            MainPageService.Instance.stackPanelContent = contentSP;
             Pusher = new NotificationPusher();
-            viewModel = new MainPageViewModel(MainPageService.Instance, LoggedWithFacebook, Pusher);
+            service = new NotificationService();
+            viewModel = new NotificationViewModel(notifications, Pusher, service);
         }
     }
 }

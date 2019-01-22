@@ -27,6 +27,12 @@
                 <Button Margin="10" Click="{x:Bind viewModel.GoToBlocked}" Background="Transparent">
                     <Image Source="/Assets/blocked.png" Height="30"/>
                 </Button>
+                <Button Margin="10" Background="Transparent">
+                    <StackPanel Orientation="Horizontal">
+                        <Image Source="/Assets/notification.png" Height="30"/>
+                        <TextBlock Text="*" Foreground="Red" FontSize="30" Visibility="{x:Bind viewModel.IsNotification, Mode=OneWay}"/>
+                    </StackPanel>
+                </Button>
                 <Button Margin="10" Click="{x:Bind viewModel.logOut}" Background="Transparent">
                     <Image Source="/Assets/key.png" Height="30"/>
                 </Button>

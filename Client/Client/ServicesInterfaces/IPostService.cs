@@ -15,5 +15,7 @@ namespace Client.ServicesInterfaces
         void GoToProfile(UserDetails userDetails, ISocialDataProvider dataProvider);
 
         void LogOut();
+
+        List<string> TagUser(object list);
     }
 }

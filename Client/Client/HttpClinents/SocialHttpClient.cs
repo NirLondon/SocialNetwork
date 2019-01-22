@@ -10,8 +10,8 @@ using Windows.UI.Xaml.Media.Imaging;
 using System.Linq;
 using System.Net;
 using Client.Exeptions;
-using Social.Common.Models.UploadedDTOs;
-using Social.Common.Models.ReturnedDTOs;
+using Client.Models.UploadedDTOs;
+using Client.Models.ReturnedDTOs;
 
 namespace Client.HttpClinents
 {
@@ -20,7 +20,7 @@ namespace Client.HttpClinents
         private int GetPostIndex { get; set; } = 0;
         private int SkipPostAmount { get; set; } = 5;
 
-        public SocialHttpClient() : base("http://localhost:63377/api/Social/") { }
+        public SocialHttpClient() : base("http://SocialNetwork.Social.com/api/Social/") { }
         //http://localhost:63377/
         //http://SocialNetwork.Social.com/
 
@@ -90,14 +90,9 @@ namespace Client.HttpClinents
             }
         }
 
-        public async Task<RetunredComment> Comment(string text, byte[] arr, string[] tags)
+        public async Task<RetunredComment> Comment(UploadedComment comment)
         {
-            var response = await httpClient.PostAsJsonAsync($"PublishComment", new UploadedPost
-            {
-                Image = arr,
-                Content = text,
-                TagedUsersIds = tags
-            });
+            var response = await httpClient.PostAsJsonAsync($"PublishComment", comment);
             switch (response.StatusCode)
             {
                 case HttpStatusCode.OK:
@@ -151,7 +146,7 @@ namespace Client.HttpClinents
             }
         }
 
-        public async Task<List<UserDetails>> GetFollowed()
+        public async Task<List<UserMention>> GetFollowed()
         {
             var response = await httpClient.GetAsync("Followed");
 
@@ -159,14 +154,14 @@ namespace Client.HttpClinents
             {
                 case HttpStatusCode.OK:
                     SetCurrentToken(response.Headers.GetValues("Token").FirstOrDefault());
-                    return response.Content.ReadAsAsync<List<UserDetails>>().Result;
+                    return response.Content.ReadAsAsync<List<UserMention>>().Result;
                 case HttpStatusCode.Unauthorized:
                     throw new TokenExpiredExeption();
             }
             return null;
         }
 
-        public async Task<List<UserDetails>> GetFollowers()
+        public async Task<List<UserMention>> GetFollowers()
         {
             var response = await httpClient.GetAsync("Followers");
 
@@ -174,14 +169,14 @@ namespace Client.HttpClinents
             {
                 case HttpStatusCode.OK:
                     SetCurrentToken(response.Headers.GetValues("Token").FirstOrDefault());
-                    return response.Content.ReadAsAsync<List<UserDetails>>().Result;
+                    return response.Content.ReadAsAsync<List<UserMention>>().Result;
                 case HttpStatusCode.Unauthorized:
                     throw new TokenExpiredExeption();
             }
             return null;
         }
 
-        public async Task<List<UserDetails>> GetBlocked()
+        public async Task<List<UserMention>> GetBlocked()
         {
             var response = await httpClient.GetAsync("Blocked");
 
@@ -189,7 +184,7 @@ namespace Client.HttpClinents
             {
                 case HttpStatusCode.OK:
                     SetCurrentToken(response.Headers.GetValues("Token").FirstOrDefault());
-                    return response.Content.ReadAsAsync<List<UserDetails>>().Result;
+                    return response.Content.ReadAsAsync<List<UserMention>>().Result;
                 case HttpStatusCode.Unauthorized:
                     throw new TokenExpiredExeption();
             }

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Social.Common.Models.ReturnedDTOs
+namespace Client.Models.ReturnedDTOs
 {
     public class ReturnedPost
     {

@@ -4,9 +4,7 @@ using System.Text;
 
 namespace Client.Models.ReturnedDTOs
 {
-    public class UserMention
+    public class Notification
     {
-        public string UserId { get; set; }
-        public string FullName { get; set; }
     }
 }

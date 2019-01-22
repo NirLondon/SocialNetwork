@@ -130,7 +130,6 @@ namespace Client.ViewModels
             return false;
         }
 
-
         private void OnPropertyChange(string propname = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propname));

@@ -12,8 +12,9 @@ using Windows.Graphics.Imaging;
 using Windows.Storage;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Media.Imaging;
-using Social.Common.Models.ReturnedDTOs;
+using Client.Models.ReturnedDTOs;
 using System.Collections.ObjectModel;
+using Client.Models.UploadedDTOs;
 
 namespace Client.ViewModels
 {
@@ -25,10 +26,11 @@ namespace Client.ViewModels
         private readonly IEditDetailsDataProvider _editDetailsDataProvider;
         public ReturnedPost CurrentPost { get; set; }
         public ObservableCollection<RetunredComment> Comments { get; set; }
+        public ObservableCollection<UserMention> Followed { get; set; }
         private List<RetunredComment> _hiddenComments { get; set; }
         public string CommentText { get; set; }
         public byte[] Image { get; set; }
-        public List<string> Tags { get; set; }
+        public object Tags { get; set; }
         public int Likes { get; set; }
         public bool ShowComments { get; set; }
 
@@ -53,15 +55,21 @@ namespace Client.ViewModels
 
         public async void PublishComment()
         {
+            var tagsList = _viewService.TagUser(Tags);
             try
             {
-                var comment = await _socialDataProvider.Comment(CommentText, Image, Tags.ToArray());
+                var comment = await _socialDataProvider.Comment(GenerateCommentToUpload(tagsList));
                 Comments.Add(comment);
             }
             catch (UnauthorizedAccessException e)
             {
                 ExpiredToken();
             }
+        }
+
+        public void TagUser(object usersLIst)
+        {
+            Tags = usersLIst;
         }
 
         public async void ChooseImage()
@@ -137,6 +145,18 @@ namespace Client.ViewModels
         private void ExpiredToken()
         {
             _viewService.LogOut();
+        }
+
+        private UploadedComment GenerateCommentToUpload(List<string> tagsList)
+        {
+            UploadedComment comment = new UploadedComment
+            {
+                Content = CommentText,
+                Image = Image,
+                TagedUsersIds = tagsList.ToArray(),
+                PostId = CurrentPost.PostId
+            };
+            return comment;
         }
 
         private void OnPropertyChange(string propname = null)

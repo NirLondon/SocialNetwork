@@ -32,5 +32,10 @@ namespace Client.WUP.UserControls
         {
             ((PostViewModel)DataContext).ExpandComments();
         }
+
+        private void TagUser(object sender, SelectionChangedEventArgs e)
+        {
+            ((PostViewModel)DataContext).TagUser(sender);
+        }
     }
 }

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Client.Models.ReturnedDTOs;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -15,6 +16,8 @@ namespace Client.ServicesInterfaces
         void GoToFollowers();
 
         void GoToBlocked();
+
+        void GoToNotifications(IEnumerable<Notification> notifications);
 
         void LogOut();
     }

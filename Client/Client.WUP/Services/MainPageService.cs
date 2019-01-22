@@ -15,6 +15,7 @@ using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media.Imaging;
 using Client.ViewModels;
+using Client.Models.ReturnedDTOs;
 
 namespace Client.WUP.Services
 {
@@ -77,6 +78,11 @@ namespace Client.WUP.Services
         {
             stackPanelContent.Children.Clear();
             stackPanelContent.Children.Add(new BlockedUserControl());
+        }
+
+        public void GoToNotifications(IEnumerable<Notification> notifications)
+        {
+
         }
     }
 }

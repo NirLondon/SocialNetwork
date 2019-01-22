@@ -1,4 +1,4 @@
-﻿namespace Social.Common.Models.UploadedDTOs
+﻿namespace Client.Models.UploadedDTOs
 {
     public class User
     {
