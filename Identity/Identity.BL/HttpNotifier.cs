@@ -26,7 +26,7 @@ namespace Identity.BL
         public void NotifyToSocialService(UserToSocial user)
         {
             var response = httpClient
-                .PutAsJsonAsync("http://localhost:63377/api/Social/Users/Edit", user)
+                .PutAsJsonAsync("http://SocailNetwork.Social/api/Social/Users/Edit", user)
                 .Result;
 
             if (!response.IsSuccessStatusCode)

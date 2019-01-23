@@ -8,9 +8,12 @@ namespace Social.BL
     public class BLDependenciesResolver : DependenciesResolver
     {
         public BLDependenciesResolver()
-        : base((typeof(ISocialRepository), typeof(Neo4jSocialRepository)),
-              (typeof(ISocialManager), typeof(SocialManager)),
-              (typeof(IPhotosStorage), typeof(PhotoStorage)))
+        : base(
+                (typeof(ISocialRepository), typeof(Neo4jSocialRepository)),
+                (typeof(ISocialManager), typeof(SocialManager)),
+                (typeof(IPhotosStorage), typeof(PhotoStorage)),
+                (typeof(INotifier), typeof(Notifier))
+              )
         { }
     }
 }

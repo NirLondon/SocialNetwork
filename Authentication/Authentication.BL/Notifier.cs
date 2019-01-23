@@ -42,7 +42,7 @@ namespace Authentication.BL
         public void NotifyToSocailService(string userId)
         {
             var response = httpClient
-                .PostAsJsonAsync($"http://localhost:63377/api/Social/Users/Add", userId)
+                .PostAsJsonAsync($"http://SocialNetwork.Social.com/api/Social/Users/Add", userId)
                 .Result;
 
             if (!response.IsSuccessStatusCode)

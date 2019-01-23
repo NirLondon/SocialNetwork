@@ -12,11 +12,13 @@ namespace Social.BL
     {
         private readonly ISocialRepository _repository;
         private readonly IPhotosStorage _photosStorage;
+        private readonly INotifier _notifier;
 
-        public SocialManager(ISocialRepository repository, IPhotosStorage photosStorage)
+        public SocialManager(ISocialRepository repository, IPhotosStorage photosStorage, INotifier notifier)
         {
             _repository = repository;
             _photosStorage = photosStorage;
+            _notifier = notifier;
         }
 
         public void AddUser(string userId)
