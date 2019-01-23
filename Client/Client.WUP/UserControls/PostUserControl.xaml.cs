@@ -23,10 +23,10 @@ namespace Client.WUP.UserControls
             ((PostViewModel)DataContext).ChooseImage();
         }
 
-        private void GoToProfile(object sender, Windows.UI.Xaml.Input.DoubleTappedRoutedEventArgs e)
-        {
-            ((PostViewModel)DataContext).GoToProfile();
-        }
+        //private void GoToProfile(object sender, Windows.UI.Xaml.Input.DoubleTappedRoutedEventArgs e)
+        //{
+        //    ((PostViewModel)DataContext).GoToProfile();
+        //}
 
         private void ExpandComments(object sender, RoutedEventArgs e)
         {

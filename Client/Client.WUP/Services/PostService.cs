@@ -16,6 +16,7 @@ using Client.WUP.UserControls;
 using Client.DataProviders;
 using Windows.UI.Xaml.Controls;
 using Client.Models.ReturnedDTOs;
+using Windows.UI.Xaml.Controls;
 
 namespace Client.WUP.Services
 {
@@ -36,8 +37,8 @@ namespace Client.WUP.Services
             if (file != null)
             {
                 //var stream = await file.OpenAsync(FileAccessMode.Read);
-               // image = new BitmapImage();
-               // image.SetSource(stream);
+                // image = new BitmapImage();
+                // image.SetSource(stream);
                 using (Stream stream = await file.OpenStreamForReadAsync())
                 {
                     using (var memoryStream = new MemoryStream())
@@ -50,10 +51,10 @@ namespace Client.WUP.Services
             return arr;
         }
 
-        public void GoToProfile(UserDetails userDetails, ISocialDataProvider dataProvider)
+        public void GoToProfile(UserMention user, ISocialDataProvider dataProvider)
         {
             MainPageService.Instance.stackPanelContent.Children.Clear();
-            MainPageService.Instance.stackPanelContent.Children.Add(new UserProfileUserControl(userDetails, dataProvider));
+            MainPageService.Instance.stackPanelContent.Children.Add(new UserProfileUserControl(user, dataProvider));
         }
 
         public void LogOut()
@@ -64,9 +65,17 @@ namespace Client.WUP.Services
         public List<string> TagUser(object tagsList)
         {
             List<string> l = new List<string>();
-            foreach (UserMention user in ((ListBox)tagsList).SelectedItems)
+            try
             {
-                l.Add(user.UserId);
+                foreach (UserMention user in ((ListBox)tagsList).SelectedItems)
+                {
+                    l.Add(user.UserId);
+                }
+                return l;
+            }
+            catch (Exception e)
+            {
+
             }
             return l;
         }
@@ -77,6 +86,14 @@ namespace Client.WUP.Services
             picker.ViewMode = PickerViewMode.Thumbnail;
             picker.FileTypeFilter.Add(".jpg");
             picker.FileTypeFilter.Add(".png");
+        }
+
+        public bool PostsScrolled(object scroll)
+        {
+            var scroller = (ScrollViewer)scroll;
+            if (scroller.VerticalOffset == scroller.Height)
+                return true;
+            return false;
         }
     }
 }

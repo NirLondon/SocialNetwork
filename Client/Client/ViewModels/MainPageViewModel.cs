@@ -72,6 +72,11 @@ namespace Client.ViewModels
             _viewService.GoToNotifications(_notifications);
         }
 
+        public void GoToSearch()
+        {
+            _viewService.GoToSearch();
+        }
+
         public void logOut()
         {
             _viewService.LogOut();

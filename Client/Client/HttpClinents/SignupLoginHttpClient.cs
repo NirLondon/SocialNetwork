@@ -51,7 +51,7 @@ namespace Client.HttpClinents
         }
 
         public async Task LoginWithFacebook(string facebookToken)
-        {
+         {
             var response = await httpClient.PostAsJsonAsync($"LoginWithFacebook", facebookToken);
 
             switch (response.StatusCode)

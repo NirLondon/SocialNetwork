@@ -17,8 +17,7 @@
                     <ListView.ItemTemplate>
                         <DataTemplate>
                             <StackPanel Margin="10" Orientation="Horizontal">
-                                <TextBlock Margin="5" Text="{Binding FirstName}"/>
-                                <TextBlock Margin="5" Text="{Binding LastName}"/>
+                                <TextBlock Margin="5" Text="{Binding FullName}"/>
                             </StackPanel>
                         </DataTemplate>
                     </ListView.ItemTemplate>

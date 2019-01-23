@@ -1,5 +1,7 @@
 ﻿using Client.DataProviders;
+using Client.Exeptions;
 using Client.Models;
+using Client.Models.ReturnedDTOs;
 using Client.ServicesInterfaces;
 using System;
 using System.Collections.Generic;
@@ -31,10 +33,10 @@ namespace Client.ViewModels
 
 
 
-        public UserProfileViewModel(UserDetails _details, ISocialDataProvider dataProvider, IFollowedUsersService followedService)
+        public UserProfileViewModel(UserMention user, ISocialDataProvider dataProvider, IFollowedUsersService followedService)
         {
             _followedService = followedService;
-            Details = _details;
+            InitDetails(user);
             _dataProvider = dataProvider;
         }
 
@@ -55,7 +57,7 @@ namespace Client.ViewModels
                 }
                 Details.IsFollowed = !Details.IsFollowed;
             }
-            catch (UnauthorizedAccessException e)
+            catch (TokenExpiredExeption e)
             {
                 ExpiredTpken();
             }
@@ -77,12 +79,17 @@ namespace Client.ViewModels
                 }
                 Details.IsBlocked = !Details.IsBlocked;
             }
-            catch (UnauthorizedAccessException e)
+            catch (TokenExpiredExeption e)
             {
                 ExpiredTpken();
             }
         }
 
+
+        private async void InitDetails(UserMention user)
+        {
+
+        }
 
         private void ExpiredTpken()
         {

@@ -16,9 +16,9 @@ namespace Client.HttpClinents
 {
     public class EditDetailsHttpClient : HttpHelper, IEditDetailsDataProvider
     {
-        public EditDetailsHttpClient() : base("http://localhost:63276/api/users/") { }
+        public EditDetailsHttpClient() : base("http://SocialNetwork.Identity.com/api/users/") { }
         //http://localhost:63276/
-        //http://SocialNetwork.Social.com/
+        //http://SocialNetwork.Identity.com/
         public async Task<UserDetails> GetUserDetails()
         {
             var response = await httpClient.GetAsync($"GetUserDetails");

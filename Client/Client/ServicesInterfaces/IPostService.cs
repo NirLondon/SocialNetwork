@@ -1,5 +1,6 @@
 ﻿using Client.DataProviders;
 using Client.Models;
+using Client.Models.ReturnedDTOs;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -12,10 +13,12 @@ namespace Client.ServicesInterfaces
     {
         Task<byte[]> ChooseImage();
 
-        void GoToProfile(UserDetails userDetails, ISocialDataProvider dataProvider);
+        void GoToProfile(UserMention userDetails, ISocialDataProvider dataProvider);
 
         void LogOut();
 
         List<string> TagUser(object list);
+
+        bool PostsScrolled(object scroll);
     }
 }

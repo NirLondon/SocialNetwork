@@ -124,6 +124,9 @@
     <Compile Include="UserControls\PostUserControl.xaml.cs">
       <DependentUpon>PostUserControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="UserControls\SearchUserControl.xaml.cs">
+      <DependentUpon>SearchUserControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="UserControls\UserProfileUserControl.xaml.cs">
       <DependentUpon>UserProfileUserControl.xaml</DependentUpon>
     </Compile>
@@ -150,6 +153,7 @@
     <Content Include="Assets\notification.png" />
     <Content Include="Assets\pen.png" />
     <Content Include="Assets\Rotatedfootsteps.png" />
+    <Content Include="Assets\search.png" />
     <Content Include="Assets\Sending.gif" />
     <Content Include="Properties\Default.rd.xml" />
     <Content Include="Assets\LockScreenLogo.scale-200.png" />
@@ -218,6 +222,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="UserControls\PostUserControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UserControls\SearchUserControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

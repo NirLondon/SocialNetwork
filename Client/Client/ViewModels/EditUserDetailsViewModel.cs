@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using System.ComponentModel;
 using Client.Models;
 using Client.ServicesInterfaces;
+using Client.Exeptions;
 
 namespace Client.ViewModels
 {
@@ -38,7 +39,7 @@ namespace Client.ViewModels
             {
                 await _dataProvider.UpdateUserDetails(UserDetails);
             }
-            catch (UnauthorizedAccessException e)
+            catch (TokenExpiredExeption e)
             {
                 ExpiredTpken();
             }
@@ -51,7 +52,7 @@ namespace Client.ViewModels
             {
                 UserDetails = await _dataProvider.GetUserDetails();
             }
-            catch (UnauthorizedAccessException e)
+            catch (TokenExpiredExeption e)
             {
                 ExpiredTpken();
             }

@@ -1,4 +1,5 @@
 ﻿using Client.DataProviders;
+using Client.Exeptions;
 using Client.Models.ReturnedDTOs;
 using Client.ServicesInterfaces;
 using System;
@@ -53,7 +54,7 @@ namespace Client.ViewModels
                 await _notificator.RemoveNotification(SelectedNotification);
                 Notifications.Remove(SelectedNotification);
             }
-            catch (UnauthorizedAccessException e)
+            catch (TokenExpiredExeption e)
             {
                 ExpireToken();
             }

@@ -104,18 +104,18 @@ namespace Client.HttpClinents
             return null;
         }
 
-        public async Task<ReturnedPost> Post(UploadedPost post)
+        public async Task Post(UploadedPost post)
         {
             var response = await httpClient.PostAsJsonAsync($"Post", post);
             switch (response.StatusCode)
             {
                 case HttpStatusCode.OK:
                     SetCurrentToken(response.Headers.GetValues("Token").FirstOrDefault());
-                    return response.Content.ReadAsAsync<ReturnedPost>().Result;
+                    //return response.Content.ReadAsAsync<ReturnedPost>().Result;
+                    break;
                 case HttpStatusCode.Unauthorized:
                     throw new TokenExpiredExeption();
             }
-            return null;
         }
 
         public async Task Block(string userID)
@@ -200,6 +200,21 @@ namespace Client.HttpClinents
                 case HttpStatusCode.OK:
                     SetCurrentToken(response.Headers.GetValues("Token").FirstOrDefault());
                     return response.Content.ReadAsAsync<List<RetunredComment>>().Result;
+                case HttpStatusCode.Unauthorized:
+                    throw new TokenExpiredExeption();
+            }
+            return null;
+        }
+
+        public async Task<UserDetails> Search(string user)
+        {
+            var response = await httpClient.GetAsync($"Search/{user}");
+
+            switch (response.StatusCode)
+            {
+                case HttpStatusCode.OK:
+                    SetCurrentToken(response.Headers.GetValues("Token").FirstOrDefault());
+                    return response.Content.ReadAsAsync<UserDetails>().Result;
                 case HttpStatusCode.Unauthorized:
                     throw new TokenExpiredExeption();
             }

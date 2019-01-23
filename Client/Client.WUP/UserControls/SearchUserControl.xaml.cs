@@ -1,5 +1,4 @@
 ﻿using Client.ViewModels;
-using Client.Models;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -14,22 +13,19 @@ using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
-using Client.DataProviders;
-using Client.ServicesInterfaces;
-using Client.Models.ReturnedDTOs;
 
 // The User Control item template is documented at https://go.microsoft.com/fwlink/?LinkId=234236
 
 namespace Client.WUP.UserControls
 {
-    public sealed partial class UserProfileUserControl : UserControl
+    public sealed partial class SearchUserControl : UserControl
     {
-        public UserProfileViewModel viewModel { get; set; }
-        public IFollowedUsersService followedService { get; set; }
-        public UserProfileUserControl(UserMention user, ISocialDataProvider dataProvider)
+        public SearchUserViewModel viewModel { get; set; }
+
+        public SearchUserControl()
         {
             this.InitializeComponent();
-            viewModel = new UserProfileViewModel(user, dataProvider, followedService);
+            viewModel = new SearchUserViewModel();
         }
     }
 }

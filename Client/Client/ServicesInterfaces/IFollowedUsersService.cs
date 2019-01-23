@@ -1,5 +1,6 @@
 ﻿using Client.DataProviders;
 using Client.Models;
+using Client.Models.ReturnedDTOs;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -10,6 +11,6 @@ namespace Client.ServicesInterfaces
     {
         void LogOut();
 
-        void GoToUserProfile(UserDetails userDetails, ISocialDataProvider dataProvider);
+        void GoToUserProfile(UserMention user, ISocialDataProvider dataProvider);
     }
 }

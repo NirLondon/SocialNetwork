@@ -12,7 +12,7 @@ namespace Client.DataProviders
 {
     public interface ISocialDataProvider
     {
-        Task<ReturnedPost> Post(UploadedPost post);
+        Task Post(UploadedPost post);
 
         Task<RetunredComment> Comment(UploadedComment comment);
 
@@ -37,5 +37,7 @@ namespace Client.DataProviders
         Task<List<RetunredComment>> GetComments(Guid postID);
 
         Task UnFollow(string userID);
+
+        Task<UserDetails> Search(string user);
     }
 }

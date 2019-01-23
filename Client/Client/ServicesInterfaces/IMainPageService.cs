@@ -19,6 +19,8 @@ namespace Client.ServicesInterfaces
 
         void GoToNotifications(IEnumerable<Notification> notifications);
 
+        void GoToSearch();
+
         void LogOut();
     }
 }

@@ -89,13 +89,17 @@ namespace Client.ViewModels
             {
                 try
                 {
-                    await _dataProvider.LoginWithFacebook(facebookToken);
                     LoggedWithFacebook = true;
+                    await _dataProvider.LoginWithFacebook(facebookToken);
                     _viewService.NavigateToMainPage(LoggedWithFacebook);
                 }
                 catch (WrongUsernameOrPasswordException e)
                 {
                     ManageUserSwitch();
+                }
+                catch (TokenExpiredExeption e)
+                {
+                    Message = "Wrong token";
                 }
             }
             Sending = false;

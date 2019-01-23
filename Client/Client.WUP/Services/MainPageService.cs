@@ -80,6 +80,12 @@ namespace Client.WUP.Services
             stackPanelContent.Children.Add(new BlockedUserControl());
         }
 
+        public void GoToSearch()
+        {
+            stackPanelContent.Children.Clear();
+            stackPanelContent.Children.Add(new SearchUserControl());
+        }
+
         public void GoToNotifications(IEnumerable<Notification> notifications)
         {
 

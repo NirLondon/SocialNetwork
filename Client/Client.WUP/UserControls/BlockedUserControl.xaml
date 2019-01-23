@@ -17,15 +17,14 @@
                     <ListView.ItemTemplate>
                         <DataTemplate>
                             <StackPanel Margin="10" Orientation="Horizontal">
-                                <TextBlock Margin="5" Text="{Binding FirstName}"/>
-                                <TextBlock Margin="5" Text="{Binding LastName}"/>
+                                <TextBlock Margin="5" Text="{Binding FullName}"/>
                             </StackPanel>
                         </DataTemplate>
                     </ListView.ItemTemplate>
                 </ListView>
             </ScrollViewer>
             <StackPanel Margin="10" HorizontalAlignment="Center" VerticalAlignment="Top" Orientation="Horizontal">
-                <Button Margin="5" Content="UnFollow" Click="{x:Bind viewModel.UnBlock}"/>
+                <Button Margin="5" Content="Unblock" Click="{x:Bind viewModel.UnBlock}"/>
                 <Button Margin="5" Content="Go to profile" Click="{x:Bind viewModel.GoToProfile}"/>
             </StackPanel>
         </StackPanel>

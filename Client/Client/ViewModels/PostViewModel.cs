@@ -15,6 +15,7 @@ using Windows.UI.Xaml.Media.Imaging;
 using Client.Models.ReturnedDTOs;
 using System.Collections.ObjectModel;
 using Client.Models.UploadedDTOs;
+using Client.Exeptions;
 
 namespace Client.ViewModels
 {
@@ -61,7 +62,7 @@ namespace Client.ViewModels
                 var comment = await _socialDataProvider.Comment(GenerateCommentToUpload(tagsList));
                 Comments.Add(comment);
             }
-            catch (UnauthorizedAccessException e)
+            catch (TokenExpiredExeption e)
             {
                 ExpiredToken();
             }
@@ -77,19 +78,19 @@ namespace Client.ViewModels
             Image = await _viewService.ChooseImage();
         }
 
-        public async void GoToProfile()
-        {
-            try
-            {
-                var details = await _editDetailsDataProvider.GetUserDetails();
-                _viewService.GoToProfile(details, _socialDataProvider);
-            }
-            catch (UnauthorizedAccessException e)
-            {
-                ExpiredToken();
-            }
+        //public async void GoToProfile()
+        //{
+        //    try
+        //    {
+        //        var details = await _editDetailsDataProvider.GetUserDetails();
+        //        _viewService.GoToProfile(details, _socialDataProvider);
+        //    }
+        //    catch (UnauthorizedAccessException e)
+        //    {
+        //        ExpiredToken();
+        //    }
 
-        }
+        //}
 
         public async void Like()
         {
@@ -107,7 +108,7 @@ namespace Client.ViewModels
                 }
                 CurrentPost.IsLiked = !CurrentPost.IsLiked;
             }
-            catch (UnauthorizedAccessException e)
+            catch (TokenExpiredExeption e)
             {
                 ExpiredToken();
             }
@@ -129,7 +130,7 @@ namespace Client.ViewModels
                     {
                         _hiddenComments = await _socialDataProvider.GetComments(CurrentPost.PostId);
                     }
-                    catch (UnauthorizedAccessException e)
+                    catch (TokenExpiredExeption e)
                     {
                         ExpiredToken();
                     }

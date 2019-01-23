@@ -1,5 +1,7 @@
 ﻿using Client.DataProviders;
+using Client.Exeptions;
 using Client.Models;
+using Client.Models.ReturnedDTOs;
 using Client.ServicesInterfaces;
 using System;
 using System.Collections.Generic;
@@ -13,11 +15,11 @@ namespace Client.ViewModels
     {
         public event PropertyChangedEventHandler PropertyChanged;
         public ISocialDataProvider _dataProvider { get; set; }
-        public ObservableCollection<UserDetails> Users { get; set; }
+        public ObservableCollection<UserMention> Users { get; set; }
         private IFollowedUsersService _followedService { get; set; }
 
-        private UserDetails _selectedUser;
-        public UserDetails SelectedUser
+        private UserMention _selectedUser;
+        public UserMention SelectedUser
         {
             get { return _selectedUser; }
             set
@@ -47,10 +49,10 @@ namespace Client.ViewModels
         {
             try
             {
-                await _dataProvider.UnFollow(SelectedUser.UserID);
+                await _dataProvider.UnFollow(SelectedUser.UserId);
                 Users.Remove(SelectedUser);
             }
-            catch (UnauthorizedAccessException e)
+            catch (TokenExpiredExeption e)
             {
                 ExpiredTpken();
             }
@@ -63,16 +65,16 @@ namespace Client.ViewModels
 
         private async void InitUsers()
         {
-            Users = new ObservableCollection<UserDetails>();
+            Users = new ObservableCollection<UserMention>();
             try
             {
                 var result = await _dataProvider.GetFollowed();
-                foreach (var user in Users)
+                foreach (var user in result)
                 {
                     Users.Add(user);
                 }
             }
-            catch (UnauthorizedAccessException e)
+            catch (TokenExpiredExeption e)
             {
                 ExpiredTpken();
             }

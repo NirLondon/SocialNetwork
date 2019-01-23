@@ -18,7 +18,7 @@
         <StackPanel>
             <StackPanel Margin="10">
                 <StackPanel Orientation="Horizontal">
-                    <TextBlock Margin="10" Text="{Binding CurrentPost.Poster.FullName}" FontSize="20" FontWeight="Black" DoubleTapped="GoToProfile"/>
+                    <TextBlock Margin="10" Text="{Binding CurrentPost.Poster.FullName}" FontSize="20" FontWeight="Black"/>
                     <TextBlock Margin="10" Text="{Binding CurrentPost.UploadingTime}" FontSize="20" FontWeight="Bold"/>
                 </StackPanel>
                 <Image Margin="10" Source="{Binding CurrentPost.ImageURL}" Width="280"/>
@@ -26,7 +26,6 @@
                 <Button Margin="10" IsEnabled="{Binding CurrentPost.IsLiked, Converter={StaticResource LikeConverter}}">
                     <StackPanel Orientation="Horizontal">
                         <Image Source="/Assets/like.png" Height="20"/>
-                        <TextBlock Text="{Binding CurrentPost.Likes}"/>
                     </StackPanel>
                 </Button>
                 <StackPanel Margin="10">
