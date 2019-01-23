@@ -204,7 +204,7 @@ namespace Social.Server.Controllers
             {
                 var (token, userId) = await _authentiacator.Authenticate(sentToken);
                 if (token != null && userId != null)
-                    return await action(userId);
+                    return WithToken(await action(userId), token);
             }
             return Unauthorized();
         }
@@ -219,5 +219,8 @@ namespace Social.Server.Controllers
             sentToken = null;
             return false;
         }
+
+        private Tokenned WithToken(IHttpActionResult result, string token)
+            => new Tokenned(result, token);
     }
 }

@@ -26,9 +26,16 @@ namespace Social.DAL
 
         public IEnumerable<UserMention> BlockedBy(string blockerId)
         {
-            return UsersQueryParse(
-                $"MATCH (u:User)<-[:Blocks]-(:User{{ UserID: \"{blockerId}\" }}) " +
-                 "RETURN u");
+            using (var session = _driver.Session())
+            {
+                return
+                    session.Run(
+                        $"MATCH (u:User)<-[:Blocks]-(:User{{ UserID: \"{blockerId}\" }}) " +
+                        "RETURN u{ UserID: u.UserID, FullName: u.FirstName + \" \" + u.LastName } AS Blocked")
+                        .Select(record => ConvertTo<UserMention>(
+                            record["Blocked"]
+                            .As<Dictionary<string, object>>()));
+            }
         }
 
         public void PutComment(string commenterId, DataBaseComment comment)
@@ -51,27 +58,41 @@ namespace Social.DAL
                    $"(u: User{{ UserID: \"{commenterId}\" }}) " +
                    (hasTags ? ", " + tagedUsersMatch + "\n" : string.Empty) +
                    "CREATE " +
-                   "(c: Comment{ CommentID: \"" + $"{Guid.NewGuid()}\", Content: \"{comment.Content}\"" + 
-                   (comment.ImagURL != null ? $", ImageURL: \"{comment.ImagURL}\"" : string.Empty) + 
+                   "(c: Comment{ CommentID: \"" + $"{Guid.NewGuid()}\", Content: \"{comment.Content}\"" +
+                   (comment.ImagURL != null ? $", ImageURL: \"{comment.ImagURL}\"" : string.Empty) +
                    $", UploadingTime: \"{DateTime.Now}\"" + " }), " +
                    "(c) < -[:Has] - (p), " +
                    "(c) -[:Uploaded_by]->(u) " +
-                   (hasTags ?", " + tagsCreate : string.Empty));
+                   (hasTags ? ", " + tagsCreate : string.Empty));
             }
         }
 
         public IEnumerable<UserMention> UsersFollowedBy(string userId)
         {
-            return UsersQueryParse(
-            "MATCH (:User{ UserID: \"" + userId + "\"})-[:Follows]->(u:User) " +
-            "RETURN u");
+            using (var session = _driver.Session())
+            {
+                return
+                session.Run(
+                    "MATCH (:User{ UserID: \"" + userId + "\"})-[:Follows]->(u:User) " +
+                    "RETURN { UserID: u.UserID, FullName: u.FirstName + \" \" + u.LastName } AS Followed")
+                    .Select(record => ConvertTo<UserMention>(
+                        record["Followed"]
+                        .As<Dictionary<string, object>>()));
+            }
         }
 
         public IEnumerable<UserMention> FollowersOf(string userId)
         {
-            return UsersQueryParse(
-                "MATCH (:User{ UserID: \"" + userId + "\" })<-[:Follows]-(u:User) " +
-                "RETURN u");
+            using (var session = _driver.Session())
+            {
+                return
+                    session.Run(
+                        "MATCH (:User{ UserID: \"" + userId + "\" })<-[:Follows]-(u:User) " +
+                        "RETURN { UserID: u.UserID, FullName: u.FirstName + \" \" + u.LastName } AS Follower")
+                    .Select(record => ConvertTo<UserMention>(
+                        record["Follower"]
+                        .As<Dictionary<string, object>>()));
+            }
         }
 
         public IEnumerable<ReturnedPost> PostsForUser(string userId, int amount, int skip)
@@ -80,49 +101,46 @@ namespace Social.DAL
             {
                 return
                     session.Run(
-                        "MATCH\n" +
-                            $"\t(u: User{{ UserID: \"{userId}\" }})-[:Follows]->(:User)-[:Uploaded]->(p1: Post),\n" +
-                            "\t(u)<-[:Tags]-(p2: Post),\n" +
-                            "\t(p3: Post)-[:Has]->(c: Comment)-[:Tags]->(u)\n" +
-                        "WITH\n" +
-                            "\tcollect(p1) +\n" +
-                            "\tcollect(p2) +\n" +
-                            "\tcollect(p3)\n" +
-                            "\tAS res, u\n" +
-                        "UNWIND res AS Post\n" +
-                        "OPTIONAL MATCH(Post)<-[:Uploaded]-(poster: User)\n" +
-                        "RETURN DISTINCT\n" +
-                            "\tPost.PostID AS PostId,\n" +
-                             "\t{\n" +
-                                "\t\tUserId: poster.UserID,\n" +
-                                "\t\tFullName: poster.firstName + \" \" + poster.lastName\n" +
-                             "\t} AS Poster,\n" +
-                             "\tPost.Content AS Content,\n" +
-                             "\tPost.UploadingTime AS UploadingTime,\n" +
-                             "\tPost.ImageURL AS ImageURL,\n" +
-                             "\tEXISTS((Post)-[:Liked_by]->(u)) AS IsLiked,\n" +
-                             "\t[(Post)-[:Liked_by]->(liker:User) |\n" +
-                             "\t\t{\n" +
-                                "\t\t\tUserId : liker.UserID,\n" +
-                                "\t\t\tFullName : liker.firstName + \" \" + liker.lastName\n" +
-                             "\t\t}] AS Likes,\n" +
-                             "\t[(Post)-[:Tags]->(taged: User) |\n" +
-                                     "\t\t{\n" +
-                                         "\t\t\tUserId : taged.UserID,\n" +
-                                        "\t\t\tFullName : taged.firstName + \" \" + taged.lastName\n" +
-                                    "\t\t}] AS Tags\n" +
-                        "ORDER BY Post.UploadingTime\n" +
-                        $"SKIP {skip}\n" +
-                        $"LIMIT {amount}\n")
+@"MATCH
+    (u: User{ UserID: " + '"' + userId + '"' + @"}), (p: Post) < -[:Uploaded] - (poster: User)
+WHERE
+	(poster)<-[:Follows]-(u)
+    OR
+	(p)-[:Tags]->(u)
+    OR
+    (p)-[:Has]->(:Comment)-[:Tags]->(u)
+RETURN    
+    	p.PostID AS PostId,
+           	{
+               	UserId: poster.UserID,
+                FullName: poster.FirstName + ' ' + poster.LastName
+            } AS Poster,
+        p.Content AS Content,
+        p.UploadingTime AS UploadingTime,
+        p.ImageURL AS ImageURL,
+        EXISTS((p)-[:Liked_by]->(u)) AS IsLiked,
+        [(p)-[:Liked_by]->(liker:User) |
+           			{
+                       	UserId: liker.UserID,
+                        FullName: liker.FirstName + ' ' + liker.LastName
+                    }] AS Likes,
+        [(p)-[:Tags]->(taged:User) |
+           			{
+                  		 UserId: taged.UserID,
+                   		 FullName: taged.FirstName + ' ' + taged.LastName
+                    }] AS Tags
+ORDER BY p.UploadingTime" +
+$"\nSKIP {skip}\n" +
+$"LIMIT {amount}")
                         .Select(record =>
                             new ReturnedPost
                             {
                                 PostId = Guid.Parse(record["PostId"].ToString()),
                                 Poster = ConvertTo<UserMention>(record["Poster"].As<Dictionary<string, object>>()),
-                                Content = record["Content"].ToString(),
-                                ImageURL = record["ImageURL"].ToString(),
+                                Content = record["Content"]?.ToString(),
+                                ImageURL = record["ImageURL"]?.ToString(),
                                 IsLiked = bool.Parse(record["IsLiked"].ToString()),
-                                UploadingTime = DateTime.Parse(record["UploadingTime"].ToString()),
+                                UploadingTime = new DateTime(long.Parse(record["UploadingTime"].ToString())),
                                 Likes = ConvertTo<UserMention[]>(record["Likes"].As<List<Dictionary<string, object>>>()),
                                 Tags = ConvertTo<UserMention[]>(record["Tags"].As<List<Dictionary<string, object>>>()),
                             });
@@ -155,8 +173,8 @@ namespace Social.DAL
                     "\t(p:Post\n\t{\n" +
                     $"\t\t\tPostID: \"{Guid.NewGuid()}\",\n" +
                     $"\t\t\tContent:\n\t\t\t\"{post.Content}\",\n" +
-                    $"\t\t\tUploadingTime: \"{DateTime.Now}\",\n" +
-                    (post.ImageURL != null? $"\t\t\tImageURL: \"{post.ImageURL}\",\n" : string.Empty) +
+                    $"\t\t\tUploadingTime: {DateTime.Now.Ticks},\n" +
+                    (post.ImageURL != null ? $"\t\t\tImageURL: \"{post.ImageURL}\",\n" : string.Empty) +
                     $"\t\t\tVisibility: \"{(byte)post.Visibility}\"\n" +
                     "\t}),\n" +
                     "\t(u)-[:Uploaded]->(p)" +
@@ -219,22 +237,6 @@ namespace Social.DAL
 
             using (var session = _driver.Session())
                 session.Run(query);
-        }
-
-        private IEnumerable<UserMention> UsersQueryParse(string query)
-        {
-            using (var session = _driver.Session())
-            {
-                return session.Run(query).Select(r =>
-                {
-                    var node = r["u"].As<INode>();
-                    return new UserMention
-                    {
-                        UserId = node["UserID"].ToString(),
-                        FullName = node["firstName"].ToString() + node["lastName"].ToString()
-                    };
-                });
-            }
         }
 
         public IEnumerable<RetunredComment> CommentsOfPost(Guid postId, string userId)
@@ -313,8 +315,8 @@ namespace Social.DAL
         {
             using (var sessoin = _driver.Session())
             {
-                sessoin.Run($"MATCH (u:User{{ UserID: \"{user.UserId}\" }})\n" + 
-                    $"SET u.FirstName = \"{user.FirstName}\",\n" + 
+                sessoin.Run($"MATCH (u:User{{ UserID: \"{user.UserId}\" }})\n" +
+                    $"SET u.FirstName = \"{user.FirstName}\",\n" +
                     $"u.LastName = \"{user.LastName}\"");
             }
         }
