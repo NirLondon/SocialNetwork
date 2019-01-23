@@ -24,7 +24,7 @@
                 <ComboBox Margin="0, 0, 10, 0" SelectedIndex="{x:Bind viewModel.VisibilityIndex, Mode=TwoWay}" ItemsSource="{x:Bind viewModel.PostVisibility}"/>
                 <TextBlock Margin="5" Text="Tags"/>
                 <ScrollViewer HorizontalScrollBarVisibility="Visible" Height="100">
-                    <ListBox Margin="10" SelectionMode="Multiple" ItemsSource="{x:Bind viewModel.Followed, Mode=TwoWay}" SelectionChanged="{x:Bind viewModel.TagUser}" VerticalAlignment="Top">
+                    <ListBox Margin="10" SelectionMode="Multiple" ItemsSource="{x:Bind viewModel.Followed, Mode=TwoWay}" VerticalAlignment="Top">
                         <ListBox.ItemTemplate>
                             <DataTemplate x:DataType="models:UserMention">
                                 <TextBlock Text="{Binding FullName}"/>

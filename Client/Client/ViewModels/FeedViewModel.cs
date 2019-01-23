@@ -1,17 +1,12 @@
-﻿using Client.Models;
-using Client.DataProviders;
-using Client.Enums;
+﻿using Client.DataProviders;
 using Client.ServicesInterfaces;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Text;
-using Windows.UI.Xaml.Media.Imaging;
 using Client.Models.UploadedDTOs;
 using Client.Models.ReturnedDTOs;
 using Client.Exeptions;
-using System.Threading.Tasks;
 
 namespace Client.ViewModels
 {
