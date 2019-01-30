@@ -1,5 +1,5 @@
 ﻿using Notifications.Common.BL;
-using Notifications.Common.Models;
+using Notifications.Common.Models.ReceivedDTOs;
 using System.Web.Http;
 
 namespace Notifications.Server.Controllers

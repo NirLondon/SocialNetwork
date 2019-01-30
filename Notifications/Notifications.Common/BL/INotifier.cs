@@ -1,4 +1,4 @@
-﻿using Notifications.Common.Models;
+﻿using Notifications.Common.Models.ReceivedDTOs;
 
 namespace Notifications.Common.BL
 {

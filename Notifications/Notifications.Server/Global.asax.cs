@@ -1,7 +1,7 @@
-﻿using Notifications.Common.BL;
+﻿using Notifications.BL;
+using Notifications.Common.BL;
 using Notifications.Common.DAL;
 using Notifications.DAL;
-using Notifications.Server.Hubs;
 using SimpleInjector;
 using SimpleInjector.Integration.WebApi;
 using System.Web.Http;
@@ -21,8 +21,8 @@ namespace Notifications.Server
         {
             var container = new Container();
 
-            container.Register<INotificationsRepository, DynamoDBNotificationsRepository>();
-            container.Register<INotifier, NotificationsHub>();
+            container.RegisterSingleton<INotificationsRepository, DynamoDBNotificationsRepository>();
+            container.RegisterSingleton<INotifier, SignalRNotifier>();
 
             container.RegisterWebApiControllers(GlobalConfiguration.Configuration);
 

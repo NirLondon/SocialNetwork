@@ -108,7 +108,7 @@ namespace Identity.Server.Controllers
             {
                 var (token, userId) = await _authentiacator.Authenticate(sentToken);
                 if (!string.IsNullOrEmpty(token) && !string.IsNullOrEmpty(userId))
-                    return await action(userId);
+                    return WithToken(await action(userId), token);
             }
             return Unauthorized();
         }
@@ -123,5 +123,8 @@ namespace Identity.Server.Controllers
             sentToken = null;
             return false;
         }
+
+        private Tokenned WithToken(IHttpActionResult result, string token)
+            => new Tokenned(result, token);
     }
 }

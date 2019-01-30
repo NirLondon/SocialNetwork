@@ -81,13 +81,13 @@ namespace Social.BL
             _repository.Like(id, likerId, likeOption);
         }
 
-        public void Post(string userId, UploadedPost post)
+        public ReturnedPost Post(string userId, UploadedPost post)
         {
             string photoURL = null;
             if (post.Image != null)
                 _photosStorage.UploadPhoto(post.Image, out photoURL);
 
-            _repository.PutPost(userId, new DataBasePost
+            return _repository.PutPost(userId, new DataBasePost
             {
                 Content = post.Content,
                 ImageURL = photoURL,

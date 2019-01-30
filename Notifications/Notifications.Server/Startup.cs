@@ -1,12 +1,8 @@
-﻿using Microsoft.Owin;
-using Owin;
+﻿using Owin;
+using Microsoft.Owin;
 using Microsoft.AspNet.SignalR;
-using System.Configuration;
-using SimpleInjector;
-using Notifications.Common.DAL;
-using Notifications.DAL;
-using Notifications.Common.BL;
-using Notifications.Server.Hubs;
+
+[assembly: OwinStartup(typeof(Notifications.Server.Startup))]
 
 namespace Notifications.Server
 {
@@ -14,22 +10,14 @@ namespace Notifications.Server
     {
         public void Configuration(IAppBuilder app)
         {
-            app.MapSignalR(InitDepndencies());
+            InitDepndencies();
+
+            app.MapSignalR();
         }
 
-        private HubConfiguration InitDepndencies()
+        private void InitDepndencies()
         {
-            var container = new Container();
-
-            container.Register<INotificationsRepository, DynamoDBNotificationsRepository>();
-            container.Register<INotifier, NotificationsHub>();
-
-            container.Verify();
-
-            return new HubConfiguration
-            {
-                Resolver = new SimpleInjectorDependencyResolver(container)
-            };
+            GlobalHost.DependencyResolver.Register(typeof(IUserIdProvider),() => new UserIdProvider());
         }
     }
 }

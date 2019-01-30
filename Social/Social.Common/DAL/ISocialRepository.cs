@@ -23,7 +23,7 @@ namespace Social.Common.DAL
 
         void AddUser(string userId);
 
-        void PutPost(string userId, DataBasePost post);
+        ReturnedPost PutPost(string userId, DataBasePost post);
 
         void Block(string blockingId, string blockedId);
 

@@ -4,4 +4,13 @@
     <TargetFramework>netstandard2.0</TargetFramework>
   </PropertyGroup>
 
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNet.SignalR.Core" Version="2.4.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Notifications.Common\Notifications.Common.csproj" />
+    <ProjectReference Include="..\Notifications.DAL\Notifications.DAL.csproj" />
+  </ItemGroup>
+
 </Project>

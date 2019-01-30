@@ -18,7 +18,7 @@ namespace Social.Common.BL
 
         void SetFollow(string followerId, string followedId);
 
-        void Post(string userId, UploadedPost post);
+        ReturnedPost Post(string userId, UploadedPost post);
 
         void Comment(string commenterId, UploadedComment comment);
 

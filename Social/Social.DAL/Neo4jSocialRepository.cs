@@ -147,7 +147,7 @@ $"LIMIT {amount}")
             }
         }
 
-        public void PutPost(string posterID, DataBasePost post)
+        private (string tagedUsersMatch, string tagsCreate) PutPostQueryComponents(DataBasePost post)
         {
             string tagedUsersMatch, tagsCreate;
             tagedUsersMatch = "\n\t";
@@ -163,22 +163,54 @@ $"LIMIT {amount}")
                     post.TagedUsersIds
                     .Select((userId, i) => $"(t{i})<-[:Tags]-(p)"));
             }
+            return (tagedUsersMatch, tagsCreate);
+        }
+
+        private string PutPostQuery(string posterId, DataBasePost post, Guid postId, DateTime uploadingTime)
+        {
+            var (tagedUsersMatch, tagsCreate) = PutPostQueryComponents(post);
+            return
+            $"MATCH\n\t(u:User{{ UserID: \"{posterId}\" }})" +
+            tagedUsersMatch +
+            $"CREATE\n" +
+            "\t(p:Post\n\t{\n" +
+            $"\t\t\tPostID: \"{postId}\",\n" +
+            $"\t\t\tContent:\n\t\t\t\"{post.Content}\",\n" +
+            $"\t\t\tUploadingTime: {uploadingTime.Ticks},\n" +
+            (post.ImageURL != null ? $"\t\t\tImageURL: \"{post.ImageURL}\",\n" : string.Empty) +
+            $"\t\t\tVisibility: \"{(byte)post.Visibility}\"\n" +
+            "\t}),\n" +
+            "\t(u)-[:Uploaded]->(p) " +
+            tagsCreate +
+            "RETURN " +
+            "{ FullName: u.FirstName + \" \" + u.LastName" +
+            "Tags: [(t: user) <-(: Tags)-(p) | { UserId: t.UserID, FullName: t.FirstName + \" \" + t.LastName }] }";
+        }
+
+        public ReturnedPost PutPost(string posterID, DataBasePost post)
+        {
+            Guid postId = Guid.NewGuid();
+            var uploadingTime = DateTime.Now;
 
             using (var session = _driver.Session())
             {
-                var x = session.Run(
-                    $"MATCH\n\t(u:User{{ UserID: \"{posterID}\" }})" +
-                    tagedUsersMatch +
-                    $"CREATE\n" +
-                    "\t(p:Post\n\t{\n" +
-                    $"\t\t\tPostID: \"{Guid.NewGuid()}\",\n" +
-                    $"\t\t\tContent:\n\t\t\t\"{post.Content}\",\n" +
-                    $"\t\t\tUploadingTime: {DateTime.Now.Ticks},\n" +
-                    (post.ImageURL != null ? $"\t\t\tImageURL: \"{post.ImageURL}\",\n" : string.Empty) +
-                    $"\t\t\tVisibility: \"{(byte)post.Visibility}\"\n" +
-                    "\t}),\n" +
-                    "\t(u)-[:Uploaded]->(p)" +
-                    tagsCreate);
+                var queryResult = session.Run(PutPostQuery(posterID, post, postId, uploadingTime);
+
+                return new ReturnedPost
+                {
+                    Content = post.Content,
+                    ImageURL = post.ImageURL,
+                    IsLiked = false,
+                    Likes = null,
+                    Poster = new UserMention
+                    {
+                        UserId = posterID,
+                        FullName = queryResult.First()["FullName"].ToString()
+                    },
+                    PostId = postId,
+                    Tags = ConvertTo<UserMention[]>(queryResult.First()["Tags"].As<List<Dictionary<string, object>>>()),
+                    UploadingTime = uploadingTime
+                };
             }
         }
 

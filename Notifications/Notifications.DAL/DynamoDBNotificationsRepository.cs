@@ -1,10 +1,9 @@
 ﻿using Amazon.DynamoDBv2;
 using Amazon.DynamoDBv2.DocumentModel;
 using Notifications.Common.DAL;
-using Notifications.Common.Models;
+using Notifications.Common.Models.ReceivedDTOs;
 using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Notifications.DAL
@@ -21,6 +20,11 @@ namespace Notifications.DAL
         }
 
         public Task Save(Notification notification)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task Save(Notification notification, bool beenRead)
         {
             throw new NotImplementedException();
         }
