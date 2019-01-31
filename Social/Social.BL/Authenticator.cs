@@ -11,7 +11,8 @@ namespace Social.BL
         {
             using (var httpClient = new HttpClient())
             {
-                var response = await httpClient.GetAsync($"http://SocialNetwork.Authentication.com/api/Tokens/Validate/{token}");
+                var response = await httpClient.GetAsync($"http://localhost:63172/api/Tokens/Validate/{token}");
+                //var response = await httpClient.GetAsync($"http://SocialNetwork.Authentication.com/api/Tokens/Validate/{token}");
 
                 if (response.IsSuccessStatusCode)
                 {

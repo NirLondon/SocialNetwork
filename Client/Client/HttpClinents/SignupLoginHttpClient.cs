@@ -1,7 +1,6 @@
 ﻿using Client.DataProviders;
 using Client.Enums;
 using Client.Exeptions;
-using System;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
@@ -12,8 +11,7 @@ namespace Client.HttpClinents
     public class SignupLoginHttpClient : HttpHelper, ISignupLoginDataProvider
     {
         public SignupLoginHttpClient() : base("http://localhost:63172/api/SignupLogin/") { }
-        //http://SocialNetwork.Authentication.com/
-        //http://localhost:63172/
+        //public SignupLoginHttpClient() : base("http://SocialNetwork.Authentication.com/api/SignupLogin/") { }
 
         public Task Signup(string username, string password)
         {

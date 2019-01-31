@@ -1,19 +1,9 @@
-﻿using Client.HttpClinents;
-using Client.ServicesInterfaces;
+﻿using Client.ServicesInterfaces;
 using Client.WUP.UserControls;
 using Client.WUP.Views;
-using Client.Models;
 using Microsoft.Toolkit.Uwp.Services.Facebook;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Windows.Storage;
-using Windows.Storage.Pickers;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Media.Imaging;
 using Client.ViewModels;
 
 namespace Client.WUP.Services

@@ -32,7 +32,8 @@ namespace Authentication.BL
         public void NotifyToIdentityService(string userId)
         {
             var response = httpClient
-                .PostAsJsonAsync($"http://localhost:63276/api/Users/Add", userId) //http://SocialNetwork.Identity.com
+                .PostAsJsonAsync($"http://localhost:63276/api/Users/Add", userId)
+                //.PostAsJsonAsync($"http://SocialNetwork.Identity.com/api/Users/Add", userId) 
                 .Result;
 
             if (!response.IsSuccessStatusCode)
@@ -42,7 +43,8 @@ namespace Authentication.BL
         public void NotifyToSocailService(string userId)
         {
             var response = httpClient
-                .PostAsJsonAsync($"http://SocialNetwork.Social.com/api/Social/Users/Add", userId)
+                .PostAsJsonAsync($"http://localhost:63377/api/Social/Users/Add", userId)
+                //.PostAsJsonAsync($"http://SocialNetwork.Social.com/api/Social/Users/Add", userId)
                 .Result;
 
             if (!response.IsSuccessStatusCode)

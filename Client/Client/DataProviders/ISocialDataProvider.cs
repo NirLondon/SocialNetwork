@@ -1,10 +1,7 @@
 ﻿using Client.Models;
-using Client.Enums;
 using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
-using Windows.UI.Xaml.Media.Imaging;
 using Social.Common.Models.ReturnedDTOs;
 using Social.Common.Models.UploadedDTOs;
 

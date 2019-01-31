@@ -23,10 +23,10 @@
                 </StackPanel>
                 <Image Margin="10" Source="{Binding CurrentPost.ImageURL}" Width="280"/>
                 <TextBlock Margin="10" Text="{Binding CurrentPost.Content}" FontSize="20"/>
-                <Button Margin="10" IsEnabled="{Binding CurrentPost.IsLiked, Converter={StaticResource LikeConverter}}">
+                <Button Margin="10" Click="Like" IsEnabled="{Binding CurrentPost.IsLiked, Converter={StaticResource LikeConverter}}">
                     <StackPanel Orientation="Horizontal">
                         <Image Source="/Assets/like.png" Height="20"/>
-                        <TextBlock Text="{Binding CurrentPost.Likes}"/>
+                        <TextBlock Text="{Binding CurrentPost.Likes.Length}"/>
                     </StackPanel>
                 </Button>
                 <StackPanel Margin="10">

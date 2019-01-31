@@ -24,6 +24,9 @@ namespace Client.ViewModels
             }
         }
 
+        public EditUserDetailsViewModel(IFollowedUsersService followService)
+            : this(new EditDetailsHttpClient(), followService) { }
+
         public EditUserDetailsViewModel(IEditDetailsDataProvider dataProvider, IFollowedUsersService followService)
         {
             _dataProvider = dataProvider;
@@ -43,7 +46,6 @@ namespace Client.ViewModels
                 ExpiredTpken();
             }
         }
-
 
         private async void InitializeUserDetails()
         {

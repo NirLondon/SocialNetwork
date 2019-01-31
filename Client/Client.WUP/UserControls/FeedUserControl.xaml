@@ -26,7 +26,7 @@
             </StackPanel>
             <Button Background="Transparent" Content="Publish" Click="{x:Bind viewModel.PublishPost}" FontWeight="ExtraBlack"/>
             <ScrollViewer Margin="0,15,0,0" HorizontalScrollBarVisibility="Visible" Height="450">
-                <ListView ItemsSource="{x:Bind viewModel.PostViewModels, Mode=TwoWay}" SelectionMode="None">
+                <ListView ItemsSource="{x:Bind viewModel.PostViewModels, Mode=OneWay}" SelectionMode="None">
                     <ListView.ItemTemplate>
                         <DataTemplate>
                             <uc:PostUserControl DataContext="{Binding}"/>

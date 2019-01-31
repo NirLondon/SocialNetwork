@@ -1,11 +1,9 @@
 ﻿using Identity.Common.DAL;
 using Identity.Common.Models;
-using Identity.Server.Models;
 using Identity.Common.BL;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net.Http;
 using System.Threading.Tasks;
 using System.Web.Http;
 
@@ -52,7 +50,7 @@ namespace Identity.Server.Controllers
                             LastName = userDetails.LastName
                         });
                     }
-                    return Ok();
+                    return WithToken(Ok(), token);
                 }
             }
             return Unauthorized();
@@ -65,6 +63,13 @@ namespace Identity.Server.Controllers
             return WrappedAction(userId => _repository.GetUserDetailsAsync(userId));
         }
 
+        [HttpGet]
+        [Route("{userId}/Details")]
+        public Task<IHttpActionResult> GetUserDetails(string userId)
+        {
+            return WrappedAction(() => _repository.GetUserDetailsAsync(userId));
+        }
+
         private Task<IHttpActionResult> WrappedAction<TResult>(Func<string, TResult> action)
         {
             return Wrapped(async userId => Json(action(userId)));
@@ -73,6 +78,11 @@ namespace Identity.Server.Controllers
         private Task<IHttpActionResult> WrappedAction<TResult>(Func<string, Task<TResult>> action)
         {
             return Wrapped(async userId => Json(await action(userId)));
+        }
+
+        private Task<IHttpActionResult> WrappedAction<TResult>(Func<Task<TResult>> action)
+        {
+            return Wrapped(async userId => Json(await action()));
         }
 
         private Task<IHttpActionResult> WrappedAction(Action action)

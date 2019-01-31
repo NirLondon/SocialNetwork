@@ -1,17 +1,8 @@
-﻿using Client.Models;
-using Client.DataProviders;
-using Client.Enums;
+﻿using Client.DataProviders;
 using Client.ServicesInterfaces;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.IO;
-using System.Net.Http;
-using System.Text;
-using Windows.Graphics.Imaging;
-using Windows.Storage;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Media.Imaging;
 using Social.Common.Models.ReturnedDTOs;
 using System.Collections.ObjectModel;
 
@@ -25,7 +16,6 @@ namespace Client.ViewModels
         private readonly IEditDetailsDataProvider _editDetailsDataProvider;
         public ReturnedPost CurrentPost { get; set; }
         public ObservableCollection<RetunredComment> Comments { get; set; }
-        private List<RetunredComment> _hiddenComments { get; set; }
         public string CommentText { get; set; }
         public byte[] Image { get; set; }
         public List<string> Tags { get; set; }
@@ -39,7 +29,6 @@ namespace Client.ViewModels
             set { _message = value; OnPropertyChange(); }
         }
 
-
         public PostViewModel(IPostService service, ISocialDataProvider dataprovider, IEditDetailsDataProvider editDetailsDataProvider)
         {
             _viewService = service;
@@ -49,6 +38,7 @@ namespace Client.ViewModels
             Image = new byte[32];
             Tags = new List<string>();
             ShowComments = false;
+            Comments = new ObservableCollection<RetunredComment>();
         }
 
         public async void PublishComment()
@@ -107,28 +97,17 @@ namespace Client.ViewModels
 
         public async void ExpandComments()
         {
-            if (ShowComments)
-            {
-                Comments.Clear();
-            }
+            if (ShowComments) Comments.Clear();
             else
             {
-                if (Comments == null)
+                try
                 {
-                    _hiddenComments = new List<RetunredComment>();
-                    Comments = new ObservableCollection<RetunredComment>();
-                    try
-                    {
-                        _hiddenComments = await _socialDataProvider.GetComments(CurrentPost.PostId);
-                    }
-                    catch (UnauthorizedAccessException e)
-                    {
-                        ExpiredToken();
-                    }
+                    Comments = new ObservableCollection<RetunredComment>(
+                        await _socialDataProvider.GetComments(CurrentPost.PostId));
                 }
-                foreach (var comment in _hiddenComments)
+                catch (UnauthorizedAccessException e)
                 {
-                    Comments.Add(comment);
+                    ExpiredToken();
                 }
             }
             ShowComments = !ShowComments;

@@ -1,4 +1,5 @@
 ﻿using Client.ViewModels;
+using Client.WUP.Services;
 using Windows.UI.Xaml.Controls;
 
 namespace Client.WUP.Views
@@ -9,7 +10,7 @@ namespace Client.WUP.Views
 
         public EditUserDetailsUserControl()
         {
-            ViewModel = new EditUserDetailsViewModel();
+            ViewModel = new EditUserDetailsViewModel(new FollowedUserService());
 
             this.InitializeComponent();
         }

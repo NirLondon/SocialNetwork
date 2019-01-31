@@ -183,8 +183,8 @@ $"LIMIT {amount}")
             "\t(u)-[:Uploaded]->(p) " +
             tagsCreate +
             "RETURN " +
-            "{ FullName: u.FirstName + \" \" + u.LastName" +
-            "Tags: [(t: user) <-(: Tags)-(p) | { UserId: t.UserID, FullName: t.FirstName + \" \" + t.LastName }] }";
+            "u.FirstName + \" \" + u.LastName AS FullName," +
+            "[(t:user)<-[:Tags]-(p) | { UserId: t.UserID, FullName: t.FirstName + \" \" + t.LastName }] AS Tags";
         }
 
         public ReturnedPost PutPost(string posterID, DataBasePost post)
@@ -194,7 +194,8 @@ $"LIMIT {amount}")
 
             using (var session = _driver.Session())
             {
-                var queryResult = session.Run(PutPostQuery(posterID, post, postId, uploadingTime);
+                var queryResult = session.Run(PutPostQuery(posterID, post, postId, uploadingTime))
+                    .FirstOrDefault();
 
                 return new ReturnedPost
                 {
@@ -205,10 +206,10 @@ $"LIMIT {amount}")
                     Poster = new UserMention
                     {
                         UserId = posterID,
-                        FullName = queryResult.First()["FullName"].ToString()
+                        FullName = queryResult["FullName"].ToString()
                     },
                     PostId = postId,
-                    Tags = ConvertTo<UserMention[]>(queryResult.First()["Tags"].As<List<Dictionary<string, object>>>()),
+                    Tags = ConvertTo<UserMention[]>(queryResult["Tags"].As<List<Dictionary<string, object>>>()),
                     UploadingTime = uploadingTime
                 };
             }

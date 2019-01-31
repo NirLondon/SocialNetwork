@@ -16,6 +16,7 @@ namespace Social.BL
         public Notifier()
         {
             httpClient = new HttpClient { BaseAddress = new Uri("http://localhost:63304/") };
+            //httpClient = new HttpClient { BaseAddress = new Uri("http://NotificationsService.com/") };
         }
 
         public async Task NotifyLike(Like like)

@@ -1,17 +1,14 @@
-﻿using Client.Models;
-using Client.DataProviders;
-using Client.Enums;
+﻿using Client.DataProviders;
+using Client.Exeptions;
+using Client.Models;
+using Social.Common.Models.ReturnedDTOs;
+using Social.Common.Models.UploadedDTOs;
 using System;
 using System.Collections.Generic;
-using System.Net.Http;
-using System.Text;
-using System.Threading.Tasks;
-using Windows.UI.Xaml.Media.Imaging;
 using System.Linq;
 using System.Net;
-using Client.Exeptions;
-using Social.Common.Models.UploadedDTOs;
-using Social.Common.Models.ReturnedDTOs;
+using System.Net.Http;
+using System.Threading.Tasks;
 
 namespace Client.HttpClinents
 {
@@ -21,8 +18,7 @@ namespace Client.HttpClinents
         private int SkipPostAmount { get; set; } = 5;
 
         public SocialHttpClient() : base("http://localhost:63377/api/Social/") { }
-        //http://localhost:63377/
-        //http://SocialNetwork.Social.com/
+        //public SocialHttpClient() : base("http://SocialNetwork.Social.com/api/Social/") { }
 
         public async Task Follow(string userID)
         {
@@ -119,8 +115,8 @@ namespace Client.HttpClinents
                     return response.Content.ReadAsAsync<ReturnedPost>().Result;
                 case HttpStatusCode.Unauthorized:
                     throw new TokenExpiredExeption();
+                default: return null;
             }
-            return null;
         }
 
         public async Task Block(string userID)

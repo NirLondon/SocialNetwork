@@ -32,5 +32,10 @@ namespace Client.WUP.UserControls
         {
             ((PostViewModel)DataContext).ExpandComments();
         }
+
+        private void Like(object sender, RoutedEventArgs e)
+        {
+            ((PostViewModel)DataContext).Like();
+        }
     }
 }

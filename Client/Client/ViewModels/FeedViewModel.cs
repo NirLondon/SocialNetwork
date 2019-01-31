@@ -1,15 +1,14 @@
-﻿using Client.Models;
+﻿using System.Linq;
 using Client.DataProviders;
-using Client.Enums;
 using Client.ServicesInterfaces;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Text;
-using Windows.UI.Xaml.Media.Imaging;
 using Social.Common.Models.ReturnedDTOs;
 using Social.Common.Models.UploadedDTOs;
+using Client.Exeptions;
+using System.Threading.Tasks;
 
 namespace Client.ViewModels
 {
@@ -19,21 +18,32 @@ namespace Client.ViewModels
         private IPostService _viewService { get; set; }
         private readonly ISocialDataProvider _socialDataProvider;
         private readonly IEditDetailsDataProvider _editDetailsDataProvider;
-        public ObservableCollection<ReturnedPost> Posts { get; set; }
-        public ObservableCollection<PostViewModel> PostViewModels { get; set; }
+
+        private ObservableCollection<PostViewModel> _postViewModels = new ObservableCollection<PostViewModel>();
+        public ObservableCollection<PostViewModel> PostViewModels
+        {
+            get => _postViewModels;
+            set
+            {
+                _postViewModels = value;
+                OnPropertyChange();
+            }
+        }
+
         public string PostText { get; set; } = "";
         private byte[] Image { get; set; }
-        public List<string> Tags { get; set; }
-        public ObservableCollection<string> PostVisibility { get; set; }
+        public List<string> Tags { get; set; } = new List<string>();
+        public ObservableCollection<string> PostVisibility { get; set; } =
+            new ObservableCollection<string>(Enum.GetNames(typeof(PostVisibility)));
         public int VisibilityIndex { get; set; } = -1;
 
         private string _message;
+
         public string Message
         {
             get { return _message; }
             set { _message = value; OnPropertyChange(); }
         }
-
 
         public FeedViewModel(IPostService service, ISocialDataProvider socialDataProvider, IEditDetailsDataProvider editDetailsDataProvider)
         {
@@ -42,7 +52,6 @@ namespace Client.ViewModels
             _editDetailsDataProvider = editDetailsDataProvider;
             InitPosts();
         }
-
 
         public async void ChooseImage()
         {
@@ -67,62 +76,24 @@ namespace Client.ViewModels
 
         }
 
-        private async void InitPosts()
+        private async Task InitPosts()
         {
-            UserMention u1 = new UserMention
+            try
             {
-                FullName = "oded bartov",
-                UserId = "1234"
-            };
-            UserMention u2 = new UserMention
-            {
-                FullName = "nir london",
-                UserId = "5678"
-            };
-            Tags = new List<string>();
-            Posts = new ObservableCollection<ReturnedPost>();
-            ReturnedPost p1 = new ReturnedPost()
-            {
-                Poster = u1,
-                ImageURL = "https://static.boredpanda.com/blog/wp-content/uploads/2018/04/5acb63d83493f__700-png.jpg",
-                Content = "this is the new post. bla bla",
-                UploadingTime = DateTime.Now,
-                IsLiked = true,
-                PostId = new Guid(new byte[16])
-            };
-            ReturnedPost p2 = new ReturnedPost()
-            {
-                Poster = u2,
-                ImageURL = "https://media.mnn.com/assets/images/2018/07/cat_eating_fancy_ice_cream.jpg.838x0_q80.jpg",
-                Content = "this is nir post, just another post",
-                UploadingTime = DateTime.Now - new TimeSpan(100, 0, 0, 0, 0),
-                IsLiked = false,
-                PostId = new Guid(new byte[16])
-            };
-            Posts.Add(p1);
-            Posts.Add(p2);
+                var posts =
+                    (await _socialDataProvider.GetPosts())
+                    ?.Select(p =>
+                       new PostViewModel(_viewService, _socialDataProvider, _editDetailsDataProvider)
+                       {
+                           CurrentPost = p
+                       });
 
-            PostVisibility = new ObservableCollection<string>();
-            var arr = Enum.GetNames(typeof(PostVisibility));
-            foreach (var item in arr)
-            {
-                PostVisibility.Add(item);
+                if (posts != null)
+                    PostViewModels = new ObservableCollection<PostViewModel>(posts);
             }
-            InitPostsViewModels(Posts);
-
-            //var tuple = await _dataProvider.GetPosts();
-            //if (tuple.Item1 == ErrorEnum.EverythingIsGood)
-            //    InitPostsViewModels(tuple.Item2);
-            //else
-            //    ManageError(tuple.Item1);
-        }
-
-        private void InitPostsViewModels(IEnumerable<ReturnedPost> postsList)
-        {
-            PostViewModels = new ObservableCollection<PostViewModel>();
-            foreach (var item in postsList)
+            catch (TokenExpiredExeption e)
             {
-                PostViewModels.Add(new PostViewModel(_viewService, _socialDataProvider, _editDetailsDataProvider) { CurrentPost = item });
+                ExpiredToken();
             }
         }
 

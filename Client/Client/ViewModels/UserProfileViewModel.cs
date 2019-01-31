@@ -2,9 +2,7 @@
 using Client.Models;
 using Client.ServicesInterfaces;
 using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Text;
 
 namespace Client.ViewModels
 {
@@ -29,15 +27,12 @@ namespace Client.ViewModels
             set { tbxFollow = value; OnPropertyChange(); }
         }
 
-
-
         public UserProfileViewModel(UserDetails _details, ISocialDataProvider dataProvider, IFollowedUsersService followedService)
         {
             _followedService = followedService;
             Details = _details;
             _dataProvider = dataProvider;
         }
-
 
         public async void Follow()
         {
@@ -83,7 +78,6 @@ namespace Client.ViewModels
             }
         }
 
-
         private void ExpiredTpken()
         {
             _followedService.LogOut();
@@ -93,6 +87,5 @@ namespace Client.ViewModels
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propname));
         }
-
     }
 }
